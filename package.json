@@ -18,6 +18,7 @@
     "@types/react-dom": "^16.8.5",
     "@types/styled-components": "^4.1.18",
     "babel-loader": "^8.0.6",
+    "dotenv": "^8.1.0",
     "eslint": "^6.2.0",
     "eslint-config-node": "^4.0.0",
     "eslint-config-prettier": "^6.0.0",
