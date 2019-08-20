@@ -14,7 +14,7 @@ const Search = () => {
     const response = await fetch(
       `https://trefle.io/api/plants?q=${query}?token=${TREFLE_TOKEN}`
     );
-    const data = response.json();
+    const data = await response.json();
     setPlants(data);
     console.log(data);
   };
