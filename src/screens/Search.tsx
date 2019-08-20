@@ -6,9 +6,9 @@ import { PlantCard } from '../components';
 const Search = () => {
   const API_KEY = process.env.API_KEY;
 
-  const [plants, setPlants] = useState([]);
-  const [search, setSearch] = useState('');
-  const [query, setQuery] = useState('rosemary');
+  const [plants, setPlants]: [Array<string>, any] = useState([]);
+  const [search, setSearch]: [string, any] = useState('');
+  const [query, setQuery]: [string, any] = useState('rosemary');
 
   const getData = async () => {
     const response = await fetch(
