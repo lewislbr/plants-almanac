@@ -29,11 +29,12 @@ module.exports = {
     new Dotenv(),
   ],
   stats: {
+    errors: true,
     errorDetails: true,
   },
   devServer: {
-    contentBase: __dirname + '/public/',
-    port: 3000,
-    historyApiFallback: true,
+    contentBase: path.join(__dirname, 'dist'),
+    port: 8080,
+    open: 'Google Chrome',
   },
 };
