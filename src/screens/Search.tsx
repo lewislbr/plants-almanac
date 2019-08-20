@@ -4,7 +4,7 @@ import 'regenerator-runtime/runtime';
 import { PlantCard } from '../components';
 
 const Search = () => {
-  const API_KEY = process.env.API_KEY;
+  const TREFLE_TOKEN = process.env.TREFLE_TOKEN;
 
   const [plants, setPlants]: [Array<string>, any] = useState([]);
   const [search, setSearch]: [string, any] = useState('');
@@ -12,7 +12,7 @@ const Search = () => {
 
   const getData = async () => {
     const response = await fetch(
-      `https://trefle.io/api/plants?q=${query}?token=${API_KEY}`
+      `https://trefle.io/api/plants?q=${query}?token=${TREFLE_TOKEN}`
     );
     const data = response.json();
     setPlants(data);
