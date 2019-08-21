@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import 'regenerator-runtime/runtime';
 
 import { PlantCard } from '../components';
@@ -45,7 +46,9 @@ const Search = () => {
       </form>
       <div>
         {plants.map((plant) => (
-          <PlantCard />
+          <Link to={`/plants/${plant.name}`}>
+            <PlantCard />
+          </Link>
         ))}
       </div>
     </>
