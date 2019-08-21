@@ -46,7 +46,7 @@ const Search = () => {
       </form>
       <div>
         {plants.map((plant) => (
-          <Link to={`/plants/${plant.name}`}>
+          <Link to={`/plants/${name}`}>
             <PlantCard />
           </Link>
         ))}
