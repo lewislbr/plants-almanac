@@ -4,7 +4,7 @@ import 'regenerator-runtime/runtime';
 
 import { PlantCard } from '../components';
 
-const Search = () => {
+const Plants = () => {
   const TREFLE_TOKEN = process.env.TREFLE_TOKEN;
 
   const [plants, setPlants]: [Array<string>, any] = useState([]);
@@ -55,4 +55,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default Plants;
