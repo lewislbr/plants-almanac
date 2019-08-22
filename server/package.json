@@ -1,0 +1,11 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Lewis Llobera <billobera@gmail.com>",
+  "license": "MIT",
+  "scripts": {},
+  "dependencies": {
+    "client": "1.0.0"
+  }
+}

@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "client"
+    "client",
+    "server"
   ],
   "devDependencies": {
     "eslint": "^6.2.0",
