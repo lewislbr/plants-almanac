@@ -10,6 +10,7 @@
     "server"
   ],
   "devDependencies": {
+    "@types/node": "^12.7.2",
     "eslint": "^6.2.0",
     "eslint-config-node": "^4.0.0",
     "eslint-config-prettier": "^6.0.0",
