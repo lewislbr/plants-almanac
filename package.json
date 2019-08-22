@@ -1,7 +1,7 @@
 {
-  "name": "plant-journal",
+  "name": "plants-almanac",
   "version": "1.0.0",
-  "repository": "https://github.com/lewislbr/plant-journal.git",
+  "repository": "https://github.com/lewislbr/plants-almanac.git",
   "author": "Lewis Llobera <billobera@gmail.com>",
   "license": "MIT",
   "private": true,
