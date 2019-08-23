@@ -31,6 +31,7 @@ const Plants: React.FunctionComponent = () => {
   };
 
   const updateQuery = (event: React.FormEvent<HTMLFormElement>): void => {
+    if (!search) return event.preventDefault();
     event.preventDefault();
     setQuery(search);
   };
