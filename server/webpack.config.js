@@ -21,7 +21,9 @@ module.exports = {
       },
     ],
   },
-  externals: [''],
+  externals: {
+    express: 'commonjs express',
+  },
   stats: {
     errors: true,
     errorDetails: true,
