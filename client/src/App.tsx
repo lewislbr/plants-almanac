@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { Home, PlantDetails, Plants } from './screens';
 
-const App = () => {
+const App: React.FunctionComponent = () => {
   return (
     <>
       <BrowserRouter>

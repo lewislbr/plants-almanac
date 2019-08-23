@@ -12,7 +12,7 @@ const schema = buildSchema(`
 `);
 
 const root = {
-  plant: () => {
+  plant: (): string => {
     return 'ROSEMARY';
   },
 };

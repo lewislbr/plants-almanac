@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PlantCard = () => {
+const PlantCard: React.FunctionComponent = () => {
   return (
     <div>
       <h2>Plant name</h2>
