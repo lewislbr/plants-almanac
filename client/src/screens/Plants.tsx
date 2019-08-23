@@ -25,7 +25,7 @@ const Plants: React.FunctionComponent = () => {
   }, [query]);
 
   const updateSearch = (event: React.FormEvent<HTMLInputElement>): void => {
-    const target = event.target as HTMLTextAreaElement;
+    const target = event.target as HTMLInputElement;
     setSearch(target.value);
     console.log('updateSearch here');
   };
