@@ -1,8 +1,9 @@
-const express = require('express');
-const graphqlHTTP = require('express-graphql');
-const { buildSchema } = require('graphql');
+import express from 'express';
+import graphqlHTTP from 'express-graphql';
+import { buildSchema } from 'graphql';
 
 const app = express();
+const port = 4040;
 
 const schema = buildSchema(`
   type Query {
@@ -24,5 +25,11 @@ app.use(
     graphiql: true,
   })
 );
-app.listen(4040);
-console.log('Running a GraphQL API server at localhost:4040/graphql');
+
+app.get('/', (req, res) => {
+  res.status(200).send('Server working');
+});
+
+app.listen(port, function() {
+  console.log('App listening on port: ' + port);
+});
