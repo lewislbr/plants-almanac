@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@plants-almanac/server",
   "version": "1.0.0",
   "main": "dist/app.js",
   "author": "Lewis Llobera <billobera@gmail.com>",
