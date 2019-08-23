@@ -4,33 +4,32 @@ import 'regenerator-runtime/runtime';
 
 import { PlantCard } from '../components';
 
-const Plants = () => {
-  const TREFLE_TOKEN = process.env.TREFLE_TOKEN;
-
-  const [plants, setPlants]: [Array<string>, any] = useState([]);
-  const [search, setSearch]: [string, any] = useState('');
-  const [query, setQuery]: [string, any] = useState('rosemary');
-
-  const getData = async () => {
-    const response = await fetch(
-      `https://trefle.io/api/plants?q=${query}?token=${TREFLE_TOKEN}`
-    );
-    const data = await response.json();
-    setPlants(data);
-    console.log(data);
-  };
+const Plants: React.FunctionComponent = () => {
+  const [plants, setPlants] = useState([]);
+  const [search, setSearch] = useState('');
+  const [query, setQuery] = useState('rosemary');
 
   useEffect(() => {
+    const getData = async (): Promise<void> => {
+      const TREFLE_TOKEN = process.env.TREFLE_TOKEN;
+
+      const response = await fetch(
+        `https://trefle.io/api/plants?q=${query}?token=${TREFLE_TOKEN}`
+      );
+      const data = await response.json();
+      setPlants(data);
+      console.log(data);
+    };
     getData();
     console.log('useEffect here');
   }, [query]);
 
-  const updateSearch = (event: any) => {
+  const updateSearch = (event: React.FormEvent<HTMLInputElement>): void => {
     setSearch(event.target.value);
     console.log('updateSearch here');
   };
 
-  const updateQuery = (event: any) => {
+  const updateQuery = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     setQuery(search);
   };
@@ -46,7 +45,7 @@ const Plants = () => {
       </form>
       <div>
         {plants.map((plant) => (
-          <Link to={`/plants/${name}`}>
+          <Link to={`/plants/${name}`} key={plant}>
             <PlantCard />
           </Link>
         ))}
