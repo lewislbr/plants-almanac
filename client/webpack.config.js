@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
+  target: 'web',
   entry: './src/index',
   output: {
     path: path.join(__dirname, '/dist'),
