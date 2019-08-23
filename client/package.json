@@ -5,8 +5,10 @@
   "author": "Lewis Llobera <billobera@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --hot --mode development",
-    "build": "webpack --mode production"
+    "clean": "rm -rf ./dist",
+    "check": "tsc",
+    "start": "tsc && rm -rf ./dist && webpack-dev-server --hot --mode development",
+    "build": "tsc && rm -rf ./dist && webpack --mode production"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
