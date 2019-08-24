@@ -17,8 +17,8 @@ mongoose
       res.status(200).send('Server working');
     });
 
-    app.listen(port, function() {
-      console.log('App listening on port: ' + port);
+    app.listen(port, () => {
+      console.log(`App listening on port: ${port}`);
     });
   })
   .catch((error) => {
