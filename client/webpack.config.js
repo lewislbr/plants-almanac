@@ -8,7 +8,7 @@ module.exports = {
   entry: './src/index',
   output: {
     path: path.join(__dirname, '/dist'),
-    filename: 'main.js',
+    filename: '[name].[contenthash].js',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
@@ -23,6 +23,19 @@ module.exports = {
         },
       },
     ],
+  },
+  optimization: {
+    runtimeChunk: 'single',
+    moduleIds: 'hashed',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
