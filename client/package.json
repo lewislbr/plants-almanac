@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "check": "tsc",
-    "start": "tsc && rm -rf ./dist && webpack-dev-server --hot --mode=development",
+    "start": "tsc && rm -rf ./dist && webpack-dev-server --mode=development",
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
   "devDependencies": {
