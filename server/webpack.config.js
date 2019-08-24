@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const NodemonPlugin = require('nodemon-webpack-plugin');
 
 module.exports = {
   target: 'node',
@@ -22,6 +23,7 @@ module.exports = {
       },
     ],
   },
+  plugins: [new NodemonPlugin()],
   externals: {
     express: 'commonjs express',
   },

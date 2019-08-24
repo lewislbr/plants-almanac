@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "check": "tsc",
-    "start": "tsc && rm -rf ./dist && webpack --mode=development && node dist/app.js",
+    "start": "tsc && rm -rf ./dist && webpack --mode=development --watch && node dist/app.js",
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
-    "@types/graphql": "^14.2.3"
+    "@types/graphql": "^14.2.3",
+    "nodemon-webpack-plugin": "^4.0.8"
   }
 }
