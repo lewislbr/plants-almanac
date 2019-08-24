@@ -62,7 +62,7 @@ app.use(
       }
     `),
     rootValue: {
-      plants: () => {
+      plants: (): Promise<any> => {
         return Plant.find()
           .then((plants) => {
             return plants.map((plant) => {
@@ -73,7 +73,7 @@ app.use(
             throw error;
           });
       },
-      createPlant: (args) => {
+      createPlant: ({ args }: any): Promise<any> => {
         const plant = new Plant({
           name: args.plantInput.name,
           description: args.plantInput.description,

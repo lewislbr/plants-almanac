@@ -1,8 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-const Schema = mongoose.Schema;
+export interface Plant extends Document {
+  _doc: any;
+  name: string;
+  description: string;
+  plantSeason: Array<string>;
+  harvestSeason: Array<string>;
+  pruneSeason: Array<string>;
+  tips: string;
+}
 
-const plantSchema = new Schema({
+const plantSchema: Schema = new Schema({
   name: {
     type: String,
     required: true,
@@ -29,6 +37,4 @@ const plantSchema = new Schema({
   },
 });
 
-const Plant = mongoose.model('Plant', plantSchema);
-
-export default Plant;
+export default mongoose.model<Plant>('Plant', plantSchema);
