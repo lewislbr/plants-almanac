@@ -7,8 +7,8 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "check": "tsc",
-    "start": "tsc && rm -rf ./dist && webpack --mode development && node dist/app.js",
-    "build": "tsc && rm -rf ./dist && webpack --mode production"
+    "start": "tsc && rm -rf ./dist && webpack --mode=development && node dist/app.js",
+    "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
   "dependencies": {
     "express": "^4.17.1",

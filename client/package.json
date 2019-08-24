@@ -7,8 +7,8 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "check": "tsc",
-    "start": "tsc && rm -rf ./dist && webpack-dev-server --hot --mode development",
-    "build": "tsc && rm -rf ./dist && webpack --mode production"
+    "start": "tsc && rm -rf ./dist && webpack-dev-server --hot --mode=development",
+    "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
