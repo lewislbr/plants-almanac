@@ -20,16 +20,11 @@ input PlantInput {
   tips: String
 }
 
-type RootQuery {
+type Query {
   plants: [Plant!]!
 }
 
-type RootMutation {
+type Mutation {
   createPlant(input: PlantInput): Plant
-}
-
-schema {
-  query: RootQuery
-  mutation: RootMutation
 }
 `);
