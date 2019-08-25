@@ -2,8 +2,8 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
 
-import Schema from '../graphql/schemas';
-import Resolver from '../graphql/resolvers';
+import schema from '../graphql/schemas';
+import resolver from '../graphql/resolvers';
 
 const app = express();
 const port = 4040;
@@ -28,8 +28,8 @@ mongoose
 app.use(
   '/graphql',
   graphqlHTTP({
-    schema: Schema,
-    rootValue: Resolver,
+    schema: schema,
+    rootValue: resolver,
     graphiql: true,
   })
 );
