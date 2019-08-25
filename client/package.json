@@ -19,7 +19,6 @@
     "dotenv": "^8.1.0",
     "dotenv-webpack": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",
-    "regenerator-runtime": "^0.13.3",
     "styled-components": "^4.3.2"
   },
   "dependencies": {

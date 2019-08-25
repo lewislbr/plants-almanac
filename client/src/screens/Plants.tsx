@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import 'regenerator-runtime/runtime';
 
 import { PlantCard } from '../components';
 
