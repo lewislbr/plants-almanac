@@ -1,9 +1,9 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
-import { buildSchema } from 'graphql';
 import mongoose from 'mongoose';
 
-import Plant from '../models/plant';
+import Schema from '../graphql/schemas';
+import Resolver from '../graphql/resolvers';
 
 const app = express();
 const port = 4040;
@@ -28,81 +28,8 @@ mongoose
 app.use(
   '/graphql',
   graphqlHTTP({
-    schema: buildSchema(`
-      type Plant {
-        _id: ID!
-        name: String!
-        description: String
-        plantSeason: [String!]
-        harvestSeason: [String!]
-        pruneSeason: [String!]
-        tips: String
-      }
-
-      input PlantInput {
-        name: String!
-        description: String
-        plantSeason: [String!]
-        harvestSeason: [String!]
-        pruneSeason: [String!]
-        tips: String
-      }
-
-      type RootQuery {
-        plants: [Plant!]!
-      }
-
-      type RootMutation {
-        createPlant(input: PlantInput): Plant
-      }
-      
-      schema {
-        query: RootQuery
-        mutation: RootMutation
-      }
-    `),
-    rootValue: {
-      plants: (): Promise<any> => {
-        return Plant.find()
-          .then((plants) => {
-            return plants.map((plant) => {
-              return { ...plant._doc };
-            });
-          })
-          .catch((error) => {
-            throw error;
-          });
-      },
-      createPlant: (args: {
-        input: {
-          name: string;
-          description: string;
-          plantSeason: string[];
-          harvestSeason: string[];
-          pruneSeason: string[];
-          tips: string;
-        };
-      }): Promise<any> => {
-        const plant = new Plant({
-          name: args.input.name,
-          description: args.input.description,
-          plantSeason: args.input.plantSeason,
-          harvestSeason: args.input.harvestSeason,
-          pruneSeason: args.input.pruneSeason,
-          tips: args.input.tips,
-        });
-        return plant
-          .save()
-          .then((result) => {
-            console.log(result);
-            return { ...result._doc };
-          })
-          .catch((error) => {
-            console.log(error);
-            throw error;
-          });
-      },
-    },
+    schema: Schema,
+    rootValue: Resolver,
     graphiql: true,
   })
 );
