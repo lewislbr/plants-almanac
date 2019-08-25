@@ -53,7 +53,7 @@ app.use(
       }
 
       type RootMutation {
-        createPlant(plantInput: PlantInput): Plant
+        createPlant(input: PlantInput): Plant
       }
       
       schema {
@@ -74,7 +74,7 @@ app.use(
           });
       },
       createPlant: (args: {
-        plantInput: {
+        input: {
           name: string;
           description: string;
           plantSeason: string[];
@@ -84,12 +84,12 @@ app.use(
         };
       }): Promise<any> => {
         const plant = new Plant({
-          name: args.plantInput.name,
-          description: args.plantInput.description,
-          plantSeason: args.plantInput.plantSeason,
-          harvestSeason: args.plantInput.harvestSeason,
-          pruneSeason: args.plantInput.pruneSeason,
-          tips: args.plantInput.tips,
+          name: args.input.name,
+          description: args.input.description,
+          plantSeason: args.input.plantSeason,
+          harvestSeason: args.input.harvestSeason,
+          pruneSeason: args.input.pruneSeason,
+          tips: args.input.tips,
         });
         return plant
           .save()
