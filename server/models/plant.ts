@@ -4,9 +4,9 @@ export interface Plant extends Document {
   _doc: any;
   name: string;
   description: string;
-  plantSeason: Array<string>;
-  harvestSeason: Array<string>;
-  pruneSeason: Array<string>;
+  plantSeason: string[];
+  harvestSeason: string[];
+  pruneSeason: string[];
   tips: string;
 }
 
