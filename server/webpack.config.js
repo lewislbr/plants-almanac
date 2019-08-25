@@ -24,9 +24,10 @@ module.exports = {
     ],
   },
   plugins: [new NodemonPlugin()],
-  externals: {
-    express: 'commonjs express',
-  },
+  externals: [
+    { express: 'commonjs express' },
+    { mongoose: 'commonjs mongoose' },
+  ],
   stats: {
     errors: true,
     errorDetails: true,
