@@ -73,7 +73,16 @@ app.use(
             throw error;
           });
       },
-      createPlant: ({ args }: any): Promise<any> => {
+      createPlant: (args: {
+        plantInput: {
+          name: string;
+          description: string;
+          plantSeason: string[];
+          harvestSeason: string[];
+          pruneSeason: string[];
+          tips: string;
+        };
+      }): Promise<any> => {
         const plant = new Plant({
           name: args.plantInput.name,
           description: args.plantInput.description,
