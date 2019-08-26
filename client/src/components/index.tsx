@@ -1,3 +1,4 @@
+import Navigation from './Navigation';
 import PlantCard from './PlantCard';
 
-export { PlantCard };
+export { Navigation, PlantCard };
