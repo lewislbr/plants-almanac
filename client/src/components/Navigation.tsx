@@ -13,7 +13,7 @@ export const Navigation: React.FunctionComponent = () => {
             <NavLink to="/">Home</NavLink>
           </li>
           <li>
-            <NavLink to="/plants">Search Plants</NavLink>
+            <NavLink to="/search">Search Plants</NavLink>
           </li>
         </ul>
       </nav>

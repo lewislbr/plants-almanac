@@ -1,5 +1,5 @@
 import { Home } from './Home';
 import { PlantDetails } from './PlantDetails';
-import { Plants } from './Plants';
+import { Search } from './Search';
 
-export { Home, PlantDetails, Plants };
+export { Home, PlantDetails, Search };

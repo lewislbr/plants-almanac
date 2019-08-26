@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { PlantCard } from '../components';
 
-export const Plants: React.FunctionComponent = () => {
+export const Search: React.FunctionComponent = () => {
   const [plants, setPlants] = useState([]);
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');

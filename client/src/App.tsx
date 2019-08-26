@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import { Home, PlantDetails, Plants } from './screens';
+import { Home, PlantDetails, Search } from './screens';
 
 import { Navigation } from './components';
 
@@ -14,8 +14,8 @@ export const App: React.FunctionComponent = () => {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/home" component={Home} />
-            <Route exact path="/plants" component={Plants} />
-            <Route path="/plants/:name" component={PlantDetails} />
+            <Route exact path="/search" component={Search} />
+            <Route path="/:name" component={PlantDetails} />
           </Switch>
         </main>
       </>
