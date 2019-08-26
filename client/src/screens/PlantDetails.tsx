@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PlantDetails: React.FunctionComponent = () => {
+export const PlantDetails: React.FunctionComponent = () => {
   return (
     <>
       <div>
@@ -9,5 +9,3 @@ const PlantDetails: React.FunctionComponent = () => {
     </>
   );
 };
-
-export default PlantDetails;

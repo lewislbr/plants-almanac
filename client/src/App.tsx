@@ -5,7 +5,7 @@ import { Home, PlantDetails, Plants } from './screens';
 
 import { Navigation } from './components';
 
-const App: React.FunctionComponent = () => {
+export const App: React.FunctionComponent = () => {
   return (
     <BrowserRouter>
       <>
@@ -22,5 +22,3 @@ const App: React.FunctionComponent = () => {
     </BrowserRouter>
   );
 };
-
-export default App;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-const Navigation: React.FunctionComponent = () => {
+export const Navigation: React.FunctionComponent = () => {
   return (
     <header>
       <div>
@@ -20,5 +20,3 @@ const Navigation: React.FunctionComponent = () => {
     </header>
   );
 };
-
-export default Navigation;
