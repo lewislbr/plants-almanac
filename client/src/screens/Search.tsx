@@ -5,7 +5,6 @@ import { PlantCard } from '../components';
 
 export const Search: React.FunctionComponent = () => {
   const [plants, setPlants] = useState([]);
-  const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
 
   const getData = async (): Promise<void> => {
@@ -19,16 +18,15 @@ export const Search: React.FunctionComponent = () => {
     console.log(data);
   };
 
-  const updateInput = (event: React.FormEvent<HTMLInputElement>): void => {
+  const updateQuery = (event: React.FormEvent<HTMLInputElement>): void => {
     const target = event.target as HTMLInputElement;
-    setInput(target.value);
-    console.log('updateInput here');
+    setQuery(target.value);
+    console.log('updateQuery here');
   };
 
   const makeQuery = (event: React.FormEvent<HTMLFormElement>): void => {
-    if (!input) return event.preventDefault();
+    if (!query) return event.preventDefault();
     event.preventDefault();
-    setQuery(input);
     getData();
   };
 
@@ -38,7 +36,7 @@ export const Search: React.FunctionComponent = () => {
         <h1>Search</h1>
       </div>
       <form onSubmit={makeQuery}>
-        <input type="text" value={input} onChange={updateInput} />
+        <input type="text" value={query} onChange={updateQuery} />
         <button type="submit">Search</button>
       </form>
       <div>
