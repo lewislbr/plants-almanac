@@ -8,10 +8,10 @@ export const Search: React.FunctionComponent = () => {
   const [query, setQuery] = useState('');
 
   const getData = async (): Promise<void> => {
-    const TREFLE_TOKEN = process.env.TREFLE_TOKEN;
+    const JWT_TOKEN = process.env.JWT_TOKEN;
 
     const response = await fetch(
-      `https://trefle.io/api/plants?q=${query}?token=${TREFLE_TOKEN}`
+      `https://trefle.io/api/plants?q=${query}?token=${JWT_TOKEN}`
     );
     const data = await response.json();
     setPlants(data);
