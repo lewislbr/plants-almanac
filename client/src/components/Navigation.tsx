@@ -15,6 +15,9 @@ export const Navigation: React.FunctionComponent = () => {
           <li>
             <NavLink to="/search">Search Plants</NavLink>
           </li>
+          <li>
+            <NavLink to="/addplant">Add Plant</NavLink>
+          </li>
         </ul>
       </nav>
     </header>
