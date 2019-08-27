@@ -1,6 +1,6 @@
-import Plant from '../../models/plant';
+import { Plant } from '../../models/plant';
 
-export default {
+export const resolver = {
   plants: async (): Promise<any> => {
     try {
       const plants = await Plant.find();

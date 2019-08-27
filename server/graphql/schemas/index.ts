@@ -1,6 +1,6 @@
 import { buildSchema } from 'graphql';
 
-export default buildSchema(`
+export const schema = buildSchema(`
 type Plant {
   _id: ID!
   name: String!

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-export interface Plant extends Document {
+interface Plant extends Document {
   _doc: any;
   name: string;
   description: string;
@@ -37,4 +37,4 @@ const plantSchema: Schema = new Schema({
   },
 });
 
-export default mongoose.model<Plant>('Plant', plantSchema);
+export const Plant = mongoose.model<Plant>('Plant', plantSchema);
