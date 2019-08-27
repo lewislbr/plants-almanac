@@ -41,7 +41,7 @@ export const Search: React.FunctionComponent = () => {
       </form>
       <div>
         {plants.map((plant) => (
-          <Link to={`/plants/${name}`} key={plant}>
+          <Link to={`/${name}`} key={plant}>
             <PlantCard />
           </Link>
         ))}
