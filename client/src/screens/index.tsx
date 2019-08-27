@@ -1,5 +1,3 @@
-import { Home } from './Home';
-import { PlantDetails } from './PlantDetails';
-import { Search } from './Search';
-
-export { Home, PlantDetails, Search };
+export { Home } from './Home';
+export { PlantDetails } from './PlantDetails';
+export { Search } from './Search';

@@ -1,6 +1,4 @@
-import { GlobalStyles } from './GlobalStyles';
-import { Navigation } from './Navigation';
-import { PlantCard } from './PlantCard';
-import { ResetStyles } from './ResetStyles';
-
-export { GlobalStyles, Navigation, PlantCard, ResetStyles };
+export { GlobalStyles } from './GlobalStyles';
+export { Navigation } from './Navigation';
+export { PlantCard } from './PlantCard';
+export { ResetStyles } from './ResetStyles';
