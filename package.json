@@ -9,6 +9,11 @@
     "client",
     "server"
   ],
+  "scripts": {
+    "client": "yarn workspace @plants-almanac/client start",
+    "server": "yarn workspace @plants-almanac/server start",
+    "start": "concurrently --kill-others-on-fail \"yarn server\"  \"yarn client\""
+  },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
@@ -17,6 +22,7 @@
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
     "babel-loader": "^8.0.6",
+    "concurrently": "^4.1.2",
     "eslint": "^6.2.0",
     "eslint-config-node": "^4.0.0",
     "eslint-config-prettier": "^6.0.0",
