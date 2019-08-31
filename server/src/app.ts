@@ -1,12 +1,34 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
 
 import { schema } from '../graphql/schemas';
 import { resolver } from '../graphql/resolvers';
 
 const app = express();
 const port = 4040;
+
+app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-type');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    rootValue: resolver,
+    graphiql: true,
+  })
+);
 
 mongoose
   .connect(
@@ -24,12 +46,3 @@ mongoose
   .catch((error) => {
     console.log(error);
   });
-
-app.use(
-  '/graphql',
-  graphqlHTTP({
-    schema: schema,
-    rootValue: resolver,
-    graphiql: true,
-  })
-);
