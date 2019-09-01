@@ -27,6 +27,10 @@ module.exports = {
   externals: [
     { express: 'commonjs express' },
     { mongoose: 'commonjs mongoose' },
+    {
+      bufferutil: 'commonjs bufferutil',
+      'utf-8-validate': 'commonjs utf-8-validate',
+    },
   ],
   stats: {
     errors: true,
