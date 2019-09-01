@@ -42,7 +42,7 @@ export const AddPlant: React.FunctionComponent = () => {
 
     (async (): Promise<void> => {
       try {
-        const response = await fetch('http://localhost:4000/graphql', {
+        const response = await fetch('http://localhost:4040/graphql', {
           method: 'POST',
           body: JSON.stringify(query),
           headers: {
