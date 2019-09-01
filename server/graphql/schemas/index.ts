@@ -12,7 +12,7 @@ export const typeDefs = gql`
   }
 
   type Query {
-    plants: [Plant!]!
+    getPlants: [Plant!]!
   }
 
   type Mutation {
