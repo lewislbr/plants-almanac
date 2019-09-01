@@ -3,7 +3,7 @@ import { IResolvers } from 'graphql-tools';
 
 export const resolvers: IResolvers = {
   Query: {
-    plants: async (): Promise<any> => {
+    getPlants: async (): Promise<any> => {
       try {
         const plants = await Plant.find();
         return plants.map((plant) => {
