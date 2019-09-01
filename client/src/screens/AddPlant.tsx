@@ -27,7 +27,7 @@ export const AddPlant: React.FunctionComponent = () => {
     const query = {
       query: `
         mutation {
-          createPlant(input: {name: "${name}", description: "${description}", plantSeason: ["${plantSeason}"], harvestSeason: ["${harvestSeason}"], pruneSeason: ["${pruneSeason}"], tips: "${tips}"}) {
+          createPlant(name: "${name}", description: "${description}", plantSeason: ["${plantSeason}"], harvestSeason: ["${harvestSeason}"], pruneSeason: ["${pruneSeason}"], tips: "${tips}") {
             _id
             name
             description
@@ -42,7 +42,7 @@ export const AddPlant: React.FunctionComponent = () => {
 
     (async (): Promise<void> => {
       try {
-        const response = await fetch('http://localhost:4040/graphql', {
+        const response = await fetch('http://localhost:4000/graphql', {
           method: 'POST',
           body: JSON.stringify(query),
           headers: {
@@ -58,8 +58,6 @@ export const AddPlant: React.FunctionComponent = () => {
         console.log(error);
       }
     })();
-    
-    console.log(`Added plant: ${name}`);
   };
 
   return (

@@ -11,14 +11,12 @@
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "express-graphql": "^0.9.0",
+    "apollo-server": "^2.9.2",
     "graphql": "^14.5.0",
     "mongoose": "^5.6.10"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.5.2",
-    "@types/express": "^4.17.1",
     "@types/graphql": "^14.2.3",
     "@types/mongoose": "^5.5.13",
     "nodemon-webpack-plugin": "^4.0.8"

@@ -1,30 +1,28 @@
-import { buildSchema } from 'graphql';
+import { gql } from 'apollo-server';
 
-export const schema = buildSchema(`
-type Plant {
-  _id: ID!
-  name: String!
-  description: String
-  plantSeason: [String!]
-  harvestSeason: [String!]
-  pruneSeason: [String!]
-  tips: String
-}
+export const typeDefs = gql`
+  type Plant {
+    _id: ID!
+    name: String!
+    description: String
+    plantSeason: [String!]
+    harvestSeason: [String!]
+    pruneSeason: [String!]
+    tips: String
+  }
 
-input PlantInput {
-  name: String!
-  description: String
-  plantSeason: [String!]
-  harvestSeason: [String!]
-  pruneSeason: [String!]
-  tips: String
-}
+  type Query {
+    plants: [Plant!]!
+  }
 
-type Query {
-  plants: [Plant!]!
-}
-
-type Mutation {
-  createPlant(input: PlantInput): Plant
-}
-`);
+  type Mutation {
+    createPlant(
+      name: String!
+      description: String
+      plantSeason: [String!]
+      harvestSeason: [String!]
+      pruneSeason: [String!]
+      tips: String
+    ): Plant
+  }
+`;
