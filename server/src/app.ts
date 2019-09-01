@@ -17,6 +17,6 @@ mongoose.connect(
   `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0-ovl3w.mongodb.net/${process.env.MONGODB_DB}?retryWrites=true&w=majority`
 );
 
-server.listen().then(({ url }) => {
+server.listen({ port: 4040 }).then(({ url }) => {
   console.log(`Server ready at ${url} 🚀`);
 });
