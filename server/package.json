@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "check": "tsc",
-    "start": "tsc && rm -rf ./dist && webpack --mode=development --watch && node dist/app.js",
+    "start": "tsc && rm -rf ./dist && webpack --mode=development --watch && node dist/index.js",
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
   "dependencies": {
