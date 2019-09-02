@@ -1,9 +1,13 @@
 import React from 'react';
 
-export const PlantCard: React.FunctionComponent = () => {
+interface Props {
+  name: string;
+}
+
+export const PlantCard: React.FunctionComponent<Props> = (props: Props) => {
   return (
     <div>
-      <h2>Plant name</h2>
+      <h2>{props.name}</h2>
     </div>
   );
 };
