@@ -1,8 +1,8 @@
 import { ApolloServer } from 'apollo-server';
 import mongoose from 'mongoose';
 
-import { typeDefs } from '../graphql/schemas';
-import { resolvers } from '../graphql/resolvers';
+import { typeDefs } from './graphql/schemas';
+import { resolvers } from './graphql/resolvers';
 
 const server = new ApolloServer({
   cors: {
