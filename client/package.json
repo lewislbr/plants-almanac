@@ -10,6 +10,14 @@
     "start": "tsc && rm -rf ./dist && webpack-dev-server --mode=development",
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
+  "dependencies": {
+    "@apollo/react-hooks": "^3.0.1",
+    "apollo-client": "^2.6.4",
+    "graphql-tag": "^2.10.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-router-dom": "^5.0.1"
+  },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
     "@types/react": "^16.9.2",
@@ -19,10 +27,5 @@
     "babel-plugin-styled-components": "^1.10.6",
     "html-webpack-plugin": "^3.2.0",
     "styled-components": "^4.3.2"
-  },
-  "dependencies": {
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
-    "react-router-dom": "^5.0.1"
   }
 }
