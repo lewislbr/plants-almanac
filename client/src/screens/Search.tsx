@@ -40,9 +40,9 @@ export const Search: React.FunctionComponent = () => {
         <button type="submit">Search</button>
       </form>
       <div>
-        {plants.map((plant) => (
-          <Link to={`/${name}`} key={plant}>
-            <PlantCard />
+        {plants.map((plant: any) => (
+          <Link to={`/${name}`} key={plant.id}>
+            <PlantCard key={plant.id} name={plant.name} />
           </Link>
         ))}
       </div>
