@@ -14,6 +14,9 @@
     "server": "yarn workspace @plants-almanac/server start",
     "start": "concurrently --kill-others-on-fail \"yarn server\"  \"yarn client\""
   },
+  "dependencies": {
+    "graphql": "^14.5.4"
+  },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
