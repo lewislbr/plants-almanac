@@ -11,6 +11,9 @@ const server = new ApolloServer({
   },
   typeDefs,
   resolvers,
+  engine: {
+    apiKey: process.env.ENGINE_API_KEY,
+  },
 });
 
 mongoose.connect(
