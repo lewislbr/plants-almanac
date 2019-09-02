@@ -1,6 +1,38 @@
 import React, { useRef } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+
+const ADD_PLANT = gql`
+  mutation AddPlant(
+    $name: String!
+    $description: String
+    $plantSeason: [String!]
+    $harvestSeason: [String!]
+    $pruneSeason: [String!]
+    $tips: String
+  ) {
+    createPlant(
+      name: $name
+      description: $description
+      plantSeason: $plantSeason
+      harvestSeason: $harvestSeason
+      pruneSeason: $pruneSeason
+      tips: $tips
+    ) {
+      _id
+      name
+      description
+      plantSeason
+      harvestSeason
+      pruneSeason
+      tips
+    }
+  }
+`;
 
 export const AddPlant: React.FunctionComponent = () => {
+  const [addPlant, { data }] = useMutation(ADD_PLANT);
+
   const nameElement = useRef<HTMLInputElement>(null!);
   const descriptionElement = useRef<HTMLTextAreaElement>(null!);
   const plantSeasonElement = useRef<HTMLInputElement>(null!);
@@ -24,40 +56,16 @@ export const AddPlant: React.FunctionComponent = () => {
 
     if (!name) return event.preventDefault();
 
-    const query = {
-      query: `
-        mutation {
-          createPlant(name: "${name}", description: "${description}", plantSeason: ["${plantSeason}"], harvestSeason: ["${harvestSeason}"], pruneSeason: ["${pruneSeason}"], tips: "${tips}") {
-            _id
-            name
-            description
-            plantSeason
-            harvestSeason
-            pruneSeason
-            tips
-          }
-        }
-      `,
-    };
-
-    (async (): Promise<void> => {
-      try {
-        const response = await fetch('http://localhost:4040/graphql', {
-          method: 'POST',
-          body: JSON.stringify(query),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        if (response.status !== 200 && response.status !== 201) {
-          throw new Error('Error');
-        }
-        const data = await response.json();
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
+    addPlant({
+      variables: {
+        name: name,
+        description: description,
+        plantSeason: plantSeason,
+        harvestSeason: harvestSeason,
+        pruneSeason: pruneSeason,
+        tips: tips,
+      },
+    });
   };
 
   return (
