@@ -1,4 +1,5 @@
 export { GlobalStyles } from './GlobalStyles';
-export { Navigation } from './Navigation';
+export { HeaderComponent } from './Header/Header';
+export { Main } from './Main';
 export { PlantCard } from './PlantCard';
-export { ResetStyles } from './ResetStyles';
+export { Section } from './Section';
