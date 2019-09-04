@@ -3,16 +3,15 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { AddPlant, Home, PlantDetails, Search } from './screens';
 
-import { GlobalStyles, Navigation, ResetStyles } from './components';
+import { GlobalStyles, HeaderComponent, Main } from './components';
 
 export const App: React.FunctionComponent = () => {
   return (
     <BrowserRouter>
       <>
-        <ResetStyles />
         <GlobalStyles />
-        <Navigation />
-        <main>
+        <HeaderComponent />
+        <Main>
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/home" component={Home} />
@@ -20,7 +19,7 @@ export const App: React.FunctionComponent = () => {
             <Route exact path="/search" component={Search} />
             <Route path="/:name" component={PlantDetails} />
           </Switch>
-        </main>
+        </Main>
       </>
     </BrowserRouter>
   );
