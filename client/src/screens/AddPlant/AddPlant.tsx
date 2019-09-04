@@ -2,7 +2,16 @@ import React, { useRef } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { H1 } from '../components';
+import {
+  Button,
+  H1,
+  Input,
+  Label,
+  Section,
+  TextArea,
+  TextTip,
+} from '../../components';
+import { ButtonDiv } from './AddPlantStyles';
 
 const ADD_PLANT = gql`
   mutation AddPlant(
@@ -72,41 +81,49 @@ export const AddPlant: React.FunctionComponent = () => {
 
   return (
     <>
-      <div>
-        <H1>Add Plant</H1>
-      </div>
-      <form onSubmit={confirmAddPlant}>
+      <Section>
         <div>
-          <label>Name</label>
-          <input type="text" ref={nameElement} />
+          <H1>Add Plant</H1>
         </div>
-        <div>
-          <label>Description</label>
-          <textarea rows={4} ref={descriptionElement} />
-        </div>
-        <div>
-          <label>Plant Season</label>
-          <input type="text" ref={plantSeasonElement} />
-        </div>
-        <div>
-          <label>Harvest Season</label>
-          <input type="text" ref={harvestSeasonElement} />
-        </div>
-        <div>
-          <label>Prune Season</label>
-          <input type="text" ref={pruneSeasonElement} />
-        </div>
-        <div>
-          <label>Tips</label>
-          <textarea rows={4} ref={tipsElement} />
-        </div>
-        <div>
-          <button type="button" onClick={cancelAddPlant}>
-            Cancel
-          </button>
-          <button type="submit">Confirm</button>
-        </div>
-      </form>
+      </Section>
+      <Section>
+        <form onSubmit={confirmAddPlant}>
+          <div>
+            <Label>
+              Name <TextTip>(Required)</TextTip>
+            </Label>
+            <Input type="text" ref={nameElement} />
+          </div>
+          <div>
+            <Label>Description</Label>
+            <TextArea rows={4} ref={descriptionElement} />
+          </div>
+          <div>
+            <Label>Plant Season</Label>
+            <Input type="text" ref={plantSeasonElement} />
+          </div>
+          <div>
+            <Label>Harvest Season</Label>
+            <Input type="text" ref={harvestSeasonElement} />
+          </div>
+          <div>
+            <Label>Prune Season</Label>
+            <Input type="text" ref={pruneSeasonElement} />
+          </div>
+          <div>
+            <Label>Tips</Label>
+            <TextArea rows={4} ref={tipsElement} />
+          </div>
+          <ButtonDiv>
+            <Button type="button" onClick={cancelAddPlant} secondary>
+              Cancel
+            </Button>
+            <Button type="submit" primary>
+              Confirm
+            </Button>
+          </ButtonDiv>
+        </form>
+      </Section>
     </>
   );
 };
