@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { H1, PlantCard } from '../components';
+import { Button, H1, Input, PlantCard, Section } from '../components';
 
 export const Search: React.FunctionComponent = () => {
   const [plants, setPlants] = useState([]);
@@ -32,20 +32,28 @@ export const Search: React.FunctionComponent = () => {
 
   return (
     <>
-      <div>
-        <H1>Search</H1>
-      </div>
-      <form onSubmit={makeQuery}>
-        <input type="text" value={query} onChange={updateQuery} />
-        <button type="submit">Search</button>
-      </form>
-      <div>
-        {plants.map((plant: any) => (
-          <Link to={`/${name}`} key={plant.id}>
-            <PlantCard key={plant.id} name={plant.name} />
-          </Link>
-        ))}
-      </div>
+      <Section>
+        <div>
+          <H1>Search</H1>
+        </div>
+      </Section>
+      <Section>
+        <form onSubmit={makeQuery}>
+          <Input type="text" value={query} onChange={updateQuery} />
+          <Button type="submit" primary>
+            Search
+          </Button>
+        </form>
+      </Section>
+      <Section>
+        <div>
+          {plants.map((plant: any) => (
+            <Link to={`/${name}`} key={plant.id}>
+              <PlantCard key={plant.id} name={plant.name} />
+            </Link>
+          ))}
+        </div>
+      </Section>
     </>
   );
 };

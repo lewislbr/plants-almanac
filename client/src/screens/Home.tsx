@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { H1, PlantCard } from '../components';
+import { H1, PlantCard, Section } from '../components';
 
 const GET_PLANTS = gql`
   query GetPlants {
@@ -30,10 +30,12 @@ export const Home: React.FunctionComponent = () => {
 
   return (
     <>
-      <H1>Home</H1>
-      {data.getPlants.map((plant: Plant) => (
-        <PlantCard key={plant._id} name={plant.name} />
-      ))}
+      <Section>
+        <H1>Home</H1>
+        {data.getPlants.map((plant: Plant) => (
+          <PlantCard key={plant._id} name={plant.name} />
+        ))}
+      </Section>
     </>
   );
 };
