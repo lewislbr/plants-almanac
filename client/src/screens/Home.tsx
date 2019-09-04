@@ -25,9 +25,6 @@ interface Plant {
 
 export const Home: React.FunctionComponent = () => {
   const { data, loading, error } = useQuery(GET_PLANTS);
-  
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>ERROR</p>;
 
   return (
     <>
@@ -35,9 +32,17 @@ export const Home: React.FunctionComponent = () => {
         <H1>Home</H1>
       </Section>
       <Section>
-        {data.getPlants.map((plant: Plant) => (
-          <PlantCard key={plant._id} name={plant.name} />
-        ))}
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p>ERROR</p>
+        ) : (
+          <div>
+            {data.getPlants.map((plant: Plant) => (
+              <PlantCard key={plant._id} name={plant.name} />
+            ))}
+          </div>
+        )}
       </Section>
     </>
   );
