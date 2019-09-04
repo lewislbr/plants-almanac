@@ -5,7 +5,7 @@ import gql from 'graphql-tag';
 import { H1, PlantCard } from '../components';
 
 const GET_PLANTS = gql`
-  query {
+  query GetPlants {
     getPlants {
       _id
       name
