@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { Header, Li, Nav, Ul } from './HeaderStyles';
+import { Header_, Li, Nav, Ul } from './HeaderStyles';
 
-export const HeaderComponent: React.FunctionComponent = () => {
+export const Header: React.FunctionComponent = () => {
   return (
-    <Header>
+    <Header_>
       <div>
         <h2>Plants Almanac</h2>
       </div>
@@ -22,6 +22,6 @@ export const HeaderComponent: React.FunctionComponent = () => {
           </Li>
         </Ul>
       </Nav>
-    </Header>
+    </Header_>
   );
 };

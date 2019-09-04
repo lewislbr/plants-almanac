@@ -3,14 +3,14 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { AddPlant, Home, PlantDetails, Search } from './screens';
 
-import { GlobalStyles, HeaderComponent, Main } from './components';
+import { GlobalStyles, Header, Main } from './components';
 
 export const App: React.FunctionComponent = () => {
   return (
     <BrowserRouter>
       <>
         <GlobalStyles />
-        <HeaderComponent />
+        <Header />
         <Main>
           <Switch>
             <Route exact path="/" component={Home} />
