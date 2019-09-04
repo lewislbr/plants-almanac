@@ -1,6 +1,11 @@
+export { Button } from './Button';
 export { GlobalStyles } from './GlobalStyles';
 export { H1 } from './H1';
 export { Header } from './Header/Header';
+export { Input } from './Input';
+export { Label } from './Label';
 export { Main } from './Main';
 export { PlantCard } from './PlantCard';
 export { Section } from './Section';
+export { TextArea } from './TextArea';
+export { TextTip } from './TextTip';
