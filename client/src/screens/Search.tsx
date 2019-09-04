@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { PlantCard } from '../components';
+import { H1, PlantCard } from '../components';
 
 export const Search: React.FunctionComponent = () => {
   const [plants, setPlants] = useState([]);
@@ -33,7 +33,7 @@ export const Search: React.FunctionComponent = () => {
   return (
     <>
       <div>
-        <h1>Search</h1>
+        <H1>Search</H1>
       </div>
       <form onSubmit={makeQuery}>
         <input type="text" value={query} onChange={updateQuery} />

@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { PlantCard } from '../components';
+import { H1, PlantCard } from '../components';
 
 const GET_PLANTS = gql`
   query {
@@ -30,7 +30,7 @@ export const Home: React.FunctionComponent = () => {
 
   return (
     <>
-      <h1>Home</h1>
+      <H1>Home</H1>
       {data.getPlants.map((plant: Plant) => (
         <PlantCard key={plant._id} name={plant.name} />
       ))}

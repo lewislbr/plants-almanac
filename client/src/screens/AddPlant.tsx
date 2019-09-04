@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
+import { H1 } from '../components';
+
 const ADD_PLANT = gql`
   mutation AddPlant(
     $name: String!
@@ -71,7 +73,7 @@ export const AddPlant: React.FunctionComponent = () => {
   return (
     <>
       <div>
-        <h2>Add Plant</h2>
+        <H1>Add Plant</H1>
       </div>
       <form onSubmit={confirmAddPlant}>
         <div>
