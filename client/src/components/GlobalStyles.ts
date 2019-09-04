@@ -15,6 +15,7 @@ export const GlobalStyles = createGlobalStyle`
     --color-light-dark: hsl(0, 0%, 75%);
     --color-light-darker: hsl(0, 0%, 55%);
     --color-light-translucent: hsla(70, 0%, 95%, 0.85);
+    --font-size-xxs: 15px;
     --font-size-xs: 17px;
     --font-size-s: 18px;
     --font-size-m: 22px;
@@ -23,6 +24,13 @@ export const GlobalStyles = createGlobalStyle`
     --font-size-xxl: 80px;
     --padding-desktop: 5%;
     --padding-mobile: 3%;
+    --page-width: 1200px;
+    --spacing-xxs: 5px;
+    --spacing-xs: 10px;
+    --spacing-s: 20px;
+    --spacing-m: 40px;
+    --spacing-l: 80px;
+    --spacing-xl: 160px;
     --radius-m: 6px;
     --radius-l: 10px;
   }
