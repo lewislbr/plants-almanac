@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 export const Header_ = styled.header`
   align-items: center;
+  backdrop-filter: blur(5px);
+  background: var(--color-light-translucent);
   display: flex;
   flex-direction: row;
   height: 60px;
