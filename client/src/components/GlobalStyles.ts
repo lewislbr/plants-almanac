@@ -2,10 +2,10 @@ import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
   :root {
-    --color-accent-primary: hsl(173, 100%, 52%);
-    --color-accent-primary-hover: hsl(173, 100%, 52%);
-    --color-accent-secondary: hsl(285, 100%, 38%);
-    --color-accent-secondary-hover: hsl(285, 100%, 38%);
+    --color-accent-primary: hsl(0, 0%, 10%);
+    --color-accent-primary-hover: hsl(0, 0%, 20%);
+    --color-accent-secondary: hsl(0, 0%, 95%);
+    --color-accent-secondary-hover: hsl(0, 0%, 85%);
     --color-dark: hsl(0, 0%, 10%);
     --color-dark-light: hsl(0, 0%, 30%);
     --color-dark-lighter: hsl(0, 0%, 50%);
