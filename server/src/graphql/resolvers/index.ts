@@ -1,6 +1,15 @@
 import { Plant } from '../../models/plant';
 import { IResolvers } from 'graphql-tools';
 
+interface Plant {
+  name: string;
+  description: string;
+  plantSeason: string[];
+  harvestSeason: string[];
+  pruneSeason: string[];
+  tips: string;
+}
+
 export const resolvers: IResolvers = {
   Query: {
     getPlants: async (): Promise<any> => {
@@ -17,17 +26,7 @@ export const resolvers: IResolvers = {
   },
 
   Mutation: {
-    createPlant: async (
-      _: any,
-      args: {
-        name: string;
-        description: string;
-        plantSeason: string[];
-        harvestSeason: string[];
-        pruneSeason: string[];
-        tips: string;
-      }
-    ): Promise<any> => {
+    createPlant: async (_: any, args: Plant): Promise<any> => {
       try {
         const plant = new Plant({
           name: args.name,
@@ -38,7 +37,6 @@ export const resolvers: IResolvers = {
           tips: args.tips,
         });
         const result = await plant.save();
-        console.log(result);
         return { ...result._doc };
       } catch (error) {
         console.log(error);
