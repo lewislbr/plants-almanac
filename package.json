@@ -31,14 +31,14 @@
     "eslint": "^6.3.0",
     "eslint-config-node": "^4.0.0",
     "eslint-config-prettier": "^6.2.0",
-    "eslint-plugin-node": "^9.2.0",
+    "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.0.1",
     "prettier": "^1.18.2",
     "typescript": "^3.6.2",
     "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7",
+    "webpack-cli": "^3.3.8",
     "webpack-dev-server": "^3.8.0"
   }
 }
