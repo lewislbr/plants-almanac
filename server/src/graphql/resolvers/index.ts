@@ -3,6 +3,15 @@ import { IResolvers } from 'graphql-tools';
 
 export const resolvers: IResolvers = {
   Query: {
+    getPlant: async (_: any, { name }): Promise<any> => {
+      try {
+        const result = await Plant.findOne({ name: name });
+        return result;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
     getPlants: async (): Promise<any> => {
       try {
         const plants = await Plant.find();
