@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
@@ -16,11 +17,6 @@ const GET_PLANTS = gql`
 interface Plant {
   _id: string;
   name: string;
-  description: string;
-  plantSeason: string[];
-  harvestSeason: string[];
-  pruneSeason: string[];
-  tips: string;
 }
 
 export const Home: React.FunctionComponent = () => {
@@ -39,7 +35,9 @@ export const Home: React.FunctionComponent = () => {
         ) : (
           <div>
             {data.getPlants.map((plant: Plant) => (
-              <PlantCard key={plant._id} name={plant.name} />
+              <Link to={`/${plant.name}`} key={plant._id}>
+                <PlantCard name={plant.name} />
+              </Link>
             ))}
           </div>
         )}
