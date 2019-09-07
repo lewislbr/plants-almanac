@@ -4,9 +4,9 @@ import { IResolvers } from 'graphql-tools';
 interface Plant {
   name: string;
   description: string;
-  plantSeason: string[];
-  harvestSeason: string[];
-  pruneSeason: string[];
+  plantSeason: string;
+  harvestSeason: string;
+  pruneSeason: string;
   tips: string;
 }
 

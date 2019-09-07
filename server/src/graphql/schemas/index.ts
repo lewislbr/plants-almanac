@@ -5,9 +5,9 @@ export const typeDefs = gql`
     _id: ID!
     name: String!
     description: String
-    plantSeason: [String!]
-    harvestSeason: [String!]
-    pruneSeason: [String!]
+    plantSeason: String
+    harvestSeason: String
+    pruneSeason: String
     tips: String
   }
 
@@ -20,9 +20,9 @@ export const typeDefs = gql`
     createPlant(
       name: String!
       description: String
-      plantSeason: [String!]
-      harvestSeason: [String!]
-      pruneSeason: [String!]
+      plantSeason: String
+      harvestSeason: String
+      pruneSeason: String
       tips: String
     ): Plant
   }

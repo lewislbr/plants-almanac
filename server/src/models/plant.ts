@@ -4,9 +4,9 @@ interface Plant extends Document {
   _doc: any;
   name: string;
   description: string;
-  plantSeason: string[];
-  harvestSeason: string[];
-  pruneSeason: string[];
+  plantSeason: string;
+  harvestSeason: string;
+  pruneSeason: string;
   tips: string;
 }
 
@@ -20,15 +20,15 @@ const plantSchema: Schema = new Schema({
     required: false,
   },
   plantSeason: {
-    type: [String],
+    type: String,
     required: false,
   },
   harvestSeason: {
-    type: [String],
+    type: String,
     required: false,
   },
   pruneSeason: {
-    type: [String],
+    type: String,
     required: false,
   },
   tips: {
