@@ -4,6 +4,7 @@ export { H1 } from './H1';
 export { Header } from './Header/Header';
 export { Input } from './Input';
 export { Label } from './Label';
+export { Loading } from './Loading';
 export { Main } from './Main';
 export { PlantCard } from './PlantCard';
 export { Section } from './Section';

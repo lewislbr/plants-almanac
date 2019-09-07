@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { H1, Section } from '../components';
+import { H1, Loading, Section } from '../components';
 
 const GET_PLANT = gql`
   query GetPlant($name: String!) {
@@ -30,7 +30,7 @@ export const PlantDetails: React.FunctionComponent = () => {
     <>
       <Section>
         {loading ? (
-          <p>Loading...</p>
+          <Loading />
         ) : error ? (
           <p>ERROR</p>
         ) : (
@@ -41,7 +41,7 @@ export const PlantDetails: React.FunctionComponent = () => {
       </Section>
       <Section>
         {loading ? (
-          <p>Loading...</p>
+          <Loading />
         ) : error ? (
           <p>ERROR</p>
         ) : (

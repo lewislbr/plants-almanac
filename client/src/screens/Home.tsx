@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { H1, PlantCard, Section } from '../components';
+import { H1, Loading, PlantCard, Section } from '../components';
 
 const GET_PLANTS = gql`
   query GetPlants {
@@ -29,7 +29,7 @@ export const Home: React.FunctionComponent = () => {
       </Section>
       <Section>
         {loading ? (
-          <p>Loading...</p>
+          <Loading />
         ) : error ? (
           <p>ERROR</p>
         ) : (
