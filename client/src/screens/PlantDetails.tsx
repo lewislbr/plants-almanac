@@ -28,24 +28,16 @@ export const PlantDetails: React.FunctionComponent = () => {
 
   return (
     <>
-      <Section>
-        {loading ? (
-          <Loading />
-        ) : error ? (
-          <p>ERROR</p>
-        ) : (
-          <>
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        <p>ERROR</p>
+      ) : (
+        <>
+          <Section>
             <H1>{data.getPlant.name}</H1>
-          </>
-        )}
-      </Section>
-      <Section>
-        {loading ? (
-          <Loading />
-        ) : error ? (
-          <p>ERROR</p>
-        ) : (
-          <>
+          </Section>
+          <Section>
             <h3>Plant ID:</h3>
             <p>{data.getPlant._id}</p>
             <h3>Description:</h3>
@@ -76,9 +68,9 @@ export const PlantDetails: React.FunctionComponent = () => {
             <p>
               {data.getPlant.tips == null ? 'No data yet' : data.getPlant.tips}
             </p>
-          </>
-        )}
-      </Section>
+          </Section>
+        </>
+      )}
     </>
   );
 };
