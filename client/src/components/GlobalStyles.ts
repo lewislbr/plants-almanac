@@ -1,5 +1,9 @@
 import { createGlobalStyle } from 'styled-components';
 
+import IMBPlexSans300 from '../assets/fonts/IBMPlexSans300.woff2';
+import IMBPlexSans400 from '../assets/fonts/IBMPlexSans400.woff2';
+import IMBPlexSans700 from '../assets/fonts/IBMPlexSans700.woff2';
+
 export const GlobalStyles = createGlobalStyle`
   :root {
     --color-accent-primary: hsl(0, 0%, 10%);
@@ -35,11 +39,36 @@ export const GlobalStyles = createGlobalStyle`
     --radius-l: 10px;
   }
 
+  @font-face {
+    font-display: block;
+	  font-family: IBM Plex Sans;
+    font-style: normal;
+	  font-weight: 300;
+	  src: url(${IMBPlexSans300});
+	}
+
+  @font-face {
+    font-display: block;
+	  font-family: IBM Plex Sans;
+    font-style: normal;
+	  font-weight: 400;
+	  src: url(${IMBPlexSans400});
+	}
+
+  @font-face {
+    font-display: block;
+	  font-family: IBM Plex Sans;
+    font-style: normal;
+	  font-weight: 700;
+	  src: url(${IMBPlexSans700});
+	}
+
+
   html
   body {
     background-color: var(--color-light);
     color: var(--color-dark);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: var(--font-size-s);
 
     @media (max-width: 555px) {
