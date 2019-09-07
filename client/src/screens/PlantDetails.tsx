@@ -9,6 +9,11 @@ const GET_PLANT = gql`
     getPlant(name: $name) {
       _id
       name
+      description
+      plantSeason
+      harvestSeason
+      pruneSeason
+      tips
     }
   }
 `;
@@ -31,7 +36,46 @@ export const PlantDetails: React.FunctionComponent = () => {
         ) : (
           <>
             <H1>{data.getPlant.name}</H1>
+          </>
+        )}
+      </Section>
+      <Section>
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p>ERROR</p>
+        ) : (
+          <>
+            <h3>Plant ID:</h3>
             <p>{data.getPlant._id}</p>
+            <h3>Description:</h3>
+            <p>
+              {data.getPlant.details == null
+                ? 'No data yet'
+                : data.getPlant.details}
+            </p>
+            <h3>Plant Season:</h3>
+            <p>
+              {data.getPlant.plantSeason == null
+                ? 'No data yet'
+                : data.getPlant.plantSeason}
+            </p>
+            <h3>Harvest Season:</h3>
+            <p>
+              {data.getPlant.harvestSeason == null
+                ? 'No data yet'
+                : data.getPlant.harvestSeason}
+            </p>
+            <h3>Prune Season</h3>
+            <p>
+              {data.getPlant.pruneSeason == null
+                ? 'No data yet'
+                : data.getPlant.pruneSeason}
+            </p>
+            <h3>Tips:</h3>
+            <p>
+              {data.getPlant.tips == null ? 'No data yet' : data.getPlant.tips}
+            </p>
           </>
         )}
       </Section>
