@@ -13,6 +13,7 @@ export const typeDefs = gql`
 
   type Query {
     getPlants: [Plant!]!
+    getPlant(name: String!): Plant
   }
 
   type Mutation {
