@@ -50,9 +50,9 @@ export const PlantDetails: React.FunctionComponent = () => {
             <p>{data.getPlant._id}</p>
             <h3>Description:</h3>
             <p>
-              {data.getPlant.details == null
+              {data.getPlant.description == null
                 ? 'No data yet'
-                : data.getPlant.details}
+                : data.getPlant.description}
             </p>
             <h3>Plant Season:</h3>
             <p>
