@@ -17,9 +17,9 @@ const ADD_PLANT = gql`
   mutation AddPlant(
     $name: String!
     $description: String
-    $plantSeason: [String!]
-    $harvestSeason: [String!]
-    $pruneSeason: [String!]
+    $plantSeason: String
+    $harvestSeason: String
+    $pruneSeason: String
     $tips: String
   ) {
     createPlant(
@@ -42,7 +42,7 @@ const ADD_PLANT = gql`
 `;
 
 export const AddPlant: React.FunctionComponent = () => {
-  const [addPlant, { data }] = useMutation(ADD_PLANT);
+  const [addPlant] = useMutation(ADD_PLANT);
 
   const nameElement = useRef<HTMLInputElement>(null!);
   const descriptionElement = useRef<HTMLTextAreaElement>(null!);
@@ -59,11 +59,24 @@ export const AddPlant: React.FunctionComponent = () => {
     event.preventDefault();
 
     const name = nameElement.current.value;
-    const description = descriptionElement.current.value;
-    const plantSeason = plantSeasonElement.current.value;
-    const harvestSeason = harvestSeasonElement.current.value;
-    const pruneSeason = pruneSeasonElement.current.value;
-    const tips = tipsElement.current.value;
+    const description =
+      descriptionElement.current.value == ''
+        ? null
+        : descriptionElement.current.value;
+    const plantSeason =
+      plantSeasonElement.current.value == ''
+        ? null
+        : plantSeasonElement.current.value;
+    const harvestSeason =
+      harvestSeasonElement.current.value == ''
+        ? null
+        : harvestSeasonElement.current.value;
+    const pruneSeason =
+      pruneSeasonElement.current.value == ''
+        ? null
+        : pruneSeasonElement.current.value;
+    const tips =
+      tipsElement.current.value == '' ? null : tipsElement.current.value;
 
     if (!name) return event.preventDefault();
 
