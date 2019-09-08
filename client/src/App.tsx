@@ -17,7 +17,7 @@ export const App: React.FunctionComponent = () => {
             <Route path="/home" component={Home} />
             <Route path="/addplant" component={AddPlant} />
             <Route exact path="/search" component={Search} />
-            <Route path="/:name" component={PlantDetails} />
+            <Route path="/:plantname" component={PlantDetails} />
           </Switch>
         </Main>
       </>
