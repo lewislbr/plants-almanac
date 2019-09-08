@@ -63,7 +63,6 @@ export const GlobalStyles = createGlobalStyle`
 	  src: url(${IMBPlexSans700});
 	}
 
-
   html
   body {
     background-color: var(--color-light);
