@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 
 export const Header_ = styled.header`
   align-items: center;
@@ -16,12 +17,13 @@ export const Header_ = styled.header`
   z-index: 2;
 `;
 
-export const Li = styled.li`
+export const StyledNavLink = styled(NavLink)`
   margin-left: var(--spacing-s);
 
   @media (max-width: 600px) {
+    display: block;
     font-size: var(--font-size-l);
-    margin: var(--spacing-s) 0;
+    margin: var(--spacing-m) 0;
     width: 100%;
   }
 `;
@@ -66,7 +68,7 @@ export const NavIconLine4 = styled(NavIconLine)`
   top: 19px;
 `;
 
-export const Input = styled.input`
+export const NavIconInput = styled.input`
   display: none;
   :checked + ${NavIcon} {
     ${NavIconLine1} {
@@ -90,28 +92,25 @@ export const Input = styled.input`
   }
 `;
 
-export const NavModal = styled.nav`
-  display: none;
-  ${Input}:checked ~ & {
-    backdrop-filter: blur(5px);
-    background: var(--color-light-translucent);
-    display: block;
-    height: 100vh;
-    left: 0;
-    position: absolute;
-    top: 100%;
-    width: 100vw;
-  }
-`;
-
-export const Ul = styled.ul`
+export const Nav = styled.nav`
   align-items: center;
   display: flex;
   flex-direction: row;
   list-style: none;
 
   @media (max-width: 600px) {
-    flex-direction: column;
-    padding: 0 var(--padding-desktop);
+    display: none;
+    ${NavIconInput}:checked ~ & {
+      backdrop-filter: blur(5px);
+      background: var(--color-light-translucent);
+      display: block;
+      flex-direction: column;
+      height: 100vh;
+      left: 0;
+      padding: 0 var(--padding-desktop);
+      position: absolute;
+      top: 100%;
+      width: 100vw;
+    }
   }
 `;
