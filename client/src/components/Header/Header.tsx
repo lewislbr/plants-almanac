@@ -16,6 +16,11 @@ import {
 } from './HeaderStyles';
 
 export const Header: React.FunctionComponent = () => {
+  const navHandler = (): void => {
+    const target = document.getElementById('icon') as HTMLInputElement;
+    target.checked = false;
+  };
+
   return (
     <Header_>
       {window.innerWidth >= 600 ? (
@@ -49,13 +54,19 @@ export const Header: React.FunctionComponent = () => {
           <NavModal id="nav">
             <Ul>
               <Li>
-                <NavLink to="/">Home</NavLink>
+                <NavLink to="/" onClick={navHandler}>
+                  Home
+                </NavLink>
               </Li>
               <Li>
-                <NavLink to="/search">Search Plants</NavLink>
+                <NavLink to="/search" onClick={navHandler}>
+                  Search Plants
+                </NavLink>
               </Li>
               <Li>
-                <NavLink to="/addplant">Add Plant</NavLink>
+                <NavLink to="/addplant" onClick={navHandler}>
+                  Add Plant
+                </NavLink>
               </Li>
             </Ul>
           </NavModal>
