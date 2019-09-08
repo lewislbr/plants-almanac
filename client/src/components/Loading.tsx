@@ -20,7 +20,6 @@ const spin = keyframes`
 const Div1 = styled.div`
   display: inline-block;
   height: 64px;
-  position: relative;
   width: 64px;
 `;
 
