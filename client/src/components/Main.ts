@@ -1,5 +1,5 @@
 import styled from 'styled-components';
 
 export const Main = styled.main`
-  padding: var(--padding-desktop);
+  padding: 10vh var(--padding-desktop);
 `;
