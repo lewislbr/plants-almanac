@@ -58,7 +58,7 @@ export const PlantDetails: React.FunctionComponent = () => {
                 ? 'No data yet'
                 : data.getPlant.harvestSeason}
             </p>
-            <h3>Prune Season</h3>
+            <h3>Prune Season:</h3>
             <p>
               {data.getPlant.pruneSeason == null
                 ? 'No data yet'
