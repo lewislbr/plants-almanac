@@ -13,6 +13,7 @@ export const Header_ = styled.header`
   position: fixed;
   right: 0;
   top: 0;
+  z-index: 2;
 `;
 
 export const Li = styled.li`
