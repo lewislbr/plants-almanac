@@ -8,7 +8,7 @@ export const Header_ = styled.header`
   flex-direction: row;
   height: 60px;
   justify-content: space-between;
-  left: 0%;
+  left: 0;
   padding: 0px var(--padding-desktop);
   position: fixed;
   right: 0;
@@ -17,29 +17,18 @@ export const Header_ = styled.header`
 `;
 
 export const Li = styled.li`
-  margin-left: 30px;
+  margin-left: var(--spacing-s);
 
   @media (max-width: 600px) {
-    display: block;
     font-size: var(--font-size-l);
     margin: var(--spacing-s) 0;
     width: 100%;
   }
 `;
 
-export const Nav = styled.nav`
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-`;
-
 export const NavIcon = styled.label`
-  align-items: center;
   cursor: pointer;
-  display: flex;
-  height: 75%;
-  justify-content: center;
-  padding: 10px;
+  height: 26px;
   transform: rotate(0deg);
   transition: 0.25s ease-in-out;
   -webkit-tap-highlight-color: hsla(0, 0%, 0%, 0);
@@ -60,21 +49,21 @@ export const NavIconLine = styled.span`
 `;
 
 export const NavIconLine1 = styled(NavIconLine)`
-  top: 10px;
+  top: 3px;
 `;
 
 export const NavIconLine2 = styled(NavIconLine)`
-  top: 18px;
+  top: 11px;
   width: 70%;
 `;
 
 export const NavIconLine3 = styled(NavIconLine)`
-  top: 18px;
+  top: 11px;
   width: 70%;
 `;
 
 export const NavIconLine4 = styled(NavIconLine)`
-  top: 26px;
+  top: 19px;
 `;
 
 export const Input = styled.input`
@@ -110,7 +99,6 @@ export const NavModal = styled.nav`
     height: 100vh;
     left: 0;
     position: absolute;
-    right: 0;
     top: 100%;
     width: 100vw;
   }
@@ -124,5 +112,6 @@ export const Ul = styled.ul`
 
   @media (max-width: 600px) {
     flex-direction: column;
+    padding: 0 var(--padding-desktop);
   }
 `;
