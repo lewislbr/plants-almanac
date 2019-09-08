@@ -5,7 +5,6 @@ import {
   Header_,
   Li,
   Input,
-  Nav,
   NavIcon,
   NavIconLine1,
   NavIconLine2,
@@ -16,7 +15,7 @@ import {
 } from './HeaderStyles';
 
 export const Header: React.FunctionComponent = () => {
-  const navHandler = (): void => {
+  const closeNavModal = (): void => {
     const target = document.getElementById('icon') as HTMLInputElement;
     target.checked = false;
   };
@@ -28,7 +27,7 @@ export const Header: React.FunctionComponent = () => {
           <div>
             <h2>Plants Almanac</h2>
           </div>
-          <Nav>
+          <nav>
             <Ul>
               <Li>
                 <NavLink to="/">Home</NavLink>
@@ -40,10 +39,13 @@ export const Header: React.FunctionComponent = () => {
                 <NavLink to="/addplant">Add Plant</NavLink>
               </Li>
             </Ul>
-          </Nav>
+          </nav>
         </>
       ) : (
         <>
+          <div>
+            <h2>Plants Almanac</h2>
+          </div>
           <Input type="checkbox" id="icon" />
           <NavIcon htmlFor="icon">
             <NavIconLine1 />
@@ -54,17 +56,17 @@ export const Header: React.FunctionComponent = () => {
           <NavModal id="nav">
             <Ul>
               <Li>
-                <NavLink to="/" onClick={navHandler}>
+                <NavLink to="/" onClick={closeNavModal}>
                   Home
                 </NavLink>
               </Li>
               <Li>
-                <NavLink to="/search" onClick={navHandler}>
+                <NavLink to="/search" onClick={closeNavModal}>
                   Search Plants
                 </NavLink>
               </Li>
               <Li>
-                <NavLink to="/addplant" onClick={navHandler}>
+                <NavLink to="/addplant" onClick={closeNavModal}>
                   Add Plant
                 </NavLink>
               </Li>
