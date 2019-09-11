@@ -8,6 +8,7 @@ module.exports = {
   entry: './src/index',
   output: {
     path: path.join(__dirname, '/dist'),
+    publicPath: '/',
     filename: '[name].[contenthash].js',
   },
   resolve: {
@@ -55,5 +56,6 @@ module.exports = {
     contentBase: path.join(__dirname, 'dist'),
     port: 8080,
     open: 'Google Chrome',
+    historyApiFallback: true,
   },
 };
