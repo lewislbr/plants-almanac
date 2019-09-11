@@ -12,6 +12,8 @@ import {
   StyledNavLink,
 } from './HeaderStyles';
 
+import { BREAKPOINT } from '../../utils/constants';
+
 export const Header: React.FunctionComponent = () => {
   const closeNavModal = (): void => {
     const target = document.getElementById('icon') as HTMLInputElement;
@@ -20,7 +22,7 @@ export const Header: React.FunctionComponent = () => {
 
   return (
     <Header_>
-      {window.innerWidth >= 600 ? (
+      {window.innerWidth >= BREAKPOINT ? (
         <>
           <div>
             <h2>Plants Almanac</h2>

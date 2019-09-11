@@ -1,5 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 
+import { BREAKPOINT, PAGE_WIDTH } from '../utils/constants';
+
 import IMBPlexSans300 from '../assets/fonts/IBMPlexSans300.woff2';
 import IMBPlexSans400 from '../assets/fonts/IBMPlexSans400.woff2';
 import IMBPlexSans700 from '../assets/fonts/IBMPlexSans700.woff2';
@@ -28,7 +30,7 @@ export const GlobalStyles = createGlobalStyle`
     --font-size-xxl: 80px;
     --padding-desktop: 5%;
     --padding-mobile: 3%;
-    --page-width: 1200px;
+    --page-width: ${PAGE_WIDTH}px;
     --spacing-xxs: 5px;
     --spacing-xs: 10px;
     --spacing-s: 20px;
@@ -70,7 +72,7 @@ export const GlobalStyles = createGlobalStyle`
     font-family: IBM Plex Sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: var(--font-size-s);
 
-    @media (max-width: 555px) {
+  @media (max-width: ${BREAKPOINT}px) {
       font-size: var(--font-size-xs);
     }
   }
