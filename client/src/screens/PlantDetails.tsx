@@ -18,12 +18,13 @@ const GET_PLANT = gql`
   }
 `;
 
-export const PlantDetails: React.FunctionComponent = () => {
-  const dirtyPath = location.pathname;
-  const cleanPath = dirtyPath.replace(/%20/g, ' ').replace(/\//g, '');
+interface Props {
+  match: any;
+}
 
+export const PlantDetails: React.FunctionComponent<Props> = (props: Props) => {
   const { data, loading, error } = useQuery(GET_PLANT, {
-    variables: { name: cleanPath },
+    variables: { name: props.match.params.plantname },
   });
 
   return (
