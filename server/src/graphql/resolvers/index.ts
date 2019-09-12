@@ -3,6 +3,7 @@ import { IResolvers } from 'graphql-tools';
 
 interface Plant {
   name: string;
+  otherNames: string;
   description: string;
   plantSeason: string;
   harvestSeason: string;
@@ -39,6 +40,7 @@ export const resolvers: IResolvers = {
       try {
         const plant = new Plant({
           name: args.name,
+          otherNames: args.otherNames,
           description: args.description,
           plantSeason: args.plantSeason,
           harvestSeason: args.harvestSeason,

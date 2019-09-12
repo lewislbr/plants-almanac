@@ -9,6 +9,7 @@ const GET_PLANT = gql`
     getPlant(name: $name) {
       _id
       name
+      otherNames
       description
       plantSeason
       harvestSeason
@@ -41,6 +42,12 @@ export const PlantDetails: React.FunctionComponent<Props> = (props: Props) => {
           <Section>
             <h3>Plant ID:</h3>
             <p>{data.getPlant._id}</p>
+            <h3>Other Names:</h3>
+            <p>
+              {data.getPlant.otherNames == null
+                ? 'No data yet'
+                : data.getPlant.otherNames}
+            </p>
             <h3>Description:</h3>
             <p>
               {data.getPlant.description == null

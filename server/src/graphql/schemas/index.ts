@@ -4,6 +4,7 @@ export const typeDefs = gql`
   type Plant {
     _id: ID!
     name: String!
+    otherNames: String
     description: String
     plantSeason: String
     harvestSeason: String
@@ -19,6 +20,7 @@ export const typeDefs = gql`
   type Mutation {
     createPlant(
       name: String!
+      otherNames: String
       description: String
       plantSeason: String
       harvestSeason: String

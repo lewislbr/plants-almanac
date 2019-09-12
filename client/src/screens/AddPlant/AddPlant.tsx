@@ -16,6 +16,7 @@ import { ButtonDiv } from './AddPlantStyles';
 const ADD_PLANT = gql`
   mutation AddPlant(
     $name: String!
+    $otherNames: String
     $description: String
     $plantSeason: String
     $harvestSeason: String
@@ -24,6 +25,7 @@ const ADD_PLANT = gql`
   ) {
     createPlant(
       name: $name
+      otherNames: $otherNames
       description: $description
       plantSeason: $plantSeason
       harvestSeason: $harvestSeason
@@ -32,6 +34,7 @@ const ADD_PLANT = gql`
     ) {
       _id
       name
+      otherNames
       description
       plantSeason
       harvestSeason
@@ -45,6 +48,7 @@ export const AddPlant: React.FunctionComponent = () => {
   const [addPlant] = useMutation(ADD_PLANT);
 
   const nameElement = useRef<HTMLInputElement>(null!);
+  const otherNamesElement = useRef<HTMLInputElement>(null!);
   const descriptionElement = useRef<HTMLTextAreaElement>(null!);
   const plantSeasonElement = useRef<HTMLInputElement>(null!);
   const harvestSeasonElement = useRef<HTMLInputElement>(null!);
@@ -59,6 +63,10 @@ export const AddPlant: React.FunctionComponent = () => {
     event.preventDefault();
 
     const name = nameElement.current.value;
+    const otherNames =
+      otherNamesElement.current.value == ''
+        ? null
+        : otherNamesElement.current.value;
     const description =
       descriptionElement.current.value == ''
         ? null
@@ -83,6 +91,7 @@ export const AddPlant: React.FunctionComponent = () => {
     addPlant({
       variables: {
         name: name,
+        otherNames: otherNames,
         description: description,
         plantSeason: plantSeason,
         harvestSeason: harvestSeason,
@@ -106,6 +115,10 @@ export const AddPlant: React.FunctionComponent = () => {
               Name <TextTip>(Required)</TextTip>
             </Label>
             <Input type="text" ref={nameElement} />
+          </div>
+          <div>
+            <Label>Other Names</Label>
+            <Input type="text" ref={otherNamesElement} />
           </div>
           <div>
             <Label>Description</Label>
