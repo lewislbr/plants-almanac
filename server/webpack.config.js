@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const NodemonPlugin = require('nodemon-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   target: 'node',
@@ -23,7 +24,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [new NodemonPlugin()],
+  plugins: [new NodemonPlugin(), new Dotenv()],
   externals: [
     { express: 'commonjs express' },
     { mongoose: 'commonjs mongoose' },
