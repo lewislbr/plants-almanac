@@ -1,14 +1,10 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "strict": true,
-    "module": "commonjs",
     "allowJs": true,
-    "noEmit": true,
     "isolatedModules": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "types": ["node"]
+    "module": "commonjs",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true
   }
 }
