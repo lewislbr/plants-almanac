@@ -16,10 +16,12 @@ const server = new ApolloServer({
   },
 });
 
-mongoose.connect(
-  `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0-ovl3w.mongodb.net/${process.env.MONGODB_DB}?retryWrites=true&w=majority`,
-  { useNewUrlParser: true }
-);
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0-ovl3w.mongodb.net/${process.env.MONGODB_DB}?retryWrites=true&w=majority`,
+    { useNewUrlParser: true, useUnifiedTopology: true }
+  )
+  .catch((error) => console.log(error));
 
 server.listen({ port: 4040 }).then(({ url }) => {
   console.log(`Server ready at ${url} 🚀`);
