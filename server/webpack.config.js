@@ -34,7 +34,14 @@ module.exports = {
     },
   ],
   stats: {
+    assetsSort: '!size',
+    builtAt: false,
+    children: false,
+    entrypoints: false,
     errors: true,
     errorDetails: true,
+    hash: false,
+    modules: false,
+    timings: false,
   },
 };

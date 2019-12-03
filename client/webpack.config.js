@@ -49,8 +49,15 @@ module.exports = {
     new Dotenv(),
   ],
   stats: {
+    assetsSort: '!size',
+    builtAt: false,
+    children: false,
+    entrypoints: false,
     errors: true,
     errorDetails: true,
+    hash: false,
+    modules: false,
+    timings: false,
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
