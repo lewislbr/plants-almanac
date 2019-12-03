@@ -11,13 +11,13 @@
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
   "dependencies": {
-    "apollo-server": "^2.9.2",
-    "mongoose": "^5.7.5"
+    "apollo-server": "^2.9.12",
+    "mongoose": "^5.7.13"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-export-default-from": "^7.5.2",
+    "@babel/plugin-proposal-export-default-from": "^7.7.4",
     "@types/graphql": "^14.2.3",
-    "@types/mongoose": "^5.5.13",
-    "nodemon-webpack-plugin": "^4.0.8"
+    "@types/mongoose": "^5.5.32",
+    "nodemon-webpack-plugin": "^4.2.1"
   }
 }
