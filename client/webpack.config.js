@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-var-requires */
+const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -80,6 +81,7 @@ module.exports = (env, options) => {
               test: /\.(js|css|html|svg)$/,
             }),
           ]),
+      ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin()] : []),
     ],
     stats: {
       assetsSort: '!size',
