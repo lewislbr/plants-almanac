@@ -7,7 +7,6 @@ import { H1, Loading, Section } from '../components';
 const GET_PLANT = gql`
   query GetPlant($name: String!) {
     getPlant(name: $name) {
-      _id
       name
       otherNames
       description
@@ -40,8 +39,6 @@ export const PlantDetails: React.FunctionComponent<Props> = (props: Props) => {
             <H1>{data.getPlant.name}</H1>
           </Section>
           <Section>
-            <h3>Plant ID:</h3>
-            <p>{data.getPlant._id}</p>
             <h3>Other Names:</h3>
             <p>
               {data.getPlant.otherNames == null
