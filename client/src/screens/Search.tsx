@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Button, H1, Input, PlantCard, Section } from '../components';
+import { Plant } from '../utils/plantInterface';
 
 export const Search: React.FunctionComponent = () => {
   const [plants, setPlants] = useState([]);
@@ -47,9 +48,9 @@ export const Search: React.FunctionComponent = () => {
       </Section>
       <Section>
         <div>
-          {plants.map((plant: any) => (
-            <Link to={`/${name}`} key={plant.id}>
-              <PlantCard key={plant.id} name={plant.name} />
+          {plants.map((plant: Plant) => (
+            <Link to={`/${name}`} key={plant._id}>
+              <PlantCard key={plant._id} name={plant.name} />
             </Link>
           ))}
         </div>

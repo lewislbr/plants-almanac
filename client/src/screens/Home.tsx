@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import { H1, Loading, PlantCard, Section } from '../components';
+import { Plant } from '../utils/plantInterface';
 
 const GET_PLANTS = gql`
   query GetPlants {
@@ -13,11 +14,6 @@ const GET_PLANTS = gql`
     }
   }
 `;
-
-interface Plant {
-  _id: string;
-  name: string;
-}
 
 export const Home: React.FunctionComponent = () => {
   const { data, loading, error } = useQuery(GET_PLANTS);
