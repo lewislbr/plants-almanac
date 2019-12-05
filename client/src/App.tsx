@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import { AddPlant, Home, PlantDetails } from './screens';
+import { AddPlant, Home, PlantDetails } from './views';
 
 import { GlobalStyles, Header, Main } from './components';
 
