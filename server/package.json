@@ -8,8 +8,8 @@
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
   "dependencies": {
-    "apollo-server": "^2.9.12",
-    "mongoose": "^5.7.13"
+    "apollo-server": "^2.9.13",
+    "mongoose": "^5.7.14"
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-default-from": "^7.7.4",
