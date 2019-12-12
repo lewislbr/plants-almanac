@@ -8,7 +8,8 @@
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
   "dependencies": {
-    "apollo-server": "^2.9.13",
+    "apollo-server-express": "^2.9.13",
+    "express": "^4.17.1",
     "mongoose": "^5.7.14"
   },
   "devDependencies": {
