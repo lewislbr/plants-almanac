@@ -13,7 +13,6 @@
     "mongoose": "^5.7.14"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-export-default-from": "^7.7.4",
     "@types/graphql": "^14.2.3",
     "@types/mongoose": "^5.5.32",
     "nodemon-webpack-plugin": "^4.2.1"

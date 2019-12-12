@@ -1,4 +1,3 @@
 {
-  "extends": "../.babelrc",
-  "plugins": ["@babel/plugin-proposal-export-default-from"]
+  "extends": "../.babelrc"
 }
