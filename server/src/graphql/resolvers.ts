@@ -1,13 +1,14 @@
 import { Plant } from '../models/plant';
 import { IResolvers } from 'graphql-tools';
+import { Document } from 'mongoose';
 
 export const resolvers: IResolvers = {
   Query: {
-    getPlant: async (_, { name }): Promise<any> => {
+    getPlant: async (_, { name }): Promise<Document | null> => {
       const plant = await Plant.findOne({ name });
       return plant;
     },
-    getPlants: async (): Promise<any> => {
+    getPlants: async (): Promise<Document[]> => {
       const plants = await Plant.find();
       return plants;
     },
@@ -25,7 +26,7 @@ export const resolvers: IResolvers = {
         pruneSeason,
         tips,
       }
-    ): Promise<any> => {
+    ): Promise<Document> => {
       const newPlant = new Plant({
         name,
         otherNames,
