@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "scripts": {
     "clean": "rm -rf ./dist",
-    "check": "tsc",
     "start": "tsc && rm -rf ./dist && webpack --mode=development --watch && node dist/index.js",
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },

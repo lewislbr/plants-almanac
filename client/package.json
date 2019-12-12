@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "scripts": {
     "clean": "rm -rf ./dist",
-    "check": "tsc",
     "start": "tsc && rm -rf ./dist && webpack-dev-server --mode=development",
     "build": "tsc && rm -rf ./dist && webpack --mode=production"
   },
