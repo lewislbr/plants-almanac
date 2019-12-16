@@ -22,7 +22,7 @@ interface Props {
   match: any;
 }
 
-export const PlantDetails: React.FunctionComponent<Props> = (props: Props) => {
+export function PlantDetails(props: Props): JSX.Element {
   const { data, loading, error } = useQuery(GET_PLANT, {
     variables: { name: props.match.params.plantname },
   });
@@ -78,4 +78,4 @@ export const PlantDetails: React.FunctionComponent<Props> = (props: Props) => {
       )}
     </>
   );
-};
+}

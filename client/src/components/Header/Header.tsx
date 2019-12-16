@@ -11,14 +11,13 @@ import {
   NavIconLine4,
   StyledNavLink,
 } from './HeaderStyles';
-
 import { BREAKPOINT } from '../../utils/constants';
 
-export const Header: React.FunctionComponent = () => {
-  const closeNavModal = (): void => {
+export function Header(): JSX.Element {
+  function closeNavModal(): void {
     const target = document.getElementById('icon') as HTMLInputElement;
     target.checked = false;
-  };
+  }
 
   return (
     <Header_>
@@ -60,4 +59,4 @@ export const Header: React.FunctionComponent = () => {
       )}
     </Header_>
   );
-};
+}

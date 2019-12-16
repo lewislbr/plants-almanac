@@ -4,10 +4,10 @@ interface Props {
   name: string;
 }
 
-export const PlantCard: React.FunctionComponent<Props> = (props: Props) => {
+export function PlantCard(props: Props): JSX.Element {
   return (
     <div>
       <h2>{props.name}</h2>
     </div>
   );
-};
+}

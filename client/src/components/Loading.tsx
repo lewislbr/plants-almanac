@@ -44,7 +44,7 @@ const Div4 = styled(Div2)`
   animation-delay: -0.3s;
 `;
 
-export const Loading: React.FunctionComponent = () => {
+export function Loading(): JSX.Element {
   return (
     <Wrapper>
       <Div1>
@@ -55,4 +55,4 @@ export const Loading: React.FunctionComponent = () => {
       </Div1>
     </Wrapper>
   );
-};
+}

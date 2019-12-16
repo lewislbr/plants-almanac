@@ -44,7 +44,7 @@ const ADD_PLANT = gql`
   }
 `;
 
-export const AddPlant: React.FunctionComponent = () => {
+export function AddPlant(): JSX.Element {
   const [addPlant] = useMutation(ADD_PLANT);
 
   const nameElement = useRef<HTMLInputElement>(null!);
@@ -55,11 +55,11 @@ export const AddPlant: React.FunctionComponent = () => {
   const pruneSeasonElement = useRef<HTMLInputElement>(null!);
   const tipsElement = useRef<HTMLTextAreaElement>(null!);
 
-  const cancelAddPlant = (): void => {
+  function cancelAddPlant(): void {
     console.log('Canceled');
-  };
+  }
 
-  const confirmAddPlant = (event: React.FormEvent<HTMLFormElement>): void => {
+  function confirmAddPlant(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
 
     const name = nameElement.current.value;
@@ -99,7 +99,7 @@ export const AddPlant: React.FunctionComponent = () => {
         tips: tips,
       },
     });
-  };
+  }
 
   return (
     <>
@@ -152,4 +152,4 @@ export const AddPlant: React.FunctionComponent = () => {
       </Section>
     </>
   );
-};
+}

@@ -15,7 +15,7 @@ const GET_PLANTS = gql`
   }
 `;
 
-export const Home: React.FunctionComponent = () => {
+export function Home(): JSX.Element {
   const { data, loading, error } = useQuery(GET_PLANTS);
 
   return (
@@ -40,4 +40,4 @@ export const Home: React.FunctionComponent = () => {
       </Section>
     </>
   );
-};
+}
