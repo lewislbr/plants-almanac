@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express';
+import {gql} from 'apollo-server';
 
 export const typeDefs = gql`
   type Plant {
@@ -13,12 +13,12 @@ export const typeDefs = gql`
   }
 
   type Query {
-    getPlants: [Plant!]!
+    getPlants: [Plant!]
     getPlant(name: String!): Plant
   }
 
   type Mutation {
-    createPlant(
+    addPlant(
       name: String!
       otherNames: String
       description: String
@@ -27,5 +27,6 @@ export const typeDefs = gql`
       pruneSeason: String
       tips: String
     ): Plant
+    deletePlant(_id: ID!): Plant
   }
 `;

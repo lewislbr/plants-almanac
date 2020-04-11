@@ -1,22 +1,23 @@
-import {Plant} from '../models/plant';
-import {IResolvers} from 'graphql-tools';
 import {Document} from 'mongoose';
+import {IResolvers} from 'graphql-tools';
+
+import {Plant} from '../models/Plant';
 
 export const resolvers: IResolvers = {
   Query: {
-    getPlant: async (_, {name}): Promise<Document | null> => {
+    async getPlant(_parent, {name}): Promise<Document | null> {
       const plant = await Plant.findOne({name});
       return plant;
     },
-    getPlants: async (): Promise<Document[]> => {
+    async getPlants(): Promise<Document[]> {
       const plants = await Plant.find();
       return plants;
     },
   },
 
   Mutation: {
-    createPlant: async (
-      _,
+    async addPlant(
+      _parent,
       {
         name,
         otherNames,
@@ -26,7 +27,7 @@ export const resolvers: IResolvers = {
         pruneSeason,
         tips,
       },
-    ): Promise<Document> => {
+    ): Promise<Document> {
       const newPlant = new Plant({
         name,
         otherNames,
@@ -36,8 +37,12 @@ export const resolvers: IResolvers = {
         pruneSeason,
         tips,
       });
-      const savedPlant = await newPlant.save();
-      return savedPlant;
+      const addedPlant = await newPlant.save();
+      return addedPlant;
+    },
+    async deletePlant(_parent, {_id}): Promise<Document | null> {
+      const deletedPlant = await Plant.findByIdAndDelete({_id});
+      return deletedPlant;
     },
   },
 };

@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, {useRef} from 'react';
-import {useMutation} from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import {gql, useMutation} from '@apollo/client';
+
+import {Button, PageTitle} from '../components';
 
 const ADD_PLANT = gql`
   mutation AddPlant(
@@ -13,7 +13,7 @@ const ADD_PLANT = gql`
     $pruneSeason: String
     $tips: String
   ) {
-    createPlant(
+    addPlant(
       name: $name
       otherNames: $otherNames
       description: $description
@@ -34,51 +34,30 @@ const ADD_PLANT = gql`
   }
 `;
 
-export function AddPlant(): JSX.Element {
+export function AddPlant(props: {history: any}): JSX.Element {
   const [addPlant] = useMutation(ADD_PLANT);
 
-  const nameElement = useRef<HTMLInputElement>(null!);
-  const otherNamesElement = useRef<HTMLInputElement>(null!);
-  const descriptionElement = useRef<HTMLTextAreaElement>(null!);
-  const plantSeasonElement = useRef<HTMLInputElement>(null!);
-  const harvestSeasonElement = useRef<HTMLInputElement>(null!);
-  const pruneSeasonElement = useRef<HTMLInputElement>(null!);
-  const tipsElement = useRef<HTMLTextAreaElement>(null!);
+  const nameElement = useRef<HTMLInputElement>(null);
+  const otherNamesElement = useRef<HTMLInputElement>(null);
+  const descriptionElement = useRef<HTMLTextAreaElement>(null);
+  const plantSeasonElement = useRef<HTMLInputElement>(null);
+  const harvestSeasonElement = useRef<HTMLInputElement>(null);
+  const pruneSeasonElement = useRef<HTMLInputElement>(null);
+  const tipsElement = useRef<HTMLTextAreaElement>(null);
 
-  function cancelAddPlant(): void {
-    console.log('Canceled');
-  }
-
-  function confirmAddPlant(event: React.FormEvent<HTMLFormElement>): void {
+  async function confirmAddPlant(
+    event: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> {
     event.preventDefault();
-
-    const name = nameElement.current.value;
-    const otherNames =
-      otherNamesElement.current.value == ''
-        ? null
-        : otherNamesElement.current.value;
-    const description =
-      descriptionElement.current.value == ''
-        ? null
-        : descriptionElement.current.value;
-    const plantSeason =
-      plantSeasonElement.current.value == ''
-        ? null
-        : plantSeasonElement.current.value;
-    const harvestSeason =
-      harvestSeasonElement.current.value == ''
-        ? null
-        : harvestSeasonElement.current.value;
-    const pruneSeason =
-      pruneSeasonElement.current.value == ''
-        ? null
-        : pruneSeasonElement.current.value;
-    const tips =
-      tipsElement.current.value == '' ? null : tipsElement.current.value;
-
+    const name = nameElement.current?.value;
+    const otherNames = otherNamesElement.current?.value || null;
+    const description = descriptionElement.current?.value || null;
+    const plantSeason = plantSeasonElement.current?.value || null;
+    const harvestSeason = harvestSeasonElement.current?.value || null;
+    const pruneSeason = pruneSeasonElement.current?.value || null;
+    const tips = tipsElement.current?.value || null;
     if (!name) return event.preventDefault();
-
-    addPlant({
+    await addPlant({
       variables: {
         name: name,
         otherNames: otherNames,
@@ -89,52 +68,53 @@ export function AddPlant(): JSX.Element {
         tips: tips,
       },
     });
+    props.history.push('/');
   }
 
   return (
     <>
       <section>
         <div>
-          <h1>{'Add Plant'}</h1>
+          <PageTitle>{'Add Plant'}</PageTitle>
         </div>
       </section>
       <section>
         <form onSubmit={confirmAddPlant}>
           <div>
-            <label>
-              {'Name'} <span>{'(Required)'}</span>
+            <label className="label">
+              {'Name'}{' '}
+              <span className="text-gray-500 text-xs">{'(Required)'}</span>
             </label>
-            <input type="text" ref={nameElement} />
+            <input className="input" type="text" ref={nameElement} required />
           </div>
           <div>
-            <label>{'Other Names'}</label>
-            <input type="text" ref={otherNamesElement} />
+            <label className="label">{'Other Names'}</label>
+            <input className="input" type="text" ref={otherNamesElement} />
           </div>
           <div>
-            <label>{'Description'}</label>
-            <textarea rows={4} ref={descriptionElement} />
+            <label className="label">{'Description'}</label>
+            <textarea className="input" rows={4} ref={descriptionElement} />
           </div>
           <div>
-            <label>{'Plant Season'}</label>
-            <input type="text" ref={plantSeasonElement} />
+            <label className="label">{'Plant Season'}</label>
+            <input className="input" type="text" ref={plantSeasonElement} />
           </div>
           <div>
-            <label>{'Harvest Season'}</label>
-            <input type="text" ref={harvestSeasonElement} />
+            <label className="label">{'Harvest Season'}</label>
+            <input className="input" type="text" ref={harvestSeasonElement} />
           </div>
           <div>
-            <label>{'Prune Season'}</label>
-            <input type="text" ref={pruneSeasonElement} />
+            <label className="label">{'Prune Season'}</label>
+            <input className="input" type="text" ref={pruneSeasonElement} />
           </div>
           <div>
-            <label>{'Tips'}</label>
-            <textarea rows={4} ref={tipsElement} />
+            <label className="label">{'Tips'}</label>
+            <textarea className="input" rows={4} ref={tipsElement} />
           </div>
-          <div>
-            <button type="button" onClick={cancelAddPlant}>
-              {'Cancel'}
-            </button>
-            <button type="submit">{'Confirm'}</button>
+          <div className="flex justify-center">
+            <Button style="primary" type="submit">
+              {'Add plant'}
+            </Button>
           </div>
         </form>
       </section>

@@ -2,4 +2,12 @@
 
 @tailwind components;
 
+.input {
+  @apply mb-4 p-2 rounded-lg w-full;
+}
+
+.label {
+  @apply block font-semibold mb-1 text-lg;
+}
+
 @tailwind utilities;

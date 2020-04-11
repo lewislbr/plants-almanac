@@ -1,9 +1,8 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {useQuery} from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import {gql, useQuery} from '@apollo/client';
 
-import {PlantCard} from '../components';
+import {PageTitle, PlantCard} from '../components';
 import {Plant} from '../types/Plant';
 
 const GET_PLANTS = gql`
@@ -15,15 +14,19 @@ const GET_PLANTS = gql`
   }
 `;
 
-export function Home(): JSX.Element {
-  const {data, loading, error} = useQuery(GET_PLANTS);
+export function Plants(): JSX.Element {
+  const {data, loading, error, refetch} = useQuery(GET_PLANTS);
+
+  React.useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <>
       <section>
-        <h1 className="font-bold">{'Home'}</h1>
+        <PageTitle>{'Plants'}</PageTitle>
       </section>
-      <section>
+      <section className="mt-8">
         {loading ? (
           <div>{'Loading...'}</div>
         ) : error ? (
