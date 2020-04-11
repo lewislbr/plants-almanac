@@ -5,40 +5,11 @@
   "repository": "https://github.com/lewislbr/plants-almanac.git",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "scripts": {
-    "client": "yarn workspace @plants-almanac/client start",
-    "server": "yarn workspace @plants-almanac/server start",
-    "start": "concurrently --kill-others-on-fail \"yarn server\"  \"yarn client\""
+    "start": "concurrently --kill-others-on-fail \"cd backend && npm run start\"  \"cd frontend && npm run start\""
   },
-  "dependencies": {
-    "graphql": "^14.5.8"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.7.5",
-    "@babel/preset-env": "^7.7.5",
-    "@babel/preset-typescript": "^7.7.4",
-    "@types/node": "^12.12.14",
-    "@typescript-eslint/eslint-plugin": "^2.10.0",
-    "@typescript-eslint/parser": "^2.10.0",
-    "babel-loader": "^8.0.6",
-    "concurrently": "^5.0.0",
-    "dotenv": "^8.2.0",
-    "dotenv-webpack": "^1.7.0",
-    "eslint": "^6.7.2",
-    "eslint-config-node": "^4.0.0",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-node": "^10.0.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-react": "^7.17.0",
-    "eslint-plugin-react-hooks": "^2.3.0",
-    "prettier": "^1.19.1",
-    "typescript": "^3.7.3",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0"
+    "concurrently": "^5.1.0"
   }
 }
