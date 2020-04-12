@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Button, DataFieldBody, DataFieldTitle, PageTitle} from '../components';
+import {Alert} from '../components';
 import {useGetPlantQuery} from '../graphql/queries/getPlant.graphql';
 import {useDeletePlantMutation} from '../graphql/mutations/deletePlant.graphql';
 
@@ -8,13 +8,19 @@ export function PlantDetails(props: {history: any; match: any}): JSX.Element {
   const {data, loading, error} = useGetPlantQuery({
     variables: {name: props.match.params.plantname},
   });
-  const [deletePlant] = useDeletePlantMutation();
+  const [deletePlantMutation] = useDeletePlantMutation();
 
-  async function confirmDeletePlant(
-    event: React.FormEvent<HTMLFormElement>,
-  ): Promise<void> {
+  const [alertOpen, setAlertOpen] = React.useState(false);
+
+  function openAlert(): void {
+    setAlertOpen(true);
+  }
+
+  async function deletePlant(event: React.SyntheticEvent): Promise<void> {
     event.preventDefault();
-    await deletePlant({variables: {_id: data?.getPlant?._id as string}});
+    await deletePlantMutation({
+      variables: {_id: data?.getPlant?._id as string},
+    });
     props.history.push('/');
   }
 
@@ -27,39 +33,44 @@ export function PlantDetails(props: {history: any; match: any}): JSX.Element {
       ) : (
         <>
           <section>
-            <PageTitle>{data?.getPlant?.name}</PageTitle>
+            <h1 className="page-title">{data?.getPlant?.name}</h1>
           </section>
-          <section>
-            <DataFieldTitle>{'Other Names:'}</DataFieldTitle>
-            <DataFieldBody>
+          <section className="mb-12">
+            <h5 className="data-title">{'Other Names:'}</h5>
+            <p className="data-body">
               {data?.getPlant?.otherNames || 'No data yet'}
-            </DataFieldBody>
-            <DataFieldTitle>{'Description:'}</DataFieldTitle>
-            <DataFieldBody>
+            </p>
+            <h5 className="data-title">{'Description:'}</h5>
+            <p className="data-body">
               {data?.getPlant?.description || 'No data yet'}
-            </DataFieldBody>
-            <DataFieldTitle>{'Plant Season:'}</DataFieldTitle>
-            <DataFieldBody>
+            </p>
+            <h5 className="data-title">{'Plant Season:'}</h5>
+            <p className="data-body">
               {data?.getPlant?.plantSeason || 'No data yet'}
-            </DataFieldBody>
-            <DataFieldTitle>{'Harvest Season:'}</DataFieldTitle>
-            <DataFieldBody>
+            </p>
+            <h5 className="data-title">{'Harvest Season:'}</h5>
+            <p className="data-body">
               {data?.getPlant?.harvestSeason || 'No data yet'}
-            </DataFieldBody>
-            <DataFieldTitle>{'Prune Season:'}</DataFieldTitle>
-            <DataFieldBody>
+            </p>
+            <h5 className="data-title">{'Prune Season:'}</h5>
+            <p className="data-body">
               {data?.getPlant?.pruneSeason || 'No data yet'}
-            </DataFieldBody>
-            <DataFieldTitle>{'Tips:'}</DataFieldTitle>
-            <DataFieldBody>
-              {data?.getPlant?.tips || 'No data yet'}
-            </DataFieldBody>
+            </p>
+            <h5 className="data-title">{'Tips:'}</h5>
+            <p className="data-body">{data?.getPlant?.tips || 'No data yet'}</p>
           </section>
           <div className="flex justify-center">
-            <Button style="danger" type="button" onClick={confirmDeletePlant}>
+            <button
+              className="button button-danger"
+              type="button"
+              onClick={openAlert}
+            >
               {'Delete plant'}
-            </Button>
+            </button>
           </div>
+          {alertOpen ? (
+            <Alert deletePlant={deletePlant} setAlertOpen={setAlertOpen} />
+          ) : null}
         </>
       )}
     </>

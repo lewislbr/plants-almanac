@@ -1,10 +1,9 @@
 import React, {useRef} from 'react';
 
-import {Button, PageTitle} from '../components';
 import {useAddPlantMutation} from '../graphql/mutations/addPlant.graphql';
 
 export function AddPlant(props: {history: any}): JSX.Element {
-  const [addPlant] = useAddPlantMutation();
+  const [addPlantMutation] = useAddPlantMutation();
 
   const nameElement = useRef<HTMLInputElement>(null);
   const otherNamesElement = useRef<HTMLInputElement>(null);
@@ -14,7 +13,7 @@ export function AddPlant(props: {history: any}): JSX.Element {
   const pruneSeasonElement = useRef<HTMLInputElement>(null);
   const tipsElement = useRef<HTMLTextAreaElement>(null);
 
-  async function confirmAddPlant(
+  async function addPlant(
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> {
     event.preventDefault();
@@ -26,7 +25,7 @@ export function AddPlant(props: {history: any}): JSX.Element {
     const pruneSeason = pruneSeasonElement.current?.value || null;
     const tips = tipsElement.current?.value || null;
     if (!name) return event.preventDefault();
-    await addPlant({
+    await addPlantMutation({
       variables: {
         name: name,
         otherNames: otherNames,
@@ -44,11 +43,11 @@ export function AddPlant(props: {history: any}): JSX.Element {
     <>
       <section>
         <div>
-          <PageTitle>{'Add Plant'}</PageTitle>
+          <h1 className="page-title">{'Add Plant'}</h1>
         </div>
       </section>
       <section>
-        <form onSubmit={confirmAddPlant}>
+        <form onSubmit={addPlant}>
           <div>
             <label className="label">
               {'Name'}{' '}
@@ -80,10 +79,10 @@ export function AddPlant(props: {history: any}): JSX.Element {
             <label className="label">{'Tips'}</label>
             <textarea className="input" rows={4} ref={tipsElement} />
           </div>
-          <div className="flex justify-center">
-            <Button style="primary" type="submit">
+          <div className="flex justify-center pt-6">
+            <button className="button button-primary" type="submit">
               {'Add plant'}
-            </Button>
+            </button>
           </div>
         </form>
       </section>

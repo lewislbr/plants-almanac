@@ -2,7 +2,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'accent-green': '#75c130',
+        backdrop: 'hsl(0, 0%, 0%, 0.75)',
       },
       spacing: {
         '5pc': '5%',
