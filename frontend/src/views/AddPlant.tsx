@@ -1,41 +1,10 @@
 import React, {useRef} from 'react';
-import {gql, useMutation} from '@apollo/client';
 
 import {Button, PageTitle} from '../components';
-
-const ADD_PLANT = gql`
-  mutation AddPlant(
-    $name: String!
-    $otherNames: String
-    $description: String
-    $plantSeason: String
-    $harvestSeason: String
-    $pruneSeason: String
-    $tips: String
-  ) {
-    addPlant(
-      name: $name
-      otherNames: $otherNames
-      description: $description
-      plantSeason: $plantSeason
-      harvestSeason: $harvestSeason
-      pruneSeason: $pruneSeason
-      tips: $tips
-    ) {
-      _id
-      name
-      otherNames
-      description
-      plantSeason
-      harvestSeason
-      pruneSeason
-      tips
-    }
-  }
-`;
+import {useAddPlantMutation} from '../graphql/mutations/addPlant.graphql';
 
 export function AddPlant(props: {history: any}): JSX.Element {
-  const [addPlant] = useMutation(ADD_PLANT);
+  const [addPlant] = useAddPlantMutation();
 
   const nameElement = useRef<HTMLInputElement>(null);
   const otherNamesElement = useRef<HTMLInputElement>(null);

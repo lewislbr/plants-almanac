@@ -42,6 +42,10 @@ module.exports = (env, options) => {
           },
         },
         {
+          test: /\.graphql$/,
+          use: [{loader: 'babel-loader'}, {loader: 'graphql-let/loader'}],
+        },
+        {
           test: /\.css$/,
           use: [
             {loader: MiniCssExtractPlugin.loader},

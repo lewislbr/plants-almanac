@@ -1,0 +1,12 @@
+mutation DeletePlant($_id: ID!) {
+  deletePlant(_id: $_id) {
+    _id
+    name
+    otherNames
+    description
+    plantSeason
+    harvestSeason
+    pruneSeason
+    tips
+  }
+}

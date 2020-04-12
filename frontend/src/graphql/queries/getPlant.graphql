@@ -1,0 +1,12 @@
+query GetPlant($name: String!) {
+  getPlant(name: $name) {
+    _id
+    name
+    otherNames
+    description
+    plantSeason
+    harvestSeason
+    pruneSeason
+    tips
+  }
+}
