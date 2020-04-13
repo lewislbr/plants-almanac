@@ -2,8 +2,8 @@
   "name": "@plants-almanac/backend",
   "version": "1.0.0",
   "scripts": {
-    "start": "tsc && node dist/index.js",
-    "build": "rm -rf ./dist && tsc",
+    "start": "node dist/index.js",
+    "build": "rm -rf dist && tsc",
     "lint": "eslint \"{,!(.cache|dist|node_modules)/**/}*.{js,jsx,ts,tsx}\"",
     "format": "prettier --write --check \"{,!(.cache|dist|node_modules)/**/}*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}\""
   },
