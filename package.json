@@ -6,10 +6,23 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently --kill-others-on-fail \"cd backend && npm run start\"  \"cd frontend && npm run start\""
+    "start": "concurrently --kill-others-on-fail \"cd backend && npm run start\" \"cd frontend && npm run start\"",
+    "lint": "concurrently \"cd backend && npm run lint\" \"cd frontend && npm run lint\"",
+    "format": "concurrently \"cd backend && npm run format\" \"cd frontend && npm run format\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "(backend|frontend)/**/*.{js,jsx,ts,tsx}": ["npm run lint"],
+    "(backend|frontend)/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": ["npm run format"]
   },
   "dependencies": {},
   "devDependencies": {
-    "concurrently": "^5.1.0"
+    "concurrently": "^5.1.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.1.3"
   }
 }
