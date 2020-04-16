@@ -10,6 +10,9 @@ dotenv.config();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  engine: {
+    apiKey: process.env.APOLLO_KEY,
+  },
 });
 
 async function startServer(): Promise<void> {

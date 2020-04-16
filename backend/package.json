@@ -6,7 +6,8 @@
     "start:dev": "ts-node-dev src/index.ts",
     "build": "rm -rf dist && tsc",
     "lint": "eslint \"{,!(.cache|dist|node_modules)/**/}*.{js,jsx,ts,tsx}\"",
-    "format": "prettier --write --check \"{,!(.cache|dist|node_modules)/**/}*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}\""
+    "format": "prettier --write --check \"{,!(.cache|dist|node_modules)/**/}*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}\"",
+    "push:schema": "npx apollo service:push --endpoint=http://localhost:4000"
   },
   "dependencies": {
     "apollo-server": "^2.12.0",
