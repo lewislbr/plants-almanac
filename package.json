@@ -6,7 +6,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently --kill-others-on-fail \"cd backend && npm run start\" \"cd frontend && npm run start\"",
+    "start": "concurrently --kill-others-on-fail \"cd backend && npm run start:dev\" \"cd frontend && npm run start\"",
     "lint": "concurrently \"cd backend && npm run lint\" \"cd frontend && npm run lint\"",
     "format": "concurrently \"cd backend && npm run format\" \"cd frontend && npm run format\""
   },

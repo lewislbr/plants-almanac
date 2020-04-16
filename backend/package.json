@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node dist/index.js",
+    "start:dev": "ts-node-dev src/index.ts",
     "build": "rm -rf dist && tsc",
     "lint": "eslint \"{,!(.cache|dist|node_modules)/**/}*.{js,jsx,ts,tsx}\"",
     "format": "prettier --write --check \"{,!(.cache|dist|node_modules)/**/}*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}\""
@@ -22,6 +23,7 @@
     "eslint": "^6.8.0",
     "eslint-plugin-node": "^11.1.0",
     "prettier": "^2.0.4",
+    "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.8.3"
   }
 }
