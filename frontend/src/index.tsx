@@ -7,7 +7,10 @@ import {App} from './App';
 import './styles.css';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri:
+    process.env.NODE_ENV === 'production'
+      ? 'https://plants-almanac.herokuapp.com/'
+      : 'http://localhost:4000/graphql',
 });
 
 ReactDOM.render(

@@ -10,6 +10,14 @@ dotenv.config();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: ({res}): void => {
+    res.header(
+      'Access-Control-Allow-Origin',
+      process.env.NODE_ENV === 'production'
+        ? 'https://plants-almanac.netlify.app'
+        : 'http://localhost:7001',
+    );
+  },
   engine: {
     apiKey: process.env.APOLLO_KEY,
   },
