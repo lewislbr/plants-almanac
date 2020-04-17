@@ -1,6 +1,0 @@
-query GetPlants {
-  getPlants {
-    _id
-    name
-  }
-}

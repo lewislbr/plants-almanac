@@ -1,41 +1,35 @@
-import React, {useRef} from 'react';
+import React from 'react';
 
-import {useAddPlantMutation} from '../graphql/mutations/addPlant.graphql';
+import {useAddPlantMutation} from '../graphql/types';
 
 export function AddPlant(props: {history: any}): JSX.Element {
-  const [addPlantMutation] = useAddPlantMutation();
+  const [addPlant] = useAddPlantMutation();
 
-  const nameElement = useRef<HTMLInputElement>(null);
-  const otherNamesElement = useRef<HTMLInputElement>(null);
-  const descriptionElement = useRef<HTMLTextAreaElement>(null);
-  const plantSeasonElement = useRef<HTMLInputElement>(null);
-  const harvestSeasonElement = useRef<HTMLInputElement>(null);
-  const pruneSeasonElement = useRef<HTMLInputElement>(null);
-  const tipsElement = useRef<HTMLTextAreaElement>(null);
+  const nameElement = React.useRef<HTMLInputElement>(null);
+  const otherNamesElement = React.useRef<HTMLInputElement>(null);
+  const descriptionElement = React.useRef<HTMLTextAreaElement>(null);
+  const plantSeasonElement = React.useRef<HTMLInputElement>(null);
+  const harvestSeasonElement = React.useRef<HTMLInputElement>(null);
+  const pruneSeasonElement = React.useRef<HTMLInputElement>(null);
+  const tipsElement = React.useRef<HTMLTextAreaElement>(null);
 
-  async function addPlant(
+  async function submitAddPlant(
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> {
     event.preventDefault();
-    const name = nameElement.current?.value;
-    const otherNames = otherNamesElement.current?.value || null;
-    const description = descriptionElement.current?.value || null;
-    const plantSeason = plantSeasonElement.current?.value || null;
-    const harvestSeason = harvestSeasonElement.current?.value || null;
-    const pruneSeason = pruneSeasonElement.current?.value || null;
-    const tips = tipsElement.current?.value || null;
-    if (!name) return event.preventDefault();
-    await addPlantMutation({
-      variables: {
-        name: name,
-        otherNames: otherNames,
-        description: description,
-        plantSeason: plantSeason,
-        harvestSeason: harvestSeason,
-        pruneSeason: pruneSeason,
-        tips: tips,
-      },
-    });
+
+    const newPlant = {
+      name: nameElement.current?.value || '',
+      otherNames: otherNamesElement.current?.value || null,
+      description: descriptionElement.current?.value || null,
+      plantSeason: plantSeasonElement.current?.value || null,
+      harvestSeason: harvestSeasonElement.current?.value || null,
+      pruneSeason: pruneSeasonElement.current?.value || null,
+      tips: tipsElement.current?.value || null,
+    };
+
+    await addPlant({variables: newPlant});
+
     props.history.push('/');
   }
 
@@ -47,7 +41,7 @@ export function AddPlant(props: {history: any}): JSX.Element {
         </div>
       </section>
       <section>
-        <form onSubmit={addPlant}>
+        <form onSubmit={submitAddPlant}>
           <div>
             <label className="label">
               {'Name'}{' '}

@@ -26,7 +26,7 @@ export const typeDefs = gql`
       harvestSeason: String
       pruneSeason: String
       tips: String
-    ): Plant
+    ): Plant!
     deletePlant(_id: ID!): Plant
   }
 `;

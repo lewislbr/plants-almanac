@@ -1,14 +1,13 @@
 import React from 'react';
 
 import {Alert} from '../components';
-import {useGetPlantQuery} from '../graphql/queries/getPlant.graphql';
-import {useDeletePlantMutation} from '../graphql/mutations/deletePlant.graphql';
+import {useGetPlantQuery, useDeletePlantMutation} from '../graphql/types';
 
 export function PlantDetails(props: {history: any; match: any}): JSX.Element {
   const {data, loading, error} = useGetPlantQuery({
     variables: {name: props.match.params.plantname},
   });
-  const [deletePlantMutation] = useDeletePlantMutation();
+  const [deletePlant] = useDeletePlantMutation();
 
   const [alertOpen, setAlertOpen] = React.useState(false);
 
@@ -16,11 +15,13 @@ export function PlantDetails(props: {history: any; match: any}): JSX.Element {
     setAlertOpen(true);
   }
 
-  async function deletePlant(event: React.SyntheticEvent): Promise<void> {
+  async function submitDeletePlant(event: React.SyntheticEvent): Promise<void> {
     event.preventDefault();
-    await deletePlantMutation({
+
+    await deletePlant({
       variables: {_id: data?.getPlant?._id as string},
     });
+
     props.history.push('/');
   }
 
@@ -69,7 +70,10 @@ export function PlantDetails(props: {history: any; match: any}): JSX.Element {
             </button>
           </div>
           {alertOpen ? (
-            <Alert deletePlant={deletePlant} setAlertOpen={setAlertOpen} />
+            <Alert
+              deletePlant={submitDeletePlant}
+              setAlertOpen={setAlertOpen}
+            />
           ) : null}
         </>
       )}

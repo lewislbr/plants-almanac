@@ -1,7 +1,0 @@
-generateDir: 'src/graphql/types'
-schema: 'http://localhost:4000/graphql'
-documents: 'src/graphql/**/*.graphql'
-plugins:
-  - 'typescript'
-  - 'typescript-operations'
-  - 'typescript-react-apollo'

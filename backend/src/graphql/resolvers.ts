@@ -1,3 +1,4 @@
+import {ApolloError} from 'apollo-server';
 import {Document} from 'mongoose';
 import {IResolvers} from 'graphql-tools';
 
@@ -5,44 +6,41 @@ import {Plant} from '../models/Plant';
 
 export const resolvers: IResolvers = {
   Query: {
-    async getPlant(_parent, {name}): Promise<Document | null> {
-      const plant = await Plant.findOne({name});
-      return plant;
+    async getPlant(_, args): Promise<Document | null> {
+      try {
+        const plant = await Plant.findOne({...args});
+        return plant;
+      } catch (error) {
+        throw new ApolloError(error);
+      }
     },
-    async getPlants(): Promise<Document[]> {
-      const plants = await Plant.find();
-      return plants;
+    async getPlants(): Promise<Document[] | null> {
+      try {
+        const plants = await Plant.find();
+        return plants;
+      } catch (error) {
+        throw new ApolloError(error);
+      }
     },
   },
 
   Mutation: {
-    async addPlant(
-      _parent,
-      {
-        name,
-        otherNames,
-        description,
-        plantSeason,
-        harvestSeason,
-        pruneSeason,
-        tips,
-      },
-    ): Promise<Document> {
-      const newPlant = new Plant({
-        name,
-        otherNames,
-        description,
-        plantSeason,
-        harvestSeason,
-        pruneSeason,
-        tips,
-      });
-      const addedPlant = await newPlant.save();
-      return addedPlant;
+    async addPlant(_, args): Promise<Document> {
+      try {
+        const newPlant = new Plant({...args});
+        const addedPlant = await newPlant.save();
+        return addedPlant;
+      } catch (error) {
+        throw new ApolloError(error);
+      }
     },
-    async deletePlant(_parent, {_id}): Promise<Document | null> {
-      const deletedPlant = await Plant.findByIdAndDelete({_id});
-      return deletedPlant;
+    async deletePlant(_, args): Promise<Document | null> {
+      try {
+        const deletedPlant = await Plant.findOneAndDelete({...args});
+        return deletedPlant;
+      } catch (error) {
+        throw new ApolloError(error);
+      }
     },
   },
 };

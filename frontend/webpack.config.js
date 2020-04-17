@@ -9,7 +9,6 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const PurgecssPlugin = require('purgecss-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const PATHS = {
   src: path.join(__dirname, 'src'),
@@ -40,10 +39,6 @@ module.exports = (env, options) => {
               cacheDirectory: true,
             },
           },
-        },
-        {
-          test: /\.graphql$/,
-          use: [{loader: 'babel-loader'}, {loader: 'graphql-let/loader'}],
         },
         {
           test: /\.css$/,
@@ -181,9 +176,6 @@ module.exports = (env, options) => {
             }),
           ]),
       ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin()] : []),
-      new CopyWebpackPlugin(['src/public', {from: 'src/public', to: './'}], {
-        ignore: ['.DS_Store'],
-      }),
     ],
     stats: {
       assetsSort: '!size',

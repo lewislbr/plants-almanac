@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 import {PlantCard} from '../components';
-import {useGetPlantsQuery} from '../graphql/queries/getPlants.graphql';
+import {useGetPlantsQuery} from '../graphql/types';
 
 export function Plants(): JSX.Element {
   const {data, loading, error, refetch} = useGetPlantsQuery();
