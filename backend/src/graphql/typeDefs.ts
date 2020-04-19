@@ -12,6 +12,14 @@ export const typeDefs = gql`
     tips: String
   }
 
+  type AddPlantResponse {
+    insertedId: ID!
+  }
+
+  type DeletePlantResponse {
+    deletedCount: Int
+  }
+
   type Query {
     getPlants: [Plant!]
     getPlant(name: String!): Plant
@@ -19,6 +27,7 @@ export const typeDefs = gql`
 
   type Mutation {
     addPlant(
+      _id: ID!
       name: String!
       otherNames: String
       description: String
@@ -26,7 +35,7 @@ export const typeDefs = gql`
       harvestSeason: String
       pruneSeason: String
       tips: String
-    ): Plant!
-    deletePlant(_id: ID!): Plant
+    ): AddPlantResponse!
+    deletePlant(_id: ID!): DeletePlantResponse
   }
 `;

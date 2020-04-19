@@ -2,6 +2,7 @@ import {gql} from '@apollo/client';
 
 export const ADD_PLANT = gql`
   mutation AddPlant(
+    $_id: ID!
     $name: String!
     $otherNames: String
     $description: String
@@ -11,6 +12,7 @@ export const ADD_PLANT = gql`
     $tips: String
   ) {
     addPlant(
+      _id: $_id
       name: $name
       otherNames: $otherNames
       description: $description
@@ -19,14 +21,7 @@ export const ADD_PLANT = gql`
       pruneSeason: $pruneSeason
       tips: $tips
     ) {
-      _id
-      name
-      otherNames
-      description
-      plantSeason
-      harvestSeason
-      pruneSeason
-      tips
+      insertedId
     }
   }
 `;
