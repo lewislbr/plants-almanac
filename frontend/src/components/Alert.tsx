@@ -1,11 +1,14 @@
 import React from 'react';
 
-export function Alert(props: {
+export function Alert({
+  deletePlant,
+  setAlertOpen,
+}: {
   deletePlant: (event: React.SyntheticEvent) => Promise<void>;
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }): JSX.Element {
   function closeAlert(): void {
-    props.setAlertOpen(false);
+    setAlertOpen(false);
   }
 
   return (
@@ -16,7 +19,7 @@ export function Alert(props: {
         </p>
         <button
           className="button button-danger mb-4"
-          onClick={props.deletePlant}
+          onClick={deletePlant}
           type="button"
         >
           {'Delete'}

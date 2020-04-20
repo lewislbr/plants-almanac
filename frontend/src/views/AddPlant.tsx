@@ -2,7 +2,7 @@ import React from 'react';
 
 import {useAddPlantMutation} from '../graphql/types';
 
-export function AddPlant(props: {history: any}): JSX.Element {
+export function AddPlant({history}: {history: any}): JSX.Element {
   const [addPlant] = useAddPlantMutation();
 
   const nameElement = React.useRef<HTMLInputElement>(null);
@@ -31,7 +31,7 @@ export function AddPlant(props: {history: any}): JSX.Element {
 
     await addPlant({variables: newPlant});
 
-    props.history.push('/');
+    history.push('/');
   }
 
   return (

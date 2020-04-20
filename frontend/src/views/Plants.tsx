@@ -25,7 +25,7 @@ export function Plants(): JSX.Element {
           <div>
             {data?.getPlants?.map(plant => (
               <Link to={`/${plant.name}`} key={plant._id}>
-                <PlantCard name={plant.name} />
+                <PlantCard {...{name: plant.name}} />
               </Link>
             ))}
           </div>

@@ -3,17 +3,17 @@ import {IResolvers} from 'graphql-tools';
 
 export const resolvers: IResolvers = {
   Query: {
-    async getPlant(_, args, context): Promise<any | null> {
+    async getPlant(_, args, {mongodb: {plants}}): Promise<any | null> {
       try {
-        const requestedPlant = await context.mongodb.plants.findOne(args);
+        const requestedPlant = await plants.findOne(args);
         return requestedPlant;
       } catch (error) {
         throw new ApolloError(error);
       }
     },
-    async getPlants(_, __, context): Promise<any | null> {
+    async getPlants(_, __, {mongodb: {plants}}): Promise<any | null> {
       try {
-        const allPlants = await context.mongodb.plants.find().toArray();
+        const allPlants = await plants.find().toArray();
         return allPlants;
       } catch (error) {
         throw new ApolloError(error);
@@ -22,17 +22,17 @@ export const resolvers: IResolvers = {
   },
 
   Mutation: {
-    async addPlant(_, args, context): Promise<any> {
+    async addPlant(_, args, {mongodb: {plants}}): Promise<any> {
       try {
-        const addedPlant = await context.mongodb.plants.insertOne(args);
+        const addedPlant = await plants.insertOne(args);
         return addedPlant;
       } catch (error) {
         throw new ApolloError(error);
       }
     },
-    async deletePlant(_, args, context): Promise<any | null> {
+    async deletePlant(_, args, {mongodb: {plants}}): Promise<any | null> {
       try {
-        const deletedPlant = await context.mongodb.plants.deleteOne(args);
+        const deletedPlant = await plants.deleteOne(args);
         return deletedPlant;
       } catch (error) {
         throw new ApolloError(error);

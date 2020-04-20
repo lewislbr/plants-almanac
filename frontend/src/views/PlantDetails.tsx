@@ -3,9 +3,15 @@ import React from 'react';
 import {Alert} from '../components';
 import {useGetPlantQuery, useDeletePlantMutation} from '../graphql/types';
 
-export function PlantDetails(props: {history: any; match: any}): JSX.Element {
+export function PlantDetails({
+  history,
+  match,
+}: {
+  history: any;
+  match: any;
+}): JSX.Element {
   const {data, loading, error} = useGetPlantQuery({
-    variables: {name: props.match.params.plantname},
+    variables: {name: match.params.plantname},
   });
   const [deletePlant] = useDeletePlantMutation();
 
@@ -22,7 +28,7 @@ export function PlantDetails(props: {history: any; match: any}): JSX.Element {
       variables: {_id: data?.getPlant?._id as string},
     });
 
-    props.history.push('/');
+    history.push('/');
   }
 
   return (
@@ -70,10 +76,7 @@ export function PlantDetails(props: {history: any; match: any}): JSX.Element {
             </button>
           </div>
           {alertOpen ? (
-            <Alert
-              deletePlant={submitDeletePlant}
-              setAlertOpen={setAlertOpen}
-            />
+            <Alert {...{deletePlant: submitDeletePlant, setAlertOpen}} />
           ) : null}
         </>
       )}
