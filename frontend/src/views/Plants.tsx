@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {Link} from 'react-router-dom';
 
 import {PlantCard} from '../components';
@@ -18,7 +18,7 @@ export function Plants(): JSX.Element {
       </section>
       <section className="mt-8">
         {loading ? (
-          <div>{'Loading...'}</div>
+          <p>{'Loading...'}</p>
         ) : error ? (
           <p>{'ERROR'}</p>
         ) : (

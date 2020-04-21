@@ -3,11 +3,12 @@
     [
       "@babel/preset-env",
       {
-        "targets": { "esmodules": true },
+        "targets": {"esmodules": true},
         "bugfixes": true
       }
     ],
     "@babel/preset-react",
     "@babel/preset-typescript"
-  ]
+  ],
+  "plugins": ["graphql-tag"]
 }

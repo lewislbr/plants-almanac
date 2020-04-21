@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 export function PlantCard({name}: {name: string}): JSX.Element {
   return (

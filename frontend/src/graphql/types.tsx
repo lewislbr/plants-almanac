@@ -14,7 +14,7 @@ export type Scalars = {
 };
 
 export type Plant = {
-  __typename?: 'Plant';
+   __typename?: 'Plant';
   _id: Scalars['ID'];
   name: Scalars['String'];
   otherNames?: Maybe<Scalars['String']>;
@@ -26,30 +26,32 @@ export type Plant = {
 };
 
 export type AddPlantResponse = {
-  __typename?: 'AddPlantResponse';
-  insertedId?: Maybe<Scalars['Int']>;
+   __typename?: 'AddPlantResponse';
+  insertedId: Scalars['ID'];
 };
 
 export type DeletePlantResponse = {
-  __typename?: 'DeletePlantResponse';
+   __typename?: 'DeletePlantResponse';
   deletedCount?: Maybe<Scalars['Int']>;
 };
 
 export type Query = {
-  __typename?: 'Query';
+   __typename?: 'Query';
   getPlants?: Maybe<Array<Plant>>;
   getPlant?: Maybe<Plant>;
 };
+
 
 export type QueryGetPlantArgs = {
   name: Scalars['String'];
 };
 
 export type Mutation = {
-  __typename?: 'Mutation';
+   __typename?: 'Mutation';
   addPlant: AddPlantResponse;
   deletePlant?: Maybe<DeletePlantResponse>;
 };
+
 
 export type MutationAddPlantArgs = {
   _id: Scalars['ID'];
@@ -62,14 +64,16 @@ export type MutationAddPlantArgs = {
   tips?: Maybe<Scalars['String']>;
 };
 
+
 export type MutationDeletePlantArgs = {
   _id: Scalars['ID'];
 };
 
 export enum CacheControlScope {
   Public = 'PUBLIC',
-  Private = 'PRIVATE',
+  Private = 'PRIVATE'
 }
+
 
 export type AddPlantMutationVariables = {
   _id: Scalars['ID'];
@@ -82,83 +86,61 @@ export type AddPlantMutationVariables = {
   tips?: Maybe<Scalars['String']>;
 };
 
-export type AddPlantMutation = {__typename?: 'Mutation'} & {
-  addPlant: {__typename?: 'AddPlantResponse'} & Pick<
-    AddPlantResponse,
-    'insertedId'
-  >;
-};
+
+export type AddPlantMutation = (
+  { __typename?: 'Mutation' }
+  & { addPlant: (
+    { __typename?: 'AddPlantResponse' }
+    & Pick<AddPlantResponse, 'insertedId'>
+  ) }
+);
 
 export type DeletePlantMutationVariables = {
   _id: Scalars['ID'];
 };
 
-export type DeletePlantMutation = {__typename?: 'Mutation'} & {
-  deletePlant?: Maybe<
-    {__typename?: 'DeletePlantResponse'} & Pick<
-      DeletePlantResponse,
-      'deletedCount'
-    >
-  >;
-};
+
+export type DeletePlantMutation = (
+  { __typename?: 'Mutation' }
+  & { deletePlant?: Maybe<(
+    { __typename?: 'DeletePlantResponse' }
+    & Pick<DeletePlantResponse, 'deletedCount'>
+  )> }
+);
 
 export type GetPlantQueryVariables = {
   name: Scalars['String'];
 };
 
-export type GetPlantQuery = {__typename?: 'Query'} & {
-  getPlant?: Maybe<
-    {__typename?: 'Plant'} & Pick<
-      Plant,
-      | '_id'
-      | 'name'
-      | 'otherNames'
-      | 'description'
-      | 'plantSeason'
-      | 'harvestSeason'
-      | 'pruneSeason'
-      | 'tips'
-    >
-  >;
-};
+
+export type GetPlantQuery = (
+  { __typename?: 'Query' }
+  & { getPlant?: Maybe<(
+    { __typename?: 'Plant' }
+    & Pick<Plant, '_id' | 'name' | 'otherNames' | 'description' | 'plantSeason' | 'harvestSeason' | 'pruneSeason' | 'tips'>
+  )> }
+);
 
 export type GetPlantsQueryVariables = {};
 
-export type GetPlantsQuery = {__typename?: 'Query'} & {
-  getPlants?: Maybe<
-    Array<{__typename?: 'Plant'} & Pick<Plant, '_id' | 'name'>>
-  >;
-};
+
+export type GetPlantsQuery = (
+  { __typename?: 'Query' }
+  & { getPlants?: Maybe<Array<(
+    { __typename?: 'Plant' }
+    & Pick<Plant, '_id' | 'name'>
+  )>> }
+);
+
 
 export const AddPlantDocument = gql`
-  mutation AddPlant(
-    $_id: ID!
-    $name: String!
-    $otherNames: String
-    $description: String
-    $plantSeason: String
-    $harvestSeason: String
-    $pruneSeason: String
-    $tips: String
-  ) {
-    addPlant(
-      _id: $_id
-      name: $name
-      otherNames: $otherNames
-      description: $description
-      plantSeason: $plantSeason
-      harvestSeason: $harvestSeason
-      pruneSeason: $pruneSeason
-      tips: $tips
-    ) {
-      insertedId
-    }
+    mutation AddPlant($_id: ID!, $name: String!, $otherNames: String, $description: String, $plantSeason: String, $harvestSeason: String, $pruneSeason: String, $tips: String) {
+  addPlant(_id: $_id, name: $name, otherNames: $otherNames, description: $description, plantSeason: $plantSeason, harvestSeason: $harvestSeason, pruneSeason: $pruneSeason, tips: $tips) {
+    insertedId
   }
-`;
-export type AddPlantMutationFn = ApolloReactCommon.MutationFunction<
-  AddPlantMutation,
-  AddPlantMutationVariables
->;
+}
+    `;
+export type AddPlantMutationFn = ApolloReactCommon.MutationFunction<AddPlantMutation, AddPlantMutationVariables>;
 
 /**
  * __useAddPlantMutation__
@@ -184,36 +166,20 @@ export type AddPlantMutationFn = ApolloReactCommon.MutationFunction<
  *   },
  * });
  */
-export function useAddPlantMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    AddPlantMutation,
-    AddPlantMutationVariables
-  >,
-) {
-  return ApolloReactHooks.useMutation<
-    AddPlantMutation,
-    AddPlantMutationVariables
-  >(AddPlantDocument, baseOptions);
-}
+export function useAddPlantMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AddPlantMutation, AddPlantMutationVariables>) {
+        return ApolloReactHooks.useMutation<AddPlantMutation, AddPlantMutationVariables>(AddPlantDocument, baseOptions);
+      }
 export type AddPlantMutationHookResult = ReturnType<typeof useAddPlantMutation>;
-export type AddPlantMutationResult = ApolloReactCommon.MutationResult<
-  AddPlantMutation
->;
-export type AddPlantMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  AddPlantMutation,
-  AddPlantMutationVariables
->;
+export type AddPlantMutationResult = ApolloReactCommon.MutationResult<AddPlantMutation>;
+export type AddPlantMutationOptions = ApolloReactCommon.BaseMutationOptions<AddPlantMutation, AddPlantMutationVariables>;
 export const DeletePlantDocument = gql`
-  mutation DeletePlant($_id: ID!) {
-    deletePlant(_id: $_id) {
-      deletedCount
-    }
+    mutation DeletePlant($_id: ID!) {
+  deletePlant(_id: $_id) {
+    deletedCount
   }
-`;
-export type DeletePlantMutationFn = ApolloReactCommon.MutationFunction<
-  DeletePlantMutation,
-  DeletePlantMutationVariables
->;
+}
+    `;
+export type DeletePlantMutationFn = ApolloReactCommon.MutationFunction<DeletePlantMutation, DeletePlantMutationVariables>;
 
 /**
  * __useDeletePlantMutation__
@@ -232,41 +198,26 @@ export type DeletePlantMutationFn = ApolloReactCommon.MutationFunction<
  *   },
  * });
  */
-export function useDeletePlantMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    DeletePlantMutation,
-    DeletePlantMutationVariables
-  >,
-) {
-  return ApolloReactHooks.useMutation<
-    DeletePlantMutation,
-    DeletePlantMutationVariables
-  >(DeletePlantDocument, baseOptions);
-}
-export type DeletePlantMutationHookResult = ReturnType<
-  typeof useDeletePlantMutation
->;
-export type DeletePlantMutationResult = ApolloReactCommon.MutationResult<
-  DeletePlantMutation
->;
-export type DeletePlantMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  DeletePlantMutation,
-  DeletePlantMutationVariables
->;
+export function useDeletePlantMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeletePlantMutation, DeletePlantMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeletePlantMutation, DeletePlantMutationVariables>(DeletePlantDocument, baseOptions);
+      }
+export type DeletePlantMutationHookResult = ReturnType<typeof useDeletePlantMutation>;
+export type DeletePlantMutationResult = ApolloReactCommon.MutationResult<DeletePlantMutation>;
+export type DeletePlantMutationOptions = ApolloReactCommon.BaseMutationOptions<DeletePlantMutation, DeletePlantMutationVariables>;
 export const GetPlantDocument = gql`
-  query GetPlant($name: String!) {
-    getPlant(name: $name) {
-      _id
-      name
-      otherNames
-      description
-      plantSeason
-      harvestSeason
-      pruneSeason
-      tips
-    }
+    query GetPlant($name: String!) {
+  getPlant(name: $name) {
+    _id
+    name
+    otherNames
+    description
+    plantSeason
+    harvestSeason
+    pruneSeason
+    tips
   }
-`;
+}
+    `;
 
 /**
  * __useGetPlantQuery__
@@ -284,44 +235,23 @@ export const GetPlantDocument = gql`
  *   },
  * });
  */
-export function useGetPlantQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetPlantQuery,
-    GetPlantQueryVariables
-  >,
-) {
-  return ApolloReactHooks.useQuery<GetPlantQuery, GetPlantQueryVariables>(
-    GetPlantDocument,
-    baseOptions,
-  );
-}
-export function useGetPlantLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetPlantQuery,
-    GetPlantQueryVariables
-  >,
-) {
-  return ApolloReactHooks.useLazyQuery<GetPlantQuery, GetPlantQueryVariables>(
-    GetPlantDocument,
-    baseOptions,
-  );
-}
+export function useGetPlantQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetPlantQuery, GetPlantQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetPlantQuery, GetPlantQueryVariables>(GetPlantDocument, baseOptions);
+      }
+export function useGetPlantLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPlantQuery, GetPlantQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetPlantQuery, GetPlantQueryVariables>(GetPlantDocument, baseOptions);
+        }
 export type GetPlantQueryHookResult = ReturnType<typeof useGetPlantQuery>;
-export type GetPlantLazyQueryHookResult = ReturnType<
-  typeof useGetPlantLazyQuery
->;
-export type GetPlantQueryResult = ApolloReactCommon.QueryResult<
-  GetPlantQuery,
-  GetPlantQueryVariables
->;
+export type GetPlantLazyQueryHookResult = ReturnType<typeof useGetPlantLazyQuery>;
+export type GetPlantQueryResult = ApolloReactCommon.QueryResult<GetPlantQuery, GetPlantQueryVariables>;
 export const GetPlantsDocument = gql`
-  query GetPlants {
-    getPlants {
-      _id
-      name
-    }
+    query GetPlants {
+  getPlants {
+    _id
+    name
   }
-`;
+}
+    `;
 
 /**
  * __useGetPlantsQuery__
@@ -338,33 +268,12 @@ export const GetPlantsDocument = gql`
  *   },
  * });
  */
-export function useGetPlantsQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetPlantsQuery,
-    GetPlantsQueryVariables
-  >,
-) {
-  return ApolloReactHooks.useQuery<GetPlantsQuery, GetPlantsQueryVariables>(
-    GetPlantsDocument,
-    baseOptions,
-  );
-}
-export function useGetPlantsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetPlantsQuery,
-    GetPlantsQueryVariables
-  >,
-) {
-  return ApolloReactHooks.useLazyQuery<GetPlantsQuery, GetPlantsQueryVariables>(
-    GetPlantsDocument,
-    baseOptions,
-  );
-}
+export function useGetPlantsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetPlantsQuery, GetPlantsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetPlantsQuery, GetPlantsQueryVariables>(GetPlantsDocument, baseOptions);
+      }
+export function useGetPlantsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPlantsQuery, GetPlantsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetPlantsQuery, GetPlantsQueryVariables>(GetPlantsDocument, baseOptions);
+        }
 export type GetPlantsQueryHookResult = ReturnType<typeof useGetPlantsQuery>;
-export type GetPlantsLazyQueryHookResult = ReturnType<
-  typeof useGetPlantsLazyQuery
->;
-export type GetPlantsQueryResult = ApolloReactCommon.QueryResult<
-  GetPlantsQuery,
-  GetPlantsQueryVariables
->;
+export type GetPlantsLazyQueryHookResult = ReturnType<typeof useGetPlantsLazyQuery>;
+export type GetPlantsQueryResult = ApolloReactCommon.QueryResult<GetPlantsQuery, GetPlantsQueryVariables>;

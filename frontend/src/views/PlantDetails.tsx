@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import {Alert} from '../components';
 import {useGetPlantQuery, useDeletePlantMutation} from '../graphql/types';
@@ -34,7 +34,7 @@ export function PlantDetails({
   return (
     <>
       {loading ? (
-        <div>{'Loading...'}</div>
+        <p>{'Loading...'}</p>
       ) : error ? (
         <p>{'ERROR'}</p>
       ) : (
