@@ -13,7 +13,7 @@
     "plugin:jest/recommended",
     "plugin:testing-library/react"
   ],
-  "ignorePatterns": ["src/graphql"],
+  "ignorePatterns": ["dist", "src/graphql"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
