@@ -8,8 +8,8 @@
     "gqltypes": "graphql-codegen",
     "typecheck": "tsc",
     "test": "jest",
-    "lint": "eslint \"{,!(.cache|dist|node_modules)/**/}*.{js,jsx,ts,tsx}\"",
-    "format": "prettier --write --check \"{,!(.cache|dist|node_modules)/**/}*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}\" \"!src/graphql/types/**\""
+    "lint": "eslint --ext .js,.ts,.tsx .",
+    "format": "prettier --write --check \"!.cache\" \"!dist\" ."
   },
   "dependencies": {
     "@apollo/client": "^3.0.0-beta.43",
