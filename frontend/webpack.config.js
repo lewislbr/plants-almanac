@@ -2,20 +2,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require('webpack');
 const path = require('path');
-const glob = require('glob');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const PurgecssPlugin = require('purgecss-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
-const PATHS = {
-  src: path.join(__dirname, 'src'),
-};
-
 module.exports = (env, options) => {
   const isDevelopment = options.mode !== 'production';
+
+  process.env.NODE_ENV = options.mode;
 
   return {
     mode: isDevelopment ? 'development' : 'production',
@@ -119,12 +115,6 @@ module.exports = (env, options) => {
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
-          styles: {
-            name: 'styles',
-            test: /\.css$/,
-            chunks: 'all',
-            enforce: true,
-          },
           vendor: {
             name: 'vendors',
             test: /[\\/]node_modules[\\/]/,
@@ -158,13 +148,6 @@ module.exports = (env, options) => {
       new MiniCssExtractPlugin({
         filename: isDevelopment ? '[name].css' : '[name].[contenthash:8].css',
       }),
-      ...(isDevelopment
-        ? []
-        : [
-            new PurgecssPlugin({
-              paths: glob.sync(`${PATHS.src}/**/*`, {nodir: true}),
-            }),
-          ]),
       ...(isDevelopment
         ? []
         : [
