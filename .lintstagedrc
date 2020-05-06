@@ -1,0 +1,6 @@
+{
+  "backend/**/*.{js,jsx,ts,tsx}": "cd backend && npm run lint",
+  "backend/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd backend && npm run format",
+  "frontend/**/*.{js,jsx,ts,tsx}": "cd frontend && npm run lint",
+  "frontend/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd frontend && npm run format"
+}
