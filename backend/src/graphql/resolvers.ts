@@ -24,7 +24,10 @@ export const resolvers: IResolvers = {
   Mutation: {
     async addPlant(_, args, {mongodb: {plants}}): Promise<any> {
       try {
-        const addedPlant = await plants.insertOne(args);
+        const addedPlant = await plants.insertOne({
+          _id: String(Date.now()),
+          ...args,
+        });
         return addedPlant;
       } catch (error) {
         throw new ApolloError(error);

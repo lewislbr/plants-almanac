@@ -27,7 +27,6 @@ export const typeDefs = gql`
 
   type Mutation {
     addPlant(
-      _id: ID!
       name: String!
       otherNames: String
       description: String

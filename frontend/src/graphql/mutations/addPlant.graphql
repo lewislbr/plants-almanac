@@ -1,5 +1,4 @@
 mutation AddPlant(
-  $_id: ID!
   $name: String!
   $otherNames: String
   $description: String
@@ -9,7 +8,6 @@ mutation AddPlant(
   $tips: String
 ) {
   addPlant(
-    _id: $_id
     name: $name
     otherNames: $otherNames
     description: $description

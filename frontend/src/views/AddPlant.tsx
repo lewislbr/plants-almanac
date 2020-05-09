@@ -19,7 +19,6 @@ export function AddPlant({history}: {history: any}): JSX.Element {
     event.preventDefault();
 
     const newPlant = {
-      _id: String(Date.now()),
       name: nameElement.current?.value || '',
       otherNames: otherNamesElement.current?.value || null,
       description: descriptionElement.current?.value || null,
