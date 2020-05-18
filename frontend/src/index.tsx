@@ -15,7 +15,7 @@ const client = new ApolloClient({
   link: new HttpLink({
     uri:
       process.env.NODE_ENV === 'production'
-        ? 'https://plants-almanac.herokuapp.com/'
+        ? 'https://plants-almanac.herokuapp.com/graphql'
         : 'http://localhost:4000/graphql',
   }),
 });
