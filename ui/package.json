@@ -1,5 +1,5 @@
 {
-  "name": "@plants-almanac/frontend",
+  "name": "@plants-almanac/ui",
   "version": "1.0.0",
   "scripts": {
     "start": "webpack-dev-server --mode=development",

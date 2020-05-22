@@ -1,6 +1,6 @@
 {
-  "backend/**/*.{js,jsx,ts,tsx}": "cd backend && npm run lint",
-  "backend/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd backend && npm run format",
-  "frontend/**/*.{js,jsx,ts,tsx}": "cd frontend && npm run lint",
-  "frontend/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd frontend && npm run format"
+  "api/**/*.{js,jsx,ts,tsx}": "cd api && npm run lint",
+  "api/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd api && npm run format",
+  "ui/**/*.{js,jsx,ts,tsx}": "cd ui && npm run lint",
+  "ui/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd ui && npm run format"
 }

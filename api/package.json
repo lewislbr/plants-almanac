@@ -1,11 +1,10 @@
 {
-  "name": "@plants-almanac/backend",
+  "name": "@plants-almanac/api",
   "version": "1.0.0",
   "scripts": {
     "start": "node dist/main.js",
     "start:dev": "ts-node-dev src/main.ts",
     "build": "rm -rf dist && tsc",
-    "generate": "graphql-codegen",
     "lint": "eslint --ext .js,.ts .",
     "format": "prettier --write --check \"!dist\" .",
     "push": "git add . && git commit -am \"-\" && git push heroku master"

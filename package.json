@@ -6,9 +6,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently --kill-others-on-fail \"cd backend && npm run start:dev\" \"cd frontend && npm run start\"",
-    "lint": "concurrently \"cd backend && npm run lint\" \"cd frontend && npm run lint\"",
-    "format": "concurrently \"cd backend && npm run format\" \"cd frontend && npm run format\""
+    "start": "concurrently --kill-others-on-fail \"cd api && npm run start:dev\" \"cd ui && npm run start\"",
+    "lint": "concurrently \"cd api && npm run lint\" \"cd ui && npm run lint\"",
+    "format": "concurrently \"cd api && npm run format\" \"cd ui && npm run format\""
   },
   "dependencies": {},
   "devDependencies": {
