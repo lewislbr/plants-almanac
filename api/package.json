@@ -6,8 +6,7 @@
     "start:dev": "ts-node-dev src/main.ts",
     "build": "rm -rf dist && tsc",
     "lint": "eslint --ext .js,.ts .",
-    "format": "prettier --write --check \"!dist\" .",
-    "push": "git add . && git commit -am \"-\" && git push heroku master"
+    "format": "prettier --write --check \"!dist\" ."
   },
   "dependencies": {
     "dotenv": "^8.2.0",

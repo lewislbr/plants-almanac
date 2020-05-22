@@ -15,9 +15,9 @@ server.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Content-Type, Origin");
   res.header(
     "Access-Control-Allow-Origin",
-    process.env.NODE_ENV === "development"
-      ? process.env.DEVELOPMENT_URL
-      : process.env.PRODUCTION_URL,
+    process.env.NODE_ENV === "production"
+      ? process.env.PRODUCTION_URL
+      : process.env.DEVELOPMENT_URL,
   );
 
   if (process.env.NODE_ENV === "production") {

@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require('webpack');
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -127,6 +128,7 @@ module.exports = (env, options) => {
       hints: false,
     },
     plugins: [
+      new Dotenv(),
       new HtmlWebpackPlugin({
         minify: isDevelopment
           ? false
