@@ -1,5 +1,5 @@
-import {MongoClient} from 'mongodb';
-import dotenv from 'dotenv';
+import {MongoClient} from "mongodb";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -10,11 +10,11 @@ export async function connectDatabase(): Promise<object | undefined> {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    const database = cluster.db('plants-almanac');
+    const database = cluster.db("plants-almanac");
 
-    console.log('MongoDB database connected ✅');
+    console.log("MongoDB database connected ✅");
 
-    return {plants: database.collection('plants')};
+    return {plants: database.collection("plants")};
   } catch (error) {
     console.log(error);
   }
