@@ -1,6 +1,6 @@
 import express from "express";
+import {readFileSync} from "fs";
 import {buildSchema} from "graphql";
-import {importSchema} from "graphql-import";
 import graphqlHTTP from "express-graphql";
 import expressPlayground from "graphql-playground-middleware-express";
 
@@ -38,10 +38,15 @@ server.use((req, res, next) => {
 async function startServer(): Promise<void> {
   const mongodb = await connectDatabase();
 
+  const schema = readFileSync(
+    __dirname + "/graphql/schema/schema.graphql",
+    "utf8",
+  );
+
   server.use(
     "/graphql",
     graphqlHTTP({
-      schema: buildSchema(importSchema("**/*.graphql")),
+      schema: buildSchema(schema),
       rootValue: resolvers,
       context: {mongodb},
       graphiql: false,
