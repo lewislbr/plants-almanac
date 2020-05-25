@@ -63,7 +63,7 @@ async function startServer(): Promise<void> {
     server.get("/playground", expressPlayground({endpoint: "/graphql"}));
   }
 
-  const port = process.env.PORT || 4000;
+  const port = process.env.PORT || 4040;
 
   server.listen(port, () => console.log(`API ready at localhost:${port} ✅`));
 }
