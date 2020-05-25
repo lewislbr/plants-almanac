@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    image: api-dev
+    ports:
+      - "4040:4040"
+    volumes:
+      - ./api:/usr/src/app
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile.dev
+    image: ui-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./ui:/usr/src/app

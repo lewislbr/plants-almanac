@@ -1,6 +1,7 @@
 .DS_Store
 .env
+api/Makefile
 dist
-Makefile
 node_modules
 npm-debug.log
+ui/Makefile
