@@ -17,4 +17,4 @@ COPY --from=builder /usr/src/app/package.json ./
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/src/graphql/schema ./dist/graphql/schema
 COPY --from=builder /usr/src/app/node_modules ./node_modules
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "dist/main.js" ]
