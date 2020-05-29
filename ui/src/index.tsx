@@ -6,7 +6,6 @@ import {
   HttpLink,
   InMemoryCache,
 } from '@apollo/client';
-
 import {App} from './App';
 import './styles.css';
 

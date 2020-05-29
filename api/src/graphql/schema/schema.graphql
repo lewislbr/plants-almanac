@@ -22,15 +22,17 @@ type Query {
   getPlant(name: String!): Plant
 }
 
+input NewPlant {
+  name: String!
+  otherNames: String
+  description: String
+  plantSeason: String
+  harvestSeason: String
+  pruneSeason: String
+  tips: String
+}
+
 type Mutation {
-  addPlant(
-    name: String!
-    otherNames: String
-    description: String
-    plantSeason: String
-    harvestSeason: String
-    pruneSeason: String
-    tips: String
-  ): AddPlantResponse!
+  addPlant(input: NewPlant): AddPlantResponse!
   deletePlant(_id: ID!): DeletePlantResponse
 }

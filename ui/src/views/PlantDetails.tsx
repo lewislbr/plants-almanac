@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import {Alert} from '../components';
 import {useGetPlantQuery, useDeletePlantMutation} from '../graphql/types';
 
@@ -14,7 +13,6 @@ export function PlantDetails({
     variables: {name: match.params.plantname},
   });
   const [deletePlant] = useDeletePlantMutation();
-
   const [alertOpen, setAlertOpen] = React.useState(false);
 
   function openAlert(): void {
