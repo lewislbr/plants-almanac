@@ -1,6 +1,6 @@
-import gql from 'graphql-tag';
-import * as ApolloReactCommon from '@apollo/client';
-import * as ApolloReactHooks from '@apollo/client';
+import gql from "graphql-tag";
+import * as ApolloReactCommon from "@apollo/client";
+import * as ApolloReactHooks from "@apollo/client";
 export type Maybe<T> = T | null;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -14,117 +14,117 @@ export type Scalars = {
 };
 
 export type Plant = {
-  __typename?: 'Plant';
-  _id: Scalars['ID'];
-  name: Scalars['String'];
-  otherNames?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  plantSeason?: Maybe<Scalars['String']>;
-  harvestSeason?: Maybe<Scalars['String']>;
-  pruneSeason?: Maybe<Scalars['String']>;
-  tips?: Maybe<Scalars['String']>;
+  __typename?: "Plant";
+  _id: Scalars["ID"];
+  name: Scalars["String"];
+  otherNames?: Maybe<Scalars["String"]>;
+  description?: Maybe<Scalars["String"]>;
+  plantSeason?: Maybe<Scalars["String"]>;
+  harvestSeason?: Maybe<Scalars["String"]>;
+  pruneSeason?: Maybe<Scalars["String"]>;
+  tips?: Maybe<Scalars["String"]>;
 };
 
 export type AddPlantResponse = {
-  __typename?: 'AddPlantResponse';
-  insertedId: Scalars['ID'];
+  __typename?: "AddPlantResponse";
+  insertedId: Scalars["ID"];
 };
 
 export type DeletePlantResponse = {
-  __typename?: 'DeletePlantResponse';
-  deletedCount?: Maybe<Scalars['Int']>;
+  __typename?: "DeletePlantResponse";
+  deletedCount?: Maybe<Scalars["Int"]>;
 };
 
 export type Query = {
-  __typename?: 'Query';
+  __typename?: "Query";
   getPlants?: Maybe<Array<Plant>>;
   getPlant?: Maybe<Plant>;
 };
 
 export type QueryGetPlantArgs = {
-  name: Scalars['String'];
+  name: Scalars["String"];
 };
 
 export type Mutation = {
-  __typename?: 'Mutation';
+  __typename?: "Mutation";
   addPlant: AddPlantResponse;
   deletePlant?: Maybe<DeletePlantResponse>;
 };
 
 export type MutationAddPlantArgs = {
-  name: Scalars['String'];
-  otherNames?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  plantSeason?: Maybe<Scalars['String']>;
-  harvestSeason?: Maybe<Scalars['String']>;
-  pruneSeason?: Maybe<Scalars['String']>;
-  tips?: Maybe<Scalars['String']>;
+  name: Scalars["String"];
+  otherNames?: Maybe<Scalars["String"]>;
+  description?: Maybe<Scalars["String"]>;
+  plantSeason?: Maybe<Scalars["String"]>;
+  harvestSeason?: Maybe<Scalars["String"]>;
+  pruneSeason?: Maybe<Scalars["String"]>;
+  tips?: Maybe<Scalars["String"]>;
 };
 
 export type MutationDeletePlantArgs = {
-  _id: Scalars['ID'];
+  _id: Scalars["ID"];
 };
 
 export enum CacheControlScope {
-  Public = 'PUBLIC',
-  Private = 'PRIVATE',
+  Public = "PUBLIC",
+  Private = "PRIVATE",
 }
 
 export type AddPlantMutationVariables = {
-  name: Scalars['String'];
-  otherNames?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  plantSeason?: Maybe<Scalars['String']>;
-  harvestSeason?: Maybe<Scalars['String']>;
-  pruneSeason?: Maybe<Scalars['String']>;
-  tips?: Maybe<Scalars['String']>;
+  name: Scalars["String"];
+  otherNames?: Maybe<Scalars["String"]>;
+  description?: Maybe<Scalars["String"]>;
+  plantSeason?: Maybe<Scalars["String"]>;
+  harvestSeason?: Maybe<Scalars["String"]>;
+  pruneSeason?: Maybe<Scalars["String"]>;
+  tips?: Maybe<Scalars["String"]>;
 };
 
-export type AddPlantMutation = {__typename?: 'Mutation'} & {
-  addPlant: {__typename?: 'AddPlantResponse'} & Pick<
+export type AddPlantMutation = {__typename?: "Mutation"} & {
+  addPlant: {__typename?: "AddPlantResponse"} & Pick<
     AddPlantResponse,
-    'insertedId'
+    "insertedId"
   >;
 };
 
 export type DeletePlantMutationVariables = {
-  _id: Scalars['ID'];
+  _id: Scalars["ID"];
 };
 
-export type DeletePlantMutation = {__typename?: 'Mutation'} & {
+export type DeletePlantMutation = {__typename?: "Mutation"} & {
   deletePlant?: Maybe<
-    {__typename?: 'DeletePlantResponse'} & Pick<
+    {__typename?: "DeletePlantResponse"} & Pick<
       DeletePlantResponse,
-      'deletedCount'
+      "deletedCount"
     >
   >;
 };
 
 export type GetPlantQueryVariables = {
-  name: Scalars['String'];
+  name: Scalars["String"];
 };
 
-export type GetPlantQuery = {__typename?: 'Query'} & {
+export type GetPlantQuery = {__typename?: "Query"} & {
   getPlant?: Maybe<
-    {__typename?: 'Plant'} & Pick<
+    {__typename?: "Plant"} & Pick<
       Plant,
-      | '_id'
-      | 'name'
-      | 'otherNames'
-      | 'description'
-      | 'plantSeason'
-      | 'harvestSeason'
-      | 'pruneSeason'
-      | 'tips'
+      | "_id"
+      | "name"
+      | "otherNames"
+      | "description"
+      | "plantSeason"
+      | "harvestSeason"
+      | "pruneSeason"
+      | "tips"
     >
   >;
 };
 
 export type GetPlantsQueryVariables = {};
 
-export type GetPlantsQuery = {__typename?: 'Query'} & {
+export type GetPlantsQuery = {__typename?: "Query"} & {
   getPlants?: Maybe<
-    Array<{__typename?: 'Plant'} & Pick<Plant, '_id' | 'name'>>
+    Array<{__typename?: "Plant"} & Pick<Plant, "_id" | "name">>
   >;
 };
 

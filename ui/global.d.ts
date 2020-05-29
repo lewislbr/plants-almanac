@@ -1,4 +1,4 @@
-declare module '*.woff2';
+declare module "*.woff2";
 
 declare interface NodeModule {
   hot: {

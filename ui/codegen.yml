@@ -1,11 +1,11 @@
-schema: 'http://localhost:4040/graphql'
-documents: 'src/graphql/**/*.graphql'
+schema: "http://localhost:4040/graphql"
+documents: "src/graphql/**/*.graphql"
 generates:
-  'src/graphql/types.tsx':
+  "src/graphql/types.tsx":
     plugins:
-      - 'typescript'
-      - 'typescript-operations'
-      - 'typescript-react-apollo'
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
     config:
       reactApolloVersion: 3
       withHooks: true

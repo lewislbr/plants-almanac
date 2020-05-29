@@ -1,7 +1,7 @@
-import * as React from 'react';
-import {Link} from 'react-router-dom';
-import {PlantCard} from '../components';
-import {useGetPlantsQuery} from '../graphql/types';
+import * as React from "react";
+import {Link} from "react-router-dom";
+import {PlantCard} from "../components";
+import {useGetPlantsQuery} from "../graphql/types";
 
 export function Plants(): JSX.Element {
   const {data, loading, error, refetch} = useGetPlantsQuery();
@@ -13,13 +13,13 @@ export function Plants(): JSX.Element {
   return (
     <>
       <section>
-        <h1 className="page-title">{'Plants'}</h1>
+        <h1 className="page-title">{"Plants"}</h1>
       </section>
       <section className="mt-8">
         {loading ? (
-          <p>{'Loading...'}</p>
+          <p>{"Loading..."}</p>
         ) : error ? (
-          <p>{'ERROR'}</p>
+          <p>{"ERROR"}</p>
         ) : (
           <div>
             {data?.getPlants?.map(plant => (
