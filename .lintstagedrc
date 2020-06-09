@@ -1,6 +1,6 @@
 {
-  "api/**/*.{js,jsx,ts,tsx}": "cd api && npm run lint",
-  "api/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd api && npm run format",
+  "data/**/*.{js,jsx,ts,tsx}": "cd data && npm run lint",
+  "data/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd data && npm run format",
   "ui/**/*.{js,jsx,ts,tsx}": "cd ui && npm run lint",
   "ui/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd ui && npm run format"
 }
