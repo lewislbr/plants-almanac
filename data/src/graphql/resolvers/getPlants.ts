@@ -1,6 +1,6 @@
 export async function getPlants(
-  _: object,
+  _: Record<string, unknown>,
   {mongodb}: {mongodb: any},
-): Promise<object[] | null> {
+): Promise<Record<string, unknown>[] | null> {
   return await mongodb.plants.find().toArray();
 }

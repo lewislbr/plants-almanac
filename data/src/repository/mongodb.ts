@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export async function connectDatabase(): Promise<object | undefined> {
+export async function connectDatabase(): Promise<
+  Record<string, unknown> | undefined
+> {
   try {
     const uri = String(process.env.MONGODB_URI);
     const cluster = await MongoClient.connect(uri, {

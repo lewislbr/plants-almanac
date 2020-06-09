@@ -1,7 +1,7 @@
 export async function addPlant(
-  args: object,
+  args: Record<string, unknown>,
   {mongodb}: {mongodb: any},
-): Promise<object> {
+): Promise<Record<string, unknown>> {
   return await mongodb.plants.insertOne({
     _id: Date.now().toString(),
     ...args,
