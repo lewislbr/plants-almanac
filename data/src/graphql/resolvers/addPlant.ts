@@ -3,7 +3,7 @@ export async function addPlant(
   {mongodb}: {mongodb: any},
 ): Promise<object> {
   return await mongodb.plants.insertOne({
-    _id: String(Date.now()),
+    _id: Date.now().toString(),
     ...args,
   });
 }
