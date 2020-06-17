@@ -4,7 +4,7 @@ import {buildSchema} from "graphql";
 import graphqlHTTP from "express-graphql";
 import expressPlayground from "graphql-playground-middleware-express";
 import dotenv from "dotenv";
-import {connectDatabase} from "./repository/mongodb";
+import {connectDatabase} from "./database/mongodb";
 import {resolvers} from "./graphql/resolvers/resolvers";
 
 dotenv.config();
