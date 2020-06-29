@@ -64,7 +64,9 @@ async function startServer(): Promise<void> {
     server.get("/playground", expressPlayground({endpoint: "/graphql"}));
   }
 
-  server.listen(port, () => console.log(`Data ready at localhost:${port} ✅`));
+  server.listen(port, () =>
+    console.log(`Plants service ready at localhost:${port} ✅`),
+  );
 }
 
 startServer();

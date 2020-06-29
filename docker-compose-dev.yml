@@ -1,15 +1,15 @@
 version: "3.8"
 
 services:
-  data:
+  plants:
     build:
-      context: ./data
+      context: ./plants
       dockerfile: Dockerfile.dev
-    image: data-dev
+    image: plants-dev
     ports:
       - "4040:4040"
     volumes:
-      - ./data:/usr/src/app
+      - ./plants:/usr/src/app
 
   ui:
     build:

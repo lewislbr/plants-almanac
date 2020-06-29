@@ -1,5 +1,5 @@
 {
-  "name": "@plants-almanac/data",
+  "name": "@plants-almanac/plants",
   "version": "1.0.0",
   "scripts": {
     "start": "ts-node-dev src/main.ts",

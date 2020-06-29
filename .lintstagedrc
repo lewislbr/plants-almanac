@@ -1,6 +1,6 @@
 {
-  "data/**/*.{js,jsx,ts,tsx}": "cd data && npm run lint",
-  "data/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd data && npm run format",
+  "plants/**/*.{js,jsx,ts,tsx}": "cd plants && npm run lint",
+  "plants/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd plants && npm run format",
   "ui/**/*.{js,jsx,ts,tsx}": "cd ui && npm run lint",
   "ui/**/*.{js,jsx,ts,tsx,html,css,json,md,yaml,yml,graphql}": "cd ui && npm run format"
 }
