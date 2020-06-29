@@ -12,7 +12,7 @@ export async function connectDatabase(): Promise<
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    const database = cluster.db("plants-almanac");
+    const database = cluster.db("plants");
 
     console.log("MongoDB database connected ✅");
 
