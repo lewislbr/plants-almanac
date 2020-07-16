@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"plants-go/src/model"
+	"plants/src/model"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"

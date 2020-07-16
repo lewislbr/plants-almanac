@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"plants-go/src/graphql/resolvers"
+	"plants/src/graphql/resolvers"
 
 	"github.com/graphql-go/graphql"
 )

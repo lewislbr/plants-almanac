@@ -1,4 +1,4 @@
-module plants-go
+module plants
 
 go 1.14
 

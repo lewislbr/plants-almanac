@@ -1,8 +1,8 @@
 package resolvers
 
 import (
-	"plants-go/src/model"
-	"plants-go/src/repository"
+	"plants/src/model"
+	"plants/src/repository"
 
 	"github.com/google/uuid"
 	"github.com/graphql-go/graphql"

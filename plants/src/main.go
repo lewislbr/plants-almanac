@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"plants-go/src/graphql/schema"
+	"plants/src/graphql/schema"
 
 	"github.com/graphql-go/handler"
 )
