@@ -1,8 +1,0 @@
-.dockerignore
-.eslintrc
-.prettierrc
-dist
-Dockerfile
-Makefile
-node_modules
-npm-debug.log

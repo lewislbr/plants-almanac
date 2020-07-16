@@ -1,4 +1,0 @@
-FROM node:12-alpine
-WORKDIR /usr/src/app
-ENV NODE_ENV=development
-CMD [ -d "node_modules" ] && npm run start || npm ci && npm run start
