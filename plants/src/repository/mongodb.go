@@ -13,14 +13,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Connection a
-func Connection() *mongo.Collection {
+func connectDatabase() *mongo.Collection {
 	godotenv.Load()
 
-	MONGODB := os.Getenv("MONGODB_URI")
+	mongodbURI := os.Getenv("MONGODB_URI")
 	databaseName := os.Getenv("DATABASE_NAME")
 	collectionName := os.Getenv("COLLECTION_NAME")
-	clientOptions := options.Client().ApplyURI(MONGODB)
+	clientOptions := options.Client().ApplyURI(mongodbURI)
 
 	client, err := mongo.NewClient(clientOptions)
 	if err != nil {
@@ -37,11 +36,11 @@ func Connection() *mongo.Collection {
 	return client.Database(databaseName).Collection(collectionName)
 }
 
-var collection = Connection()
+var collection = connectDatabase()
 
-// FindAll returns all the plants
+// FindAll returns all the items
 func FindAll() []*model.Plant {
-	var plants []*model.Plant
+	var result []*model.Plant
 
 	cursor, err := collection.Find(context.TODO(), bson.M{})
 	if err != nil {
@@ -49,31 +48,32 @@ func FindAll() []*model.Plant {
 	}
 
 	for cursor.Next(context.TODO()) {
-		var plant *model.Plant
-		err := cursor.Decode(&plant)
+		var item *model.Plant
+		err := cursor.Decode(&item)
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		plants = append(plants, plant)
+		result = append(result, item)
 	}
 
-	return plants
+	return result
 }
 
-// FindOne retuns the queried plant
-func FindOne(filter bson.M) model.Plant {
-	var plant model.Plant
+// FindOne retuns the queried item
+func FindOne(id string) *model.Plant {
+	var result *model.Plant
 
-	documentReturned := collection.FindOne(context.TODO(), filter)
-	documentReturned.Decode(&plant)
+	filter := bson.M{"_id": id}
+	item := collection.FindOne(context.TODO(), filter)
 
-	return plant
+	item.Decode(&result)
+
+	return result
 }
 
-// InsertOne adds a plant
-func InsertOne(plant model.Plant) interface{} {
-	result, err := collection.InsertOne(context.TODO(), plant)
+// InsertOne adds an item
+func InsertOne(item model.Plant) interface{} {
+	result, err := collection.InsertOne(context.TODO(), item)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,12 +81,13 @@ func InsertOne(plant model.Plant) interface{} {
 	return result.InsertedID
 }
 
-// DeleteOne deletes a plant
-func DeleteOne(filter bson.M) int64 {
-	deleteResult, err := collection.DeleteOne(context.TODO(), filter)
+// DeleteOne deletes an item
+func DeleteOne(id string) int64 {
+	filter := bson.M{"_id": id}
+	result, err := collection.DeleteOne(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return deleteResult.DeletedCount
+	return result.DeletedCount
 }

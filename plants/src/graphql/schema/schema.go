@@ -38,15 +38,15 @@ var plantType = graphql.NewObject(
 	},
 )
 
-var queryType = graphql.NewObject(graphql.ObjectConfig{
+var queries = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Query",
 	Fields: graphql.Fields{
 		"getPlant": &graphql.Field{
 			Type:        plantType,
 			Description: "Returns a plant",
 			Args: graphql.FieldConfigArgument{
-				"name": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.String),
+				"_id": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.ID),
 				},
 			},
 			Resolve: resolvers.GetPlant,
@@ -59,7 +59,7 @@ var queryType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-var mutationType = graphql.NewObject(graphql.ObjectConfig{
+var mutations = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Mutation",
 	Fields: graphql.Fields{
 		"addPlant": &graphql.Field{
@@ -105,6 +105,6 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 // Schema data
 var Schema, nil = graphql.NewSchema(graphql.SchemaConfig{
-	Query:    queryType,
-	Mutation: mutationType,
+	Query:    queries,
+	Mutation: mutations,
 })

@@ -8,5 +8,7 @@ import (
 
 // GetPlants resolver
 func GetPlants(p graphql.ResolveParams) (interface{}, error) {
-	return repository.FindAll(), nil
+	plants := repository.FindAll()
+
+	return plants, nil
 }

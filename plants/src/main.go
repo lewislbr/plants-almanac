@@ -19,11 +19,11 @@ func main() {
 
 	http.Handle("/graphql", corsHandler(handler))
 
-	port := ":4040"
+	port := "4040"
 
-	fmt.Printf("Server ready at http://localhost%v ✅\n", port)
+	fmt.Printf("Server ready at http://localhost:%v ✅\n", port)
 
-	http.ListenAndServe(port, nil)
+	http.ListenAndServe(":"+port, nil)
 }
 
 func corsHandler(h http.Handler) http.HandlerFunc {

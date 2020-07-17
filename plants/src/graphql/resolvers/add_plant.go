@@ -16,23 +16,25 @@ func AddPlant(p graphql.ResolveParams) (interface{}, error) {
 	plant.Name = p.Args["name"].(string)
 
 	if result, ok := p.Args["otherNames"].(string); ok {
-		plant.OtherNames = result
+		plant.OtherNames = &result
 	}
 	if result, ok := p.Args["description"].(string); ok {
-		plant.Description = result
+		plant.Description = &result
 	}
 	if result, ok := p.Args["plantSeason"].(string); ok {
-		plant.PlantSeason = result
+		plant.PlantSeason = &result
 	}
 	if result, ok := p.Args["harvestSeason"].(string); ok {
-		plant.HarvestSeason = result
+		plant.HarvestSeason = &result
 	}
 	if result, ok := p.Args["pruneSeason"].(string); ok {
-		plant.PruneSeason = result
+		plant.PruneSeason = &result
 	}
 	if result, ok := p.Args["tips"].(string); ok {
-		plant.Tips = result
+		plant.Tips = &result
 	}
 
-	return repository.InsertOne(plant), nil
+	result := repository.InsertOne(plant)
+
+	return result, nil
 }
