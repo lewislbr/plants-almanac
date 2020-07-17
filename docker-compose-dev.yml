@@ -8,8 +8,6 @@ services:
     image: plants-dev
     ports:
       - "4040:4040"
-    volumes:
-      - ./plants:/usr/src/app
 
   ui:
     build:
