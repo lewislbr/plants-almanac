@@ -10,42 +10,28 @@ import (
 
 // AddPlant resolver
 func AddPlant(p graphql.ResolveParams) (interface{}, error) {
-	id := uuid.New().String()
-	name := p.Args["name"].(string)
-	otherNames, otherNamesOk := p.Args["otherNames"].(*string)
-	if otherNamesOk {
-		p.Args["otherNames"] = otherNames
-	}
-	description, descriptionOk := p.Args["description"].(*string)
-	if descriptionOk {
-		p.Args["description"] = description
-	}
-	plantSeason, plantSeasonOk := p.Args["plantSeason"].(*string)
-	if plantSeasonOk {
-		p.Args["plantSeason"] = plantSeason
-	}
-	harvestSeason, harvestSeasonOk := p.Args["harvestSeason"].(*string)
-	if harvestSeasonOk {
-		p.Args["harvestSeason"] = harvestSeason
-	}
-	pruneSeason, pruneSeasonOk := p.Args["pruneSeason"].(*string)
-	if pruneSeasonOk {
-		p.Args["pruneSeason"] = pruneSeason
-	}
-	tips, tipsOk := p.Args["tips"].(*string)
-	if tipsOk {
-		p.Args["tips"] = tips
-	}
+	plant := model.Plant{}
 
-	plant := model.Plant{
-		ID:            id,
-		Name:          name,
-		OtherNames:    otherNames,
-		Description:   description,
-		PlantSeason:   plantSeason,
-		HarvestSeason: harvestSeason,
-		PruneSeason:   pruneSeason,
-		Tips:          tips,
+	plant.ID = uuid.New().String()
+	plant.Name = p.Args["name"].(string)
+
+	if result, ok := p.Args["otherNames"].(string); ok {
+		plant.OtherNames = result
+	}
+	if result, ok := p.Args["description"].(string); ok {
+		plant.Description = result
+	}
+	if result, ok := p.Args["plantSeason"].(string); ok {
+		plant.PlantSeason = result
+	}
+	if result, ok := p.Args["harvestSeason"].(string); ok {
+		plant.HarvestSeason = result
+	}
+	if result, ok := p.Args["pruneSeason"].(string); ok {
+		plant.PruneSeason = result
+	}
+	if result, ok := p.Args["tips"].(string); ok {
+		plant.Tips = result
 	}
 
 	return repository.InsertOne(plant), nil
