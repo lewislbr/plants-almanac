@@ -90,6 +90,37 @@ var mutations = graphql.NewObject(graphql.ObjectConfig{
 			},
 			Resolve: resolvers.AddPlant,
 		},
+		"editPlant": &graphql.Field{
+			Type:        graphql.Int,
+			Description: "Edits a plant",
+			Args: graphql.FieldConfigArgument{
+				"_id": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.ID),
+				},
+				"name": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+				"otherNames": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+				"description": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+				"plantSeason": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+				"harvestSeason": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+				"pruneSeason": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+				"tips": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+			},
+			Resolve: resolvers.EditPlant,
+		},
 		"deletePlant": &graphql.Field{
 			Type:        graphql.Int,
 			Description: "Deletes a plant",

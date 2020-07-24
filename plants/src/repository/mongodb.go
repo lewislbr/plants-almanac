@@ -81,6 +81,28 @@ func InsertOne(item model.Plant) interface{} {
 	return result.InsertedID
 }
 
+// EditOne modifies the queried item
+func EditOne(id string, updated model.Plant) int64 {
+	filter := bson.M{"_id": id}
+	update := bson.M{
+		"$set": bson.M{
+			"name":          updated.Name,
+			"otherNames":    updated.OtherNames,
+			"description":   updated.Description,
+			"plantSeason":   updated.PlantSeason,
+			"harvestSeason": updated.HarvestSeason,
+			"pruneSeason":   updated.PruneSeason,
+			"tips":          updated.Tips,
+		},
+	}
+	result, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return result.ModifiedCount
+}
+
 // DeleteOne deletes an item
 func DeleteOne(id string) int64 {
 	filter := bson.M{"_id": id}
