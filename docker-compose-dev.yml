@@ -6,6 +6,8 @@ services:
       context: ./plants
       dockerfile: Dockerfile.dev
     image: plants-dev
+    env_file:
+      - plants/.env
     ports:
       - "4040:4040"
 
@@ -14,6 +16,8 @@ services:
       context: ./ui
       dockerfile: Dockerfile.dev
     image: ui-dev
+    env_file:
+      - ui/.env
     ports:
       - "8080:8080"
     volumes:

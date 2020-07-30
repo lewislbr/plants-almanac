@@ -1,8 +1,6 @@
 .dockerignore
-.eslintrc
-.prettierrc
 dist
-Dockerfile
+Dockerfile*
 Makefile
 node_modules
 npm-debug.log
