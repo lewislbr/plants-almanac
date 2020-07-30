@@ -1,11 +1,11 @@
-package repository
+package mongodb
 
 import (
 	"context"
 	"fmt"
 	"log"
 	"os"
-	"plants/src/model"
+	"plants/pkg/entity"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
@@ -39,8 +39,8 @@ func connectDatabase() *mongo.Collection {
 var collection = connectDatabase()
 
 // FindAll returns all the items
-func FindAll() []*model.Plant {
-	var result []*model.Plant
+func FindAll() []*entity.Plant {
+	var result []*entity.Plant
 
 	cursor, err := collection.Find(context.TODO(), bson.M{})
 	if err != nil {
@@ -48,7 +48,7 @@ func FindAll() []*model.Plant {
 	}
 
 	for cursor.Next(context.TODO()) {
-		var item *model.Plant
+		var item *entity.Plant
 		err := cursor.Decode(&item)
 		if err != nil {
 			log.Fatal(err)
@@ -60,8 +60,8 @@ func FindAll() []*model.Plant {
 }
 
 // FindOne retuns the queried item
-func FindOne(id string) *model.Plant {
-	var result *model.Plant
+func FindOne(id string) *entity.Plant {
+	var result *entity.Plant
 
 	filter := bson.M{"_id": id}
 	item := collection.FindOne(context.TODO(), filter)
@@ -72,7 +72,7 @@ func FindOne(id string) *model.Plant {
 }
 
 // InsertOne adds an item
-func InsertOne(item model.Plant) interface{} {
+func InsertOne(item entity.Plant) interface{} {
 	result, err := collection.InsertOne(context.TODO(), item)
 	if err != nil {
 		log.Fatal(err)
@@ -82,7 +82,7 @@ func InsertOne(item model.Plant) interface{} {
 }
 
 // EditOne modifies the queried item
-func EditOne(id string, updated model.Plant) int64 {
+func EditOne(id string, updated entity.Plant) int64 {
 	filter := bson.M{"_id": id}
 	update := bson.M{
 		"$set": bson.M{

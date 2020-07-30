@@ -1,7 +1,10 @@
-package schema
+package graphql
 
 import (
-	"plants/src/graphql/resolvers"
+	"plants/pkg/add"
+	"plants/pkg/delete"
+	"plants/pkg/edit"
+	"plants/pkg/list"
 
 	"github.com/graphql-go/graphql"
 )
@@ -49,12 +52,12 @@ var queries = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.NewNonNull(graphql.ID),
 				},
 			},
-			Resolve: resolvers.GetPlant,
+			Resolve: list.Plant,
 		},
 		"getPlants": &graphql.Field{
 			Type:        graphql.NewList(plantType),
 			Description: "Returns all plants",
-			Resolve:     resolvers.GetPlants,
+			Resolve:     list.Plants,
 		},
 	},
 })
@@ -88,7 +91,7 @@ var mutations = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.String,
 				},
 			},
-			Resolve: resolvers.AddPlant,
+			Resolve: add.Plant,
 		},
 		"editPlant": &graphql.Field{
 			Type:        graphql.Int,
@@ -119,7 +122,7 @@ var mutations = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.String,
 				},
 			},
-			Resolve: resolvers.EditPlant,
+			Resolve: edit.Plant,
 		},
 		"deletePlant": &graphql.Field{
 			Type:        graphql.Int,
@@ -129,13 +132,12 @@ var mutations = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.NewNonNull(graphql.ID),
 				},
 			},
-			Resolve: resolvers.DeletePlant,
+			Resolve: delete.Plant,
 		},
 	},
 })
 
-// Schema data
-var Schema, nil = graphql.NewSchema(graphql.SchemaConfig{
+var schema, nil = graphql.NewSchema(graphql.SchemaConfig{
 	Query:    queries,
 	Mutation: mutations,
 })

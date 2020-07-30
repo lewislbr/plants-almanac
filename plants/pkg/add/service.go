@@ -1,16 +1,16 @@
-package resolvers
+package add
 
 import (
-	"plants/src/model"
-	"plants/src/repository"
+	"plants/pkg/entity"
+	"plants/pkg/storage/mongodb"
 
 	"github.com/google/uuid"
 	"github.com/graphql-go/graphql"
 )
 
-// AddPlant resolver
-func AddPlant(p graphql.ResolveParams) (interface{}, error) {
-	plant := model.Plant{}
+// Plant resolver
+func Plant(p graphql.ResolveParams) (interface{}, error) {
+	plant := entity.Plant{}
 
 	plant.ID = uuid.New().String()
 	plant.Name = p.Args["name"].(string)
@@ -34,7 +34,7 @@ func AddPlant(p graphql.ResolveParams) (interface{}, error) {
 		plant.Tips = &result
 	}
 
-	result := repository.InsertOne(plant)
+	result := mongodb.InsertOne(plant)
 
 	return result, nil
 }

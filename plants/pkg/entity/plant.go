@@ -1,4 +1,4 @@
-package model
+package entity
 
 // Plant entity
 type Plant struct {

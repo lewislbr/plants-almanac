@@ -1,29 +1,31 @@
-package main
+package graphql
 
 import (
 	"fmt"
 	"net/http"
 
-	"plants/src/graphql/schema"
-
 	"github.com/graphql-go/handler"
 )
 
-func main() {
+// Start initalizes the endpoint where GraphQL is available
+func Start() error {
 	handler := handler.New(&handler.Config{
-		Schema:     &schema.Schema,
+		Schema:     &schema,
 		Pretty:     true,
 		GraphiQL:   false,
 		Playground: true,
 	})
 
-	http.Handle("/graphql", corsHandler(handler))
-
 	port := "4040"
 
 	fmt.Printf("Server ready at http://localhost:%v ✅\n", port)
 
-	http.ListenAndServe(":"+port, nil)
+	err := http.ListenAndServe(":"+port, corsHandler(handler))
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func corsHandler(h http.Handler) http.HandlerFunc {
@@ -34,8 +36,9 @@ func corsHandler(h http.Handler) http.HandlerFunc {
 
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusNoContent)
-		} else {
-			h.ServeHTTP(w, r)
+			return
 		}
+
+		h.ServeHTTP(w, r)
 	}
 }

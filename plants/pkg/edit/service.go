@@ -1,17 +1,17 @@
-package resolvers
+package edit
 
 import (
-	"plants/src/model"
-	"plants/src/repository"
+	"plants/pkg/entity"
+	"plants/pkg/storage/mongodb"
 
 	"github.com/graphql-go/graphql"
 )
 
-// EditPlant resolver
-func EditPlant(p graphql.ResolveParams) (interface{}, error) {
+// Plant resolver
+func Plant(p graphql.ResolveParams) (interface{}, error) {
 	id := p.Args["_id"].(string)
-	existingPlant := repository.FindOne(id)
-	updated := model.Plant{}
+	existingPlant := mongodb.FindOne(id)
+	updated := entity.Plant{}
 
 	if result, ok := p.Args["name"].(string); ok {
 		updated.Name = result
@@ -49,7 +49,7 @@ func EditPlant(p graphql.ResolveParams) (interface{}, error) {
 		updated.Tips = existingPlant.Tips
 	}
 
-	result := repository.EditOne(id, updated)
+	result := mongodb.EditOne(id, updated)
 
 	return result, nil
 }
