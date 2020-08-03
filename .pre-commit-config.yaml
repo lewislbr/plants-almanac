@@ -1,0 +1,33 @@
+fail_fast: true
+repos:
+  - repo: local
+    hooks:
+      - id: go-docker
+        name: go
+        language: docker_image
+        entry: plants-dev:latest sh -c "cd plants && gofmt -l -s -w ."
+        files: plants/
+        verbose: true
+
+      - id: typescript-docker
+        name: typescript
+        language: docker_image
+        pass_filenames: false
+        entry: ui-dev:latest sh -c "cd ui && npm run typecheck"
+        files: ui/
+        verbose: true
+
+      - id: eslint-docker
+        name: eslint
+        language: docker_image
+        entry: ui-dev:latest sh -c "cd ui && npm run lint"
+        exclude_types: [css, html, json]
+        files: ui/
+        verbose: true
+
+      - id: prettier-docker
+        name: prettier
+        language: docker_image
+        entry: ui-dev:latest sh -c "cd ui && npm run format"
+        files: ui/
+        verbose: true
