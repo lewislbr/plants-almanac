@@ -10,6 +10,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+var isDevelopment = os.Getenv("MODE") == "development"
+
 // Start initalizes the GraphQL endpoints
 func Start() error {
 	godotenv.Load()
@@ -28,7 +30,10 @@ func Start() error {
 	})
 
 	router.POST("/api", httpWrapper(graphqlHandler))
-	router.GET("/api/playground", httpWrapper(playgroundHandler))
+
+	if isDevelopment {
+		router.GET("/api/playground", httpWrapper(playgroundHandler))
+	}
 
 	fmt.Printf("Server ready at http://localhost:%v ✅\n", port)
 
@@ -48,10 +53,22 @@ func httpWrapper(h http.Handler) httprouter.Handle {
 
 func corsWrapper(h http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var origin string
+		if isDevelopment {
+			origin = "*"
+		} else {
+			origin = os.Getenv("PRODUCTION_URL")
+		}
+
 		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Origin")
 		w.Header().Add("Access-Control-Max-Age", "86400")
-		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Add("Access-Control-Allow-Origin", origin)
 
+		if !isDevelopment {
+			w.Header().Add("Content-Security-Policy", "default-src 'self'")
+			w.Header().Add("Strict-Transport-Security",
+				"max-age=63072000; includeSubDomains; preload")
+		}
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusNoContent)
 			return
