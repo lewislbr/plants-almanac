@@ -44,7 +44,7 @@ var plantType = graphql.NewObject(
 var queries = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Query",
 	Fields: graphql.Fields{
-		"getPlant": &graphql.Field{
+		"plant": &graphql.Field{
 			Type:        plantType,
 			Description: "Returns a plant",
 			Args: graphql.FieldConfigArgument{
@@ -54,7 +54,7 @@ var queries = graphql.NewObject(graphql.ObjectConfig{
 			},
 			Resolve: list.Plant,
 		},
-		"getPlants": &graphql.Field{
+		"plants": &graphql.Field{
 			Type:        graphql.NewList(plantType),
 			Description: "Returns all plants",
 			Resolve:     list.Plants,
@@ -65,7 +65,7 @@ var queries = graphql.NewObject(graphql.ObjectConfig{
 var mutations = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Mutation",
 	Fields: graphql.Fields{
-		"addPlant": &graphql.Field{
+		"add": &graphql.Field{
 			Type:        graphql.ID,
 			Description: "Adds a plant",
 			Args: graphql.FieldConfigArgument{
@@ -93,7 +93,7 @@ var mutations = graphql.NewObject(graphql.ObjectConfig{
 			},
 			Resolve: add.Plant,
 		},
-		"editPlant": &graphql.Field{
+		"edit": &graphql.Field{
 			Type:        graphql.Int,
 			Description: "Edits a plant",
 			Args: graphql.FieldConfigArgument{
@@ -124,7 +124,7 @@ var mutations = graphql.NewObject(graphql.ObjectConfig{
 			},
 			Resolve: edit.Plant,
 		},
-		"deletePlant": &graphql.Field{
+		"delete": &graphql.Field{
 			Type:        graphql.Int,
 			Description: "Deletes a plant",
 			Args: graphql.FieldConfigArgument{

@@ -11,7 +11,7 @@ export function App(): JSX.Element {
         <Switch>
           <Route exact path="/" component={Plants} />
           <Route path="/addplant" component={AddPlant} />
-          <Route path="/:plantname" component={PlantDetails} />
+          <Route path="/:_id" component={PlantDetails} />
         </Switch>
       </main>
     </BrowserRouter>

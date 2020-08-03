@@ -1,8 +1,8 @@
 import * as React from "react";
-import {useAddPlantMutation} from "../graphql/types";
+import {useAddMutation} from "../graphql/types";
 
 export function AddPlant({history}: {history: any}): JSX.Element {
-  const [addPlant] = useAddPlantMutation();
+  const [addPlant] = useAddMutation();
   const nameElement = React.useRef<HTMLInputElement>(null);
   const otherNamesElement = React.useRef<HTMLInputElement>(null);
   const descriptionElement = React.useRef<HTMLTextAreaElement>(null);

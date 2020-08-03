@@ -1,10 +1,10 @@
 import * as React from "react";
 import {Link} from "react-router-dom";
 import {PlantCard} from "../components";
-import {useGetPlantsQuery} from "../graphql/types";
+import {usePlantsQuery} from "../graphql/types";
 
 export function Plants(): JSX.Element {
-  const {data, loading, error, refetch} = useGetPlantsQuery();
+  const {data, loading, error, refetch} = usePlantsQuery();
 
   React.useEffect(() => {
     refetch();
@@ -22,9 +22,9 @@ export function Plants(): JSX.Element {
           <p>{"ERROR"}</p>
         ) : (
           <div>
-            {data?.getPlants?.map(plant => (
-              <Link to={`/${plant.name}`} key={plant._id}>
-                <PlantCard {...{name: plant.name}} />
+            {data?.plants?.map(plant => (
+              <Link to={`/${plant?._id}`} key={plant?._id || 0}>
+                <PlantCard {...{name: plant?.name}} />
               </Link>
             ))}
           </div>

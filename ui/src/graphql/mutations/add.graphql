@@ -1,4 +1,4 @@
-mutation AddPlant(
+mutation Add(
   $name: String!
   $otherNames: String
   $description: String
@@ -7,7 +7,7 @@ mutation AddPlant(
   $pruneSeason: String
   $tips: String
 ) {
-  addPlant(
+  add(
     name: $name
     otherNames: $otherNames
     description: $description

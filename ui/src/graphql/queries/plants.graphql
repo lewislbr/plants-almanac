@@ -1,0 +1,6 @@
+query Plants {
+  plants {
+    _id
+    name
+  }
+}
