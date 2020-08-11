@@ -1,40 +1,27 @@
 package add
 
-import (
-	"plants/pkg/entity"
-	"plants/pkg/storage/mongodb"
+import "plants/pkg/entity"
 
-	"github.com/google/uuid"
-	"github.com/graphql-go/graphql"
-)
+// Service provides item add operations
+type Service interface {
+	AddPlant(entity.Plant) interface{}
+}
 
-// Plant resolver
-func Plant(p graphql.ResolveParams) (interface{}, error) {
-	plant := entity.Plant{}
+// Repository provides access to the item storage
+type Repository interface {
+	InsertOne(entity.Plant) interface{}
+}
 
-	plant.ID = uuid.New().String()
-	plant.Name = p.Args["name"].(string)
+type service struct {
+	r Repository
+}
 
-	if result, ok := p.Args["otherNames"].(string); ok {
-		plant.OtherNames = &result
-	}
-	if result, ok := p.Args["description"].(string); ok {
-		plant.Description = &result
-	}
-	if result, ok := p.Args["plantSeason"].(string); ok {
-		plant.PlantSeason = &result
-	}
-	if result, ok := p.Args["harvestSeason"].(string); ok {
-		plant.HarvestSeason = &result
-	}
-	if result, ok := p.Args["pruneSeason"].(string); ok {
-		plant.PruneSeason = &result
-	}
-	if result, ok := p.Args["tips"].(string); ok {
-		plant.Tips = &result
-	}
+// NewService creates an add service with the necessary dependencies
+func NewService(r Repository) Service {
+	return &service{r}
+}
 
-	result := mongodb.InsertOne(plant)
-
-	return result, nil
+// AddPlant adds a plant
+func (s *service) AddPlant(plant entity.Plant) interface{} {
+	return s.r.InsertOne(plant)
 }

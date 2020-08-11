@@ -38,8 +38,11 @@ func connectDatabase() *mongo.Collection {
 
 var collection = connectDatabase()
 
+// Storage stores data in MongoDB Atlas
+type Storage struct{}
+
 // FindAll returns all the items
-func FindAll() []*entity.Plant {
+func (s *Storage) FindAll() []*entity.Plant {
 	var result []*entity.Plant
 
 	cursor, err := collection.Find(context.TODO(), bson.M{})
@@ -60,7 +63,7 @@ func FindAll() []*entity.Plant {
 }
 
 // FindOne retuns the queried item
-func FindOne(id string) *entity.Plant {
+func (s *Storage) FindOne(id string) *entity.Plant {
 	var result *entity.Plant
 
 	filter := bson.M{"_id": id}
@@ -72,7 +75,7 @@ func FindOne(id string) *entity.Plant {
 }
 
 // InsertOne adds an item
-func InsertOne(item entity.Plant) interface{} {
+func (s *Storage) InsertOne(item entity.Plant) interface{} {
 	result, err := collection.InsertOne(context.TODO(), item)
 	if err != nil {
 		log.Fatal(err)
@@ -82,7 +85,7 @@ func InsertOne(item entity.Plant) interface{} {
 }
 
 // EditOne modifies the queried item
-func EditOne(id string, updated entity.Plant) int64 {
+func (s *Storage) EditOne(id string, updated entity.Plant) int64 {
 	filter := bson.M{"_id": id}
 	update := bson.M{
 		"$set": bson.M{
@@ -104,7 +107,7 @@ func EditOne(id string, updated entity.Plant) int64 {
 }
 
 // DeleteOne deletes an item
-func DeleteOne(id string) int64 {
+func (s *Storage) DeleteOne(id string) int64 {
 	filter := bson.M{"_id": id}
 	result, err := collection.DeleteOne(context.TODO(), filter)
 	if err != nil {

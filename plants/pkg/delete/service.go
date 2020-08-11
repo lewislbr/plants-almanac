@@ -1,15 +1,25 @@
 package delete
 
-import (
-	"plants/pkg/storage/mongodb"
+// Service provides item delete operations
+type Service interface {
+	DeletePlant(string) int64
+}
 
-	"github.com/graphql-go/graphql"
-)
+// Repository provides access to the item storage
+type Repository interface {
+	DeleteOne(string) int64
+}
 
-// Plant resolver
-func Plant(p graphql.ResolveParams) (interface{}, error) {
-	id := p.Args["_id"].(string)
-	result := mongodb.DeleteOne(id)
+type service struct {
+	r Repository
+}
 
-	return result, nil
+// NewService creates a delete service with the necessary dependencies
+func NewService(r Repository) Service {
+	return &service{r}
+}
+
+// DeletePlant deletes a plant
+func (s *service) DeletePlant(id string) int64 {
+	return s.r.DeleteOne(id)
 }

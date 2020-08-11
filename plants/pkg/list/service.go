@@ -1,22 +1,34 @@
 package list
 
-import (
-	"plants/pkg/storage/mongodb"
+import "plants/pkg/entity"
 
-	"github.com/graphql-go/graphql"
-)
-
-// Plant resolver
-func Plant(p graphql.ResolveParams) (interface{}, error) {
-	id := p.Args["_id"].(string)
-	plant := mongodb.FindOne(id)
-
-	return plant, nil
+// Service provides item list operations
+type Service interface {
+	GetPlants() []*entity.Plant
+	GetPlant(string) *entity.Plant
 }
 
-// Plants resolver
-func Plants(p graphql.ResolveParams) (interface{}, error) {
-	plants := mongodb.FindAll()
+// Repository provides access to the item storage
+type Repository interface {
+	FindAll() []*entity.Plant
+	FindOne(string) *entity.Plant
+}
 
-	return plants, nil
+type service struct {
+	r Repository
+}
+
+// NewService creates a list service with the necessary dependencies
+func NewService(r Repository) Service {
+	return &service{r}
+}
+
+// GetPlants returns all plants
+func (s *service) GetPlants() []*entity.Plant {
+	return s.r.FindAll()
+}
+
+// GetPlant returns a plant
+func (s *service) GetPlant(id string) *entity.Plant {
+	return s.r.FindOne(id)
 }

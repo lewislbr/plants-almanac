@@ -1,6 +1,6 @@
 package entity
 
-// Plant entity
+// Plant defines a plant entity
 type Plant struct {
 	ID            string  `json:"_id" bson:"_id"`
 	Name          string  `json:"name" bson:"name"`

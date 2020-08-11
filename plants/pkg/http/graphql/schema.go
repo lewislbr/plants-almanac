@@ -5,10 +5,15 @@ import (
 	"plants/pkg/delete"
 	"plants/pkg/edit"
 	"plants/pkg/list"
+	"plants/pkg/storage/mongodb"
 
 	"github.com/graphql-go/graphql"
 )
 
+var l = list.NewService(&mongodb.Storage{})
+var a = add.NewService(&mongodb.Storage{})
+var e = edit.NewService(&mongodb.Storage{})
+var d = delete.NewService(&mongodb.Storage{})
 var plantType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Plant",
@@ -40,104 +45,109 @@ var plantType = graphql.NewObject(
 		},
 	},
 )
+var queries *graphql.Object
+var mutations *graphql.Object
+var schema graphql.Schema
 
-var queries = graphql.NewObject(graphql.ObjectConfig{
-	Name: "Query",
-	Fields: graphql.Fields{
-		"plant": &graphql.Field{
-			Type:        plantType,
-			Description: "Returns a plant",
-			Args: graphql.FieldConfigArgument{
-				"_id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.ID),
-				},
+func init() {
+	queries = graphql.NewObject(graphql.ObjectConfig{
+		Name: "Query",
+		Fields: graphql.Fields{
+			"plants": &graphql.Field{
+				Type:        graphql.NewList(plantType),
+				Description: "Returns all plants",
+				Resolve:     getPlants(l),
 			},
-			Resolve: list.Plant,
+			"plant": &graphql.Field{
+				Type:        plantType,
+				Description: "Returns a plant",
+				Args: graphql.FieldConfigArgument{
+					"_id": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.ID),
+					},
+				},
+				Resolve: getPlant(l),
+			},
 		},
-		"plants": &graphql.Field{
-			Type:        graphql.NewList(plantType),
-			Description: "Returns all plants",
-			Resolve:     list.Plants,
-		},
-	},
-})
+	})
 
-var mutations = graphql.NewObject(graphql.ObjectConfig{
-	Name: "Mutation",
-	Fields: graphql.Fields{
-		"add": &graphql.Field{
-			Type:        graphql.ID,
-			Description: "Adds a plant",
-			Args: graphql.FieldConfigArgument{
-				"name": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.String),
+	mutations = graphql.NewObject(graphql.ObjectConfig{
+		Name: "Mutation",
+		Fields: graphql.Fields{
+			"add": &graphql.Field{
+				Type:        graphql.ID,
+				Description: "Adds a plant",
+				Args: graphql.FieldConfigArgument{
+					"name": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.String),
+					},
+					"otherNames": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"description": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"plantSeason": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"harvestSeason": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"pruneSeason": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"tips": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
 				},
-				"otherNames": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"description": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"plantSeason": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"harvestSeason": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"pruneSeason": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"tips": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
+				Resolve: addPlant(a),
 			},
-			Resolve: add.Plant,
-		},
-		"edit": &graphql.Field{
-			Type:        graphql.Int,
-			Description: "Edits a plant",
-			Args: graphql.FieldConfigArgument{
-				"_id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.ID),
+			"edit": &graphql.Field{
+				Type:        graphql.Int,
+				Description: "Edits a plant",
+				Args: graphql.FieldConfigArgument{
+					"_id": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.ID),
+					},
+					"name": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"otherNames": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"description": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"plantSeason": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"harvestSeason": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"pruneSeason": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
+					"tips": &graphql.ArgumentConfig{
+						Type: graphql.String,
+					},
 				},
-				"name": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"otherNames": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"description": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"plantSeason": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"harvestSeason": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"pruneSeason": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
-				"tips": &graphql.ArgumentConfig{
-					Type: graphql.String,
-				},
+				Resolve: editPlant(e, l),
 			},
-			Resolve: edit.Plant,
-		},
-		"delete": &graphql.Field{
-			Type:        graphql.Int,
-			Description: "Deletes a plant",
-			Args: graphql.FieldConfigArgument{
-				"_id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.ID),
+			"delete": &graphql.Field{
+				Type:        graphql.Int,
+				Description: "Deletes a plant",
+				Args: graphql.FieldConfigArgument{
+					"_id": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.ID),
+					},
 				},
+				Resolve: deletePlant(d),
 			},
-			Resolve: delete.Plant,
 		},
-	},
-})
+	})
 
-var schema, nil = graphql.NewSchema(graphql.SchemaConfig{
-	Query:    queries,
-	Mutation: mutations,
-})
+	schema, _ = graphql.NewSchema(graphql.SchemaConfig{
+		Query:    queries,
+		Mutation: mutations,
+	})
+}
