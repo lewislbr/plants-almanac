@@ -11,15 +11,38 @@ export type Scalars = {
   Float: number;
 };
 
-export type Query = {
-  __typename?: "Query";
-  /** Returns a plant */
-  plant?: Maybe<Plant>;
-  /** Returns all plants */
-  plants?: Maybe<Array<Maybe<Plant>>>;
+export type Mutation = {
+  __typename?: "Mutation";
+  /** Adds a plant */
+  add?: Maybe<Scalars["ID"]>;
+  /** Deletes a plant */
+  delete?: Maybe<Scalars["Int"]>;
+  /** Edits a plant */
+  edit?: Maybe<Scalars["Int"]>;
 };
 
-export type QueryPlantArgs = {
+export type MutationAddArgs = {
+  harvestSeason?: Maybe<Scalars["String"]>;
+  pruneSeason?: Maybe<Scalars["String"]>;
+  tips?: Maybe<Scalars["String"]>;
+  name: Scalars["String"];
+  otherNames?: Maybe<Scalars["String"]>;
+  description?: Maybe<Scalars["String"]>;
+  plantSeason?: Maybe<Scalars["String"]>;
+};
+
+export type MutationDeleteArgs = {
+  _id: Scalars["ID"];
+};
+
+export type MutationEditArgs = {
+  name?: Maybe<Scalars["String"]>;
+  otherNames?: Maybe<Scalars["String"]>;
+  description?: Maybe<Scalars["String"]>;
+  plantSeason?: Maybe<Scalars["String"]>;
+  harvestSeason?: Maybe<Scalars["String"]>;
+  pruneSeason?: Maybe<Scalars["String"]>;
+  tips?: Maybe<Scalars["String"]>;
   _id: Scalars["ID"];
 };
 
@@ -35,39 +58,16 @@ export type Plant = {
   tips?: Maybe<Scalars["String"]>;
 };
 
-export type Mutation = {
-  __typename?: "Mutation";
-  /** Adds a plant */
-  add?: Maybe<Scalars["ID"]>;
-  /** Deletes a plant */
-  delete?: Maybe<Scalars["Int"]>;
-  /** Edits a plant */
-  edit?: Maybe<Scalars["Int"]>;
+export type Query = {
+  __typename?: "Query";
+  /** Returns a plant */
+  plant?: Maybe<Plant>;
+  /** Returns all plants */
+  plants?: Maybe<Array<Maybe<Plant>>>;
 };
 
-export type MutationAddArgs = {
-  otherNames?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  plantSeason?: Maybe<Scalars["String"]>;
-  harvestSeason?: Maybe<Scalars["String"]>;
-  pruneSeason?: Maybe<Scalars["String"]>;
-  tips?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-};
-
-export type MutationDeleteArgs = {
+export type QueryPlantArgs = {
   _id: Scalars["ID"];
-};
-
-export type MutationEditArgs = {
-  otherNames?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  plantSeason?: Maybe<Scalars["String"]>;
-  harvestSeason?: Maybe<Scalars["String"]>;
-  pruneSeason?: Maybe<Scalars["String"]>;
-  tips?: Maybe<Scalars["String"]>;
-  _id: Scalars["ID"];
-  name?: Maybe<Scalars["String"]>;
 };
 
 export type AddMutationVariables = {
