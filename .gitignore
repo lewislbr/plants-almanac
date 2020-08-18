@@ -1,9 +1,5 @@
-.deno_plugins
 .DS_Store
 .env
-.vscode
-plants/Makefile
 dist
 node_modules
 npm-debug.log
-ui/Makefile
