@@ -14,8 +14,8 @@ const client = new ApolloClient({
   link: new HttpLink({
     uri:
       process.env.NODE_ENV === "production"
-        ? process.env.PRODUCTION_URL
-        : process.env.DEVELOPMENT_URL,
+        ? process.env.PLANTS_PRODUCTION_URL
+        : process.env.PLANTS_DEVELOPMENT_URL,
   }),
 });
 

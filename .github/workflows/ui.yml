@@ -20,11 +20,11 @@ jobs:
       - name: Add environment variables
         run: echo "PLANTS_PRODUCTION_URL=${{ secrets.PLANTS_PRODUCTION_URL }}" >> .env
       - name: Build image
-        run: docker build -t lewislbr/ui-prod -f Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.UI_IMAGE_NAME }}" -f Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image
-        run: docker push lewislbr/ui-prod
+        run: docker push "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.UI_IMAGE_NAME }}"
   deploy:
     name: Deploy the Docker image to DigitalOcean
     runs-on: ubuntu-latest
@@ -32,12 +32,17 @@ jobs:
     steps:
       - name: Log in and deploy image
         uses: appleboy/ssh-action@master
+        env:
+          DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"
+          UI_APP_PORT: ${{ secrets.UI_APP_PORT }}
+          UI_IMAGE_NAME: "${{ secrets.UI_IMAGE_NAME }}"
         with:
           host: ${{ secrets.DIGITALOCEAN_UI_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_KEY }}
+          envs: DOCKER_USERNAME, UI_APP_PORT, UI_IMAGE_NAME
           script: |
-            docker pull lewislbr/ui-prod
-            docker rm -f ui-prod
-            docker run -d --restart unless-stopped -p 8080:8080 --name ui-prod lewislbr/ui-prod
+            docker pull $DOCKER_USERNAME/$UI_IMAGE_NAME
+            docker rm -f $UI_IMAGE_NAME
+            docker run -d --restart unless-stopped -p 80:$UI_APP_PORT --name $UI_IMAGE_NAME $DOCKER_USERNAME/$UI_IMAGE_NAME
             docker system prune -f

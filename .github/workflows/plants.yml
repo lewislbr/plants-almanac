@@ -18,11 +18,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@master
       - name: Build image
-        run: docker build -t lewislbr/plants-prod -f Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_IMAGE_NAME }}" -f Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image
-        run: docker push lewislbr/plants-prod
+        run: docker push "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_IMAGE_NAME }}"
   deploy:
     name: Deploy the Docker image to DigitalOcean
     runs-on: ubuntu-latest
@@ -31,24 +31,26 @@ jobs:
       - name: Log in, add environment variables, and deploy image
         uses: appleboy/ssh-action@master
         env:
+          DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"
+          PLANTS_APP_PORT: ${{ secrets.PLANTS_APP_PORT }}
           PLANTS_COLLECTION_NAME: ${{ secrets.PLANTS_COLLECTION_NAME }}
           PLANTS_DATABASE_NAME: ${{ secrets.PLANTS_DATABASE_NAME }}
-          PLANTS_EXPOSED_PORT: ${{ secrets.PLANTS_EXPOSED_PORT }}
+          PLANTS_IMAGE_NAME: "${{ secrets.PLANTS_IMAGE_NAME }}"
           PLANTS_MONGODB_URI: ${{ secrets.PLANTS_MONGODB_URI }}
           UI_PRODUCTION_URL: ${{ secrets.UI_PRODUCTION_URL }}
         with:
           host: ${{ secrets.DIGITALOCEAN_PLANTS_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_KEY }}
-          envs: PLANTS_COLLECTION_NAME, PLANTS_DATABASE_NAME, PLANTS_EXPOSED_PORT, PLANTS_MONGODB_URI, UI_PRODUCTION_URL,
+          envs: DOCKER_USERNAME, PLANTS_APP_PORT, PLANTS_COLLECTION_NAME, PLANTS_DATABASE_NAME, PLANTS_IMAGE_NAME, PLANTS_MONGODB_URI, UI_PRODUCTION_URL
           script: |
-            rm .plants-env
-            echo "PORT=$PORT" >> .plants-env
-            echo "PRODUCTION_URL=$PRODUCTION_URL" >> .plants-env
-            echo "COLLECTION_NAME=$COLLECTION_NAME" >> .plants-env
-            echo "DATABASE_NAME=$DATABASE_NAME" >> .plants-env
-            echo "MONGODB_URI=$MONGODB_URI" >> .plants-env
-            docker pull lewislbr/plants-prod
-            docker rm -f plants-prod
-            docker run --env-file .env -d --restart unless-stopped -p 4040:4040 --name plants-prod lewislbr/plants-prod
+            rm .env
+            echo "PLANTS_COLLECTION_NAME=$PLANTS_COLLECTION_NAME" >> .env
+            echo "PLANTS_DATABASE_NAME=$PLANTS_DATABASE_NAME" >> .env
+            echo "PLANTS_APP_PORT=$PLANTS_APP_PORT" >> .env
+            echo "PLANTS_MONGODB_URI=$PLANTS_MONGODB_URI" >> .env
+            echo "UI_PRODUCTION_URL=$UI_PRODUCTION_URL" >> .env
+            docker pull $DOCKER_USERNAME/$PLANTS_IMAGE_NAME
+            docker rm -f $PLANTS_IMAGE_NAME
+            docker run --env-file .env -d --restart unless-stopped -p 80:$PLANTS_APP_PORT --name $PLANTS_IMAGE_NAME $DOCKER_USERNAME/$PLANTS_IMAGE_NAME
             docker system prune -f

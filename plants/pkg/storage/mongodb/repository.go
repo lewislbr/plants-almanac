@@ -16,9 +16,9 @@ import (
 func connectDatabase() *mongo.Collection {
 	godotenv.Load()
 
-	mongodbURI := os.Getenv("MONGODB_URI")
-	databaseName := os.Getenv("DATABASE_NAME")
-	collectionName := os.Getenv("COLLECTION_NAME")
+	mongodbURI := os.Getenv("PLANTS_MONGODB_URI")
+	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
+	collectionName := os.Getenv("PLANTS_COLLECTION_NAME")
 	clientOptions := options.Client().ApplyURI(mongodbURI)
 
 	client, err := mongo.NewClient(clientOptions)
