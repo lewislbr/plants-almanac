@@ -1,16 +1,24 @@
 version: "3.8"
 
 services:
-  plants:
+  plants-app-dev:
     build:
       context: ./plants
       dockerfile: Dockerfile.dev
-    image: plants-almanac_plants-dev
-    container_name: plants-almanac_plants-dev
+    image: plants-almanac_plants-app-dev
+    container_name: plants-almanac_plants-app-dev
     env_file:
       - plants/.env
     ports:
       - "4040:4040"
+
+  plants-db-dev:
+    image: mongo:4
+    container_name: plants-almanac_plants-db-dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - plants-db:/data/db
 
   ui:
     build:
@@ -24,3 +32,8 @@ services:
       - "8080:8080"
     volumes:
       - ./ui:/usr/src/app
+
+volumes:
+  plants-db:
+    labels:
+      keep: true

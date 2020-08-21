@@ -19,14 +19,12 @@ func connectDatabase() *mongo.Collection {
 	mongodbURI := os.Getenv("PLANTS_MONGODB_URI")
 	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
 	collectionName := os.Getenv("PLANTS_COLLECTION_NAME")
-	clientOptions := options.Client().ApplyURI(mongodbURI)
-
-	client, err := mongo.NewClient(clientOptions)
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongodbURI))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = client.Connect(context.Background())
+	err = client.Ping(context.TODO(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}

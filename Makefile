@@ -3,3 +3,5 @@ run:
 
 stop:
 	@docker-compose -f docker-compose-dev.yml down
+
+	@docker volume prune -f --filter "label!=keep"

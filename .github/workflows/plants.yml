@@ -18,11 +18,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@master
       - name: Build image
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_IMAGE_NAME }}" -f Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_APP_NAME }}" -f Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image
-        run: docker push "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_IMAGE_NAME }}"
+        run: docker push "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_APP_NAME }}"
   deploy:
     name: Deploy the Docker image to DigitalOcean
     runs-on: ubuntu-latest
@@ -32,17 +32,18 @@ jobs:
         uses: appleboy/ssh-action@master
         env:
           DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"
+          PLANTS_APP_NAME: "${{ secrets.PLANTS_APP_NAME }}"
           PLANTS_APP_PORT: ${{ secrets.PLANTS_APP_PORT }}
           PLANTS_COLLECTION_NAME: ${{ secrets.PLANTS_COLLECTION_NAME }}
           PLANTS_DATABASE_NAME: ${{ secrets.PLANTS_DATABASE_NAME }}
-          PLANTS_IMAGE_NAME: "${{ secrets.PLANTS_IMAGE_NAME }}"
+          PLANTS_DB_NAME: "${{ secrets.PLANTS_DB_NAME }}"
           PLANTS_MONGODB_URI: ${{ secrets.PLANTS_MONGODB_URI }}
           UI_PRODUCTION_URL: ${{ secrets.UI_PRODUCTION_URL }}
         with:
           host: ${{ secrets.DIGITALOCEAN_PLANTS_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_KEY }}
-          envs: DOCKER_USERNAME, PLANTS_APP_PORT, PLANTS_COLLECTION_NAME, PLANTS_DATABASE_NAME, PLANTS_IMAGE_NAME, PLANTS_MONGODB_URI, UI_PRODUCTION_URL
+          envs: DOCKER_USERNAME, PLANTS_APP_NAME, PLANTS_APP_PORT, PLANTS_COLLECTION_NAME, PLANTS_DATABASE_NAME, PLANTS_DB_NAME, PLANTS_MONGODB_URI, UI_PRODUCTION_URL
           script: |
             rm .env
             echo "PLANTS_COLLECTION_NAME=$PLANTS_COLLECTION_NAME" >> .env
@@ -50,7 +51,9 @@ jobs:
             echo "PLANTS_APP_PORT=$PLANTS_APP_PORT" >> .env
             echo "PLANTS_MONGODB_URI=$PLANTS_MONGODB_URI" >> .env
             echo "UI_PRODUCTION_URL=$UI_PRODUCTION_URL" >> .env
-            docker pull $DOCKER_USERNAME/$PLANTS_IMAGE_NAME
-            docker rm -f $PLANTS_IMAGE_NAME
-            docker run -d -p 80:$PLANTS_APP_PORT --restart unless-stopped --env-file .env --name $PLANTS_IMAGE_NAME $DOCKER_USERNAME/$PLANTS_IMAGE_NAME
-            docker system prune -f
+            docker pull $DOCKER_USERNAME/$PLANTS_APP_NAME
+            docker volume create --label keep=true $PLANTS_DB_NAME
+            docker run -d -p 27017:27017 --restart unless-stopped -v $PLANTS_DB_NAME:/data/db --name $PLANTS_DB_NAME mongo:4
+            docker rm -f $PLANTS_APP_NAME
+            docker run -d -p 80:$PLANTS_APP_PORT --restart unless-stopped --env-file .env --name $PLANTS_APP_NAME $DOCKER_USERNAME/$PLANTS_APP_NAME
+            docker system prune -f --volumes --filter "label!=keep"
