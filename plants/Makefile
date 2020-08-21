@@ -1,19 +1,18 @@
 include .env
 
-build-dev:
-	@docker build -t plants-dev -f Dockerfile.dev ./
-
-build-prod:
-	@docker build -t $(PLANTS_IMAGE_NAME) -f Dockerfile.prod ./
+build:
+	@docker build \
+	-t plants-almanac_plants-app-dev \
+	-f Dockerfile.dev \
+	./
 
 run:
-	@go run cmd/server/main.go
-
-run-dev:
-	@docker run --env-file .env -p 4040:$(PLANTS_APP_PORT) --name plants-dev plants-dev
-
-run-prod:
-	@docker run -p 4040:$(PLANTS_APP_PORT) --name plants-prod $(PLANTS_IMAGE_NAME)
+	@docker run \
+	-d \
+	-p 4040:$(PLANTS_APP_PORT) \
+	--env-file .env \
+	--name plants-almanac_plants-app-dev \
+	plants-almanac_plants-app-dev
 
 stop:
-	@docker rm -f $(docker ps -a -q)
+	@docker rm -f $$(docker ps -a -q)

@@ -52,5 +52,5 @@ jobs:
             echo "UI_PRODUCTION_URL=$UI_PRODUCTION_URL" >> .env
             docker pull $DOCKER_USERNAME/$PLANTS_IMAGE_NAME
             docker rm -f $PLANTS_IMAGE_NAME
-            docker run --env-file .env -d --restart unless-stopped -p 80:$PLANTS_APP_PORT --name $PLANTS_IMAGE_NAME $DOCKER_USERNAME/$PLANTS_IMAGE_NAME
+            docker run -d -p 80:$PLANTS_APP_PORT --restart unless-stopped --env-file .env --name $PLANTS_IMAGE_NAME $DOCKER_USERNAME/$PLANTS_IMAGE_NAME
             docker system prune -f

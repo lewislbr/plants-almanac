@@ -44,5 +44,5 @@ jobs:
           script: |
             docker pull $DOCKER_USERNAME/$UI_IMAGE_NAME
             docker rm -f $UI_IMAGE_NAME
-            docker run -d --restart unless-stopped -p 80:$UI_APP_PORT --name $UI_IMAGE_NAME $DOCKER_USERNAME/$UI_IMAGE_NAME
+            docker run -d -p 80:$UI_APP_PORT --restart unless-stopped --name $UI_IMAGE_NAME $DOCKER_USERNAME/$UI_IMAGE_NAME
             docker system prune -f

@@ -1,19 +1,19 @@
 include .env
 
-build-dev:
-	@docker build -t ui-dev -f Dockerfile.dev ./
-
-build-prod:
-	@docker build -t $(UI_IMAGE_NAME) -f Dockerfile.prod ./
+build:
+	@docker build \
+	-t plants-almanac_ui-dev \
+	-f Dockerfile.dev \
+	./
 
 run:
-	@npm run start
-
-run-dev:
-	@docker run --env-file .env -v ${PWD}:/usr/src/app -p 8080:$(UI_APP_PORT) --name ui-dev ui-dev
-
-run-prod:
-	@docker run -p 8080:$(UI_APP_PORT) --name ui-prod $(UI_IMAGE_NAME)
+	@docker run \
+	-d \
+	-p 8080:$(UI_APP_PORT) \
+	-v ${PWD}:/usr/src/app \
+	--env-file .env \
+	--name plants-almanac_ui-dev \
+	plants-almanac_ui-dev
 
 stop:
-	@docker rm -f $(docker ps -a -q)
+	@docker rm -f $$(docker ps -a -q)
