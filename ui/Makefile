@@ -9,7 +9,7 @@ build:
 run:
 	@docker run \
 	-d \
-	-p 8080:$(UI_APP_PORT) \
+	-p 8080:${UI_APP_PORT} \
 	-v ${PWD}:/usr/src/app \
 	--env-file .env \
 	--name plantdex_ui-dev \

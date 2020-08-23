@@ -18,7 +18,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - plants-db:/data/db
+      - ${PWD}/plants/plants-db:/data/db
 
   ui:
     build:
@@ -32,8 +32,3 @@ services:
       - "8080:8080"
     volumes:
       - ./ui:/usr/src/app
-
-volumes:
-  plants-db:
-    labels:
-      keep: true
