@@ -5,8 +5,8 @@ services:
     build:
       context: ./plants
       dockerfile: Dockerfile.dev
-    image: plants-almanac_plants-app-dev
-    container_name: plants-almanac_plants-app-dev
+    image: plantdex_plants-app-dev
+    container_name: plantdex_plants-app-dev
     env_file:
       - plants/.env
     ports:
@@ -14,7 +14,7 @@ services:
 
   plants-db-dev:
     image: mongo:4
-    container_name: plants-almanac_plants-db-dev
+    container_name: plantdex_plants-db-dev
     ports:
       - "27017:27017"
     volumes:
@@ -24,8 +24,8 @@ services:
     build:
       context: ./ui
       dockerfile: Dockerfile.dev
-    image: plants-almanac_ui-dev
-    container_name: plants-almanac_ui-dev
+    image: plantdex_ui-dev
+    container_name: plantdex_ui-dev
     env_file:
       - ui/.env
     ports:
