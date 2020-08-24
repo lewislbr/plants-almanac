@@ -53,7 +53,8 @@ jobs:
             echo "UI_PRODUCTION_URL=$UI_PRODUCTION_URL" >> .env
             docker pull $DOCKER_USERNAME/$PLANTS_APP_NAME
             [ -d plants-db ] || mkdir plants-db
-            docker run -d -p 27017:27017 --restart unless-stopped -v $PWD/plants-db:/data/db --name $PLANTS_DB_NAME mongo:4
+            [ -f plants-db/mongod.conf ] || echo "security:\n\\tauthorization: \"enabled\"" >> plants-db/mongod.conf
+            docker run -d -p 27017:27017 --restart unless-stopped -v $PWD/plants-db:/data/db -v $PWD/plants-db/mongod.conf:/etc/mongod.conf --name $PLANTS_DB_NAME mongo:4 --config /etc/mongod.conf
             docker rm -f $PLANTS_APP_NAME
             docker run -d -p 80:$PLANTS_APP_PORT --restart unless-stopped --env-file .env --name $PLANTS_APP_NAME $DOCKER_USERNAME/$PLANTS_APP_NAME
             docker system prune -f --volumes
