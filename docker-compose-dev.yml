@@ -18,12 +18,12 @@ services:
     volumes:
       - ${PWD}/plants/plants-db:/data/db
 
-  ui:
+  ui-app-dev:
     build:
       context: ./ui
       dockerfile: Dockerfile.dev
-    image: plantdex_ui-dev
-    container_name: plantdex_ui-dev
+    image: plantdex_ui-app-dev
+    container_name: plantdex_ui-app-dev
     env_file:
       - ui/.env
     ports:

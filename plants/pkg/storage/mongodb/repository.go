@@ -13,10 +13,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var isDevelopment = os.Getenv("MODE") == "development"
+
 func connectDatabase() *mongo.Collection {
 	godotenv.Load()
 
-	mongodbURI := os.Getenv("PLANTS_MONGODB_URI")
+	var mongodbURI string
+	if isDevelopment {
+		mongodbURI = os.Getenv("PLANTS_MONGODB_DEVELOPMENT_URI")
+	} else {
+		mongodbURI = os.Getenv("PLANTS_MONGODB_PRODUCTION_URI")
+	}
+	
 	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
 	collectionName := os.Getenv("PLANTS_COLLECTION_NAME")
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongodbURI))
