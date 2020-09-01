@@ -44,5 +44,5 @@ jobs:
           script: |
             docker pull $DOCKER_USERNAME/$UI_APP_NAME
             docker rm -f $UI_APP_NAME
-            docker run -d -p 80:$UI_APP_PORT --restart unless-stopped --name $UI_APP_NAME $DOCKER_USERNAME/$UI_APP_NAME
+            docker run -d -p 80:80 -p 443:443 --restart unless-stopped -v dist:/bin/www -v certbot-etc:/etc/letsencrypt -v certbot-var:/var/lib/letsencrypt -v $PWD/dhkey:/etc/ssl/certs --name $UI_APP_NAME $DOCKER_USERNAME/$UI_APP_NAME
             docker system prune -f
