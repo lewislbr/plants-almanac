@@ -1,5 +1,4 @@
-*
-!cmd
-!go.mod
-!go.sum
-!pkg
+.dockerignore
+.env
+**/Dockerfile*
+Makefile

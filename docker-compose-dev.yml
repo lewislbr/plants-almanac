@@ -13,10 +13,13 @@ services:
       - "127.0.0.1:4040:4040"
 
   plants-db-dev:
-    image: mongo:4
+    build:
+      context: ./plants/db
+      dockerfile: Dockerfile.dev
+    image: plantdex_plants-db-dev
     container_name: plantdex_plants-db-dev
     volumes:
-      - ${PWD}/plants/plants-db:/data/db
+      - plants-db:/data/db
 
   ui-app-dev:
     build:
@@ -30,3 +33,6 @@ services:
       - "127.0.0.1:8080:8080"
     volumes:
       - ./ui:/usr/src/app
+
+volumes:
+  plants-db:

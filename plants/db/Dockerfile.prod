@@ -1,0 +1,3 @@
+FROM mongo:4
+
+COPY mongod.conf /etc/mongod.conf
