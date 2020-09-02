@@ -22,6 +22,19 @@ static_resources:
                           route: { cluster: plants-app-prod }
                 http_filters:
                   - name: envoy.filters.http.router
+          transport_socket:
+            name: envoy.transport_sockets.tls
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+              common_tls_context:
+                tls_certificates:
+                  certificate_chain:
+                    filename: "/etc/tls/fullchain.pem"
+                  private_key:
+                    filename: "/etc/tls/privkey.pem"
+                alpn_protocols: ["h2"]
+                tls_params:
+                  tls_minimum_protocol_version: "TLSv1_3"
 
   clusters:
     - name: plants-app-prod
@@ -37,4 +50,9 @@ static_resources:
                   address:
                     socket_address:
                       address: plants-app-prod
-                      port_value: 4040
+                      port_value: 443
+      transport_socket:
+        name: envoy.transport_sockets.tls
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+          sni: plants-app-prod

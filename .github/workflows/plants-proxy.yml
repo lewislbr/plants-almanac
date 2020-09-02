@@ -43,6 +43,6 @@ jobs:
             docker pull $DOCKER_USERNAME/$PLANTS_PROXY_NAME
             docker network create --internal plants
             docker rm -f $PLANTS_PROXY_NAME
-            docker run -d -p 80:10000 --network plants --restart unless-stopped -e ENVOY_UID=777 -e ENVOY_GID=777 --name $PLANTS_PROXY_NAME $DOCKER_USERNAME/$PLANTS_PROXY_NAME
+            docker run -d -p 443:10000 --network plants --restart unless-stopped -v ~/tls:/etc/tls -e ENVOY_UID=777 -e ENVOY_GID=777 --name $PLANTS_PROXY_NAME $DOCKER_USERNAME/$PLANTS_PROXY_NAME
             docker network connect bridge $PLANTS_PROXY_NAME
             docker system prune -f --volumes

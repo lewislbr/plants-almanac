@@ -37,7 +37,13 @@ func Start() error {
 
 	fmt.Printf("Server ready at http://localhost:%v ✅\n", port)
 
-	err := http.ListenAndServe(":"+port, corsWrapper(router))
+	var err error
+	if isDevelopment {
+		err = http.ListenAndServe(":"+port, corsWrapper(router))
+	} else {
+		err = http.ListenAndServeTLS(":443", "tls/server.crt", "tls/server.key",
+			corsWrapper(router))
+	}
 	if err != nil {
 		return err
 	}
