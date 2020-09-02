@@ -29,10 +29,10 @@ func Start() error {
 		Playground: true,
 	})
 
-	router.POST("/api", httpWrapper(graphqlHandler))
+	router.POST("/", httpWrapper(graphqlHandler))
 
 	if isDevelopment {
-		router.GET("/api/playground", httpWrapper(playgroundHandler))
+		router.GET("/playground", httpWrapper(playgroundHandler))
 	}
 
 	fmt.Printf("Server ready at http://localhost:%v ✅\n", port)

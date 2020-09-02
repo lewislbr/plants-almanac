@@ -21,6 +21,19 @@ services:
     volumes:
       - plants-db:/data/db
 
+  plants-proxy-dev:
+    build:
+      context: ./plants/proxy
+      dockerfile: Dockerfile.dev
+    image: plantdex_plants-proxy-dev
+    container_name: plantdex_plants-proxy-dev
+    environment:
+      - ENVOY_UID=777
+      - ENVOY_GID=777
+    ports:
+      - "127.0.0.1:10000:10000"
+      - "127.0.0.1:9901:9901"
+
   ui-app-dev:
     build:
       context: ./ui
