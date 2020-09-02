@@ -1,3 +1,2 @@
 FROM envoyproxy/envoy:v1.15-latest
-
 COPY envoy-prod.yaml /etc/envoy/envoy.yaml

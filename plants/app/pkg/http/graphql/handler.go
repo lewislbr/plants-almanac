@@ -35,14 +35,13 @@ func Start() error {
 		router.GET("/playground", httpWrapper(playgroundHandler))
 	}
 
-	fmt.Printf("Server ready at http://localhost:%v ✅\n", port)
+	fmt.Println("Server ready ✅")
 
 	var err error
 	if isDevelopment {
 		err = http.ListenAndServe(":"+port, corsWrapper(router))
 	} else {
-		err = http.ListenAndServeTLS(":443", "tls/server.crt", "tls/server.key",
-			corsWrapper(router))
+		err = http.ListenAndServeTLS(":443", "etc/tls/server.crt", "etc/tls/server.key", corsWrapper(router))
 	}
 	if err != nil {
 		return err

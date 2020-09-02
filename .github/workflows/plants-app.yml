@@ -54,6 +54,6 @@ jobs:
             docker pull $DOCKER_USERNAME/$PLANTS_APP_NAME
             docker network create --internal plants
             docker rm -f $PLANTS_APP_NAME
-            docker run -d -p 443:443 --network plants --restart unless-stopped -v $PWD/tls:/tls --env-file .env --name $PLANTS_APP_NAME $DOCKER_USERNAME/$PLANTS_APP_NAME
+            docker run -d -p 443:443 --network plants --restart unless-stopped -v ~/tls:/etc/tls --env-file .env --name $PLANTS_APP_NAME $DOCKER_USERNAME/$PLANTS_APP_NAME
             docker rm -f $PLANTS_PROXY_NAME
             docker system prune -f --volumes

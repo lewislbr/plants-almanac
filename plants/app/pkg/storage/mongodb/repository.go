@@ -24,7 +24,7 @@ func connectDatabase() *mongo.Collection {
 	} else {
 		mongodbURI = os.Getenv("PLANTS_MONGODB_PRODUCTION_URI")
 	}
-	
+
 	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
 	collectionName := os.Getenv("PLANTS_COLLECTION_NAME")
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongodbURI))
@@ -37,7 +37,7 @@ func connectDatabase() *mongo.Collection {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("MongoDB database connected ✅\n")
+	fmt.Println("Database ready ✅")
 
 	return client.Database(databaseName).Collection(collectionName)
 }
