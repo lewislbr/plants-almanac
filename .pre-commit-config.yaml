@@ -5,8 +5,8 @@ repos:
       - id: go-docker
         name: go
         language: docker_image
-        entry: plantdex_plants-app-dev:latest sh -c "cd plants && gofmt -l -s -w ."
-        files: plants/
+        entry: plantdex_plants-app-dev:latest sh -c "cd plants/app && gofmt -l -s -w ."
+        files: plants/app/
         verbose: true
 
       - id: typescript-docker

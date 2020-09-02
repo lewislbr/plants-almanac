@@ -3,7 +3,7 @@ version: "3.8"
 services:
   plants-app-dev:
     build:
-      context: ./plants
+      context: ./plants/app
       dockerfile: Dockerfile.dev
     image: plantdex_plants-app-dev
     container_name: plantdex_plants-app-dev
