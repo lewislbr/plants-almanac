@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-push-proxy]
     steps:
-      - name: Log in, add environment variables, and deploy image
+      - name: Log in and deploy image
         uses: appleboy/ssh-action@master
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
