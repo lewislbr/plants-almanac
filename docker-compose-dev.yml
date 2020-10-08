@@ -34,18 +34,18 @@ services:
       - "127.0.0.1:9901:9901"
       - "127.0.0.1:10000:10000"
 
-  ui-app-dev:
+  web-app-dev:
     build:
-      context: ./ui
+      context: ./web
       dockerfile: Dockerfile.dev
-    image: plantdex_ui-app-dev
-    container_name: plantdex_ui-app-dev
+    image: plantdex_web-app-dev
+    container_name: plantdex_web-app-dev
     env_file:
-      - ui/.env
+      - web/.env
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - ./ui:/usr/src/app
+      - ./web:/usr/src/app
 
 volumes:
   plants-db:

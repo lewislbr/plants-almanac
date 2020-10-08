@@ -1,14 +1,14 @@
-name: Deploy ui service
+name: Deploy web service
 
 on:
   push:
     branches: [master]
     paths:
-      - "ui/**"
+      - "web/**"
 
 defaults:
   run:
-    working-directory: ui
+    working-directory: web
 
 jobs:
   build-push:
@@ -20,11 +20,11 @@ jobs:
       - name: Add environment variables
         run: echo "PLANTS_PRODUCTION_URL=${{ secrets.PLANTS_PRODUCTION_URL }}" >> .env
       - name: Build image
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.UI_APP_NAME }}" -f Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.WEB_APP_NAME }}" -f Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image
-        run: docker push "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.UI_APP_NAME }}"
+        run: docker push "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.WEB_APP_NAME }}"
   deploy:
     name: Deploy the Docker image to DigitalOcean
     runs-on: ubuntu-latest
@@ -34,14 +34,14 @@ jobs:
         uses: appleboy/ssh-action@master
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          UI_APP_NAME: ${{ secrets.UI_APP_NAME }}
+          WEB_APP_NAME: ${{ secrets.WEB_APP_NAME }}
         with:
-          host: ${{ secrets.DIGITALOCEAN_UI_HOST }}
+          host: ${{ secrets.DIGITALOCEAN_WEB_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_KEY }}
-          envs: DOCKER_USERNAME, UI_APP_NAME
+          envs: DOCKER_USERNAME, WEB_APP_NAME
           script: |
-            docker pull $DOCKER_USERNAME/$UI_APP_NAME
-            docker rm -f $UI_APP_NAME
-            docker run -d -p 80:80 -p 443:443 --restart unless-stopped -v certbot-etc:/etc/letsencrypt -v $PWD/dhkey:/etc/ssl/certs --name $UI_APP_NAME $DOCKER_USERNAME/$UI_APP_NAME
+            docker pull $DOCKER_USERNAME/$WEB_APP_NAME
+            docker rm -f $WEB_APP_NAME
+            docker run -d -p 80:80 -p 443:443 --restart unless-stopped -v certbot-etc:/etc/letsencrypt -v $PWD/dhkey:/etc/ssl/certs --name $WEB_APP_NAME $DOCKER_USERNAME/$WEB_APP_NAME
             docker system prune -f

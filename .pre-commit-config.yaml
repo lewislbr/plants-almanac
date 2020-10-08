@@ -13,21 +13,21 @@ repos:
         name: typescript
         language: docker_image
         pass_filenames: false
-        entry: plantdex_ui-app-dev:latest sh -c "cd ui && npm run typecheck"
-        files: ui/
+        entry: plantdex_web-app-dev:latest sh -c "cd web && npm run typecheck"
+        files: web/
         verbose: true
 
       - id: eslint-docker
         name: eslint
         language: docker_image
-        entry: plantdex_ui-app-dev:latest sh -c "cd ui && npm run lint"
+        entry: plantdex_web-app-dev:latest sh -c "cd web && npm run lint"
         exclude_types: [css, html, json]
-        files: ui/
+        files: web/
         verbose: true
 
       - id: prettier-docker
         name: prettier
         language: docker_image
-        entry: plantdex_ui-app-dev:latest sh -c "cd ui && npm run format"
-        files: ui/
+        entry: plantdex_web-app-dev:latest sh -c "cd web && npm run format"
+        files: web/
         verbose: true

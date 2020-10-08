@@ -62,7 +62,7 @@ func corsWrapper(h http.Handler) http.HandlerFunc {
 		if isDevelopment {
 			origin = "*"
 		} else {
-			origin = os.Getenv("UI_PRODUCTION_URL")
+			origin = os.Getenv("WEB_PRODUCTION_URL")
 		}
 
 		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Origin")
