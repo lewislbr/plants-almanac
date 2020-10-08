@@ -128,9 +128,17 @@ module.exports = (env, options) => {
       hints: false,
     },
     plugins: [
-      new Dotenv({
-        path: "../.env",
-      }),
+      ...(isDevelopment
+        ? [
+            new Dotenv({
+              path: "../.env",
+            }),
+          ]
+        : [
+            new Dotenv({
+              path: ".env",
+            }),
+          ]),
       new HtmlWebpackPlugin({
         minify: isDevelopment
           ? false
