@@ -1,4 +1,4 @@
-run:
+start:
 	@docker-compose -f docker-compose-dev.yml up -d --build
 
 stop:
