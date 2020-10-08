@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - "plants/app/**"
+  workflow_dispatch:
 
 defaults:
   run:
@@ -55,5 +56,4 @@ jobs:
             docker network create --internal plants
             docker rm -f $PLANTS_APP_NAME
             docker run -d -p 443:443 --network plants --restart unless-stopped -v ~/tls:/etc/tls --env-file .env --name $PLANTS_APP_NAME $DOCKER_USERNAME/plantdex_$PLANTS_APP_NAME:prod
-            docker rm -f $PLANTS_PROXY_NAME
             docker system prune -f --volumes

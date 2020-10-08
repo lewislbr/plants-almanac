@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - "plants/db/**"
+  workflow_dispatch:
 
 defaults:
   run:
