@@ -19,24 +19,24 @@ static_resources:
                 route_config:
                   name: default
                   virtual_hosts:
-                    - name: plantdex_plants-app-dev
+                    - name: plants-app
                       domains: ["*"]
                       routes:
                         - match: { prefix: "/" }
-                          route: { cluster: plantdex_plants-app-dev }
+                          route: { cluster: plants-app }
                 http_filters:
                   - name: envoy.filters.http.router
 
   clusters:
-    - name: plantdex_plants-app-dev
+    - name: plants-app
       connect_timeout: 15s
       type: logical_dns
       dns_lookup_family: v4_only
       load_assignment:
-        cluster_name: plantdex_plants-app-dev
+        cluster_name: plants-app
         endpoints:
           - lb_endpoints:
               - endpoint:
                   address:
                     socket_address:
-                      { address: plantdex_plants-app-dev, port_value: 4040 }
+                      { address: plants-app, port_value: 4040 }

@@ -5,7 +5,7 @@ repos:
       - id: go-docker
         name: go
         language: docker_image
-        entry: plantdex_plants-app-dev:latest sh -c "cd plants/app && gofmt -l -s -w ."
+        entry: lewislbr/plantdex_plants-app:dev sh -c "cd plants/app && gofmt -l -s -w ."
         files: plants/app/
         verbose: true
 
@@ -13,14 +13,14 @@ repos:
         name: typescript
         language: docker_image
         pass_filenames: false
-        entry: plantdex_web-app-dev:latest sh -c "cd web/app && npm run typecheck"
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run typecheck"
         files: web/app/
         verbose: true
 
       - id: eslint-docker
         name: eslint
         language: docker_image
-        entry: plantdex_web-app-dev:latest sh -c "cd web/app && npm run lint"
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run lint"
         exclude_types: [css, html, json]
         files: web/app/
         verbose: true
@@ -28,6 +28,6 @@ repos:
       - id: prettier-docker
         name: prettier
         language: docker_image
-        entry: plantdex_web-app-dev:latest sh -c "cd web/app && npm run format"
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run format"
         files: web/app/
         verbose: true

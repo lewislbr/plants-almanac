@@ -18,11 +18,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@master
       - name: Build image
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_DB_NAME }}" -f Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.PLANTS_DB_NAME }}":prod -f Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image
-        run: docker push "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_DB_NAME }}"
+        run: docker push "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.PLANTS_DB_NAME }}":prod
 
   deploy:
     name: Deploy the Docker image to DigitalOcean
@@ -40,8 +40,8 @@ jobs:
           key: "${{ secrets.DIGITALOCEAN_KEY }}"
           envs: DOCKER_USERNAME, PLANTS_DB_NAME
           script: |
-            docker pull $DOCKER_USERNAME/$PLANTS_DB_NAME
+            docker pull $DOCKER_USERNAME/plantdex_$PLANTS_DB_NAME:prod
             docker network create --internal plants
             docker rm -f $PLANTS_DB_NAME
-            docker run -d --network plants --restart unless-stopped -v plants-db:/data/db --name $PLANTS_DB_NAME $DOCKER_USERNAME/$PLANTS_DB_NAME --config /etc/mongod.conf
+            docker run -d --network plants --restart unless-stopped -v plants-db:/data/db --name $PLANTS_DB_NAME $DOCKER_USERNAME/plantdex_$PLANTS_DB_NAME:prod --config /etc/mongod.conf
             docker system prune -f --volumes

@@ -18,11 +18,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@master
       - name: Build image
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_APP_NAME }}" -f Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.PLANTS_APP_NAME }}":prod -f Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image
-        run: docker push "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PLANTS_APP_NAME }}"
+        run: docker push "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.PLANTS_APP_NAME }}":prod
 
   deploy:
     name: Deploy the Docker image to DigitalOcean
@@ -51,9 +51,9 @@ jobs:
             echo "PLANTS_DATABASE_NAME=$PLANTS_DATABASE_NAME" >> .env
             echo "PLANTS_MONGODB_PRODUCTION_URI=$PLANTS_MONGODB_PRODUCTION_URI" >> .env
             echo "WEB_PRODUCTION_URL=$WEB_PRODUCTION_URL" >> .env
-            docker pull $DOCKER_USERNAME/$PLANTS_APP_NAME
+            docker pull $DOCKER_USERNAME/plantdex_$PLANTS_APP_NAME:prod
             docker network create --internal plants
             docker rm -f $PLANTS_APP_NAME
-            docker run -d -p 443:443 --network plants --restart unless-stopped -v ~/tls:/etc/tls --env-file .env --name $PLANTS_APP_NAME $DOCKER_USERNAME/$PLANTS_APP_NAME
+            docker run -d -p 443:443 --network plants --restart unless-stopped -v ~/tls:/etc/tls --env-file .env --name $PLANTS_APP_NAME $DOCKER_USERNAME/plantdex_$PLANTS_APP_NAME:prod
             docker rm -f $PLANTS_PROXY_NAME
             docker system prune -f --volumes

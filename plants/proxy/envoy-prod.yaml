@@ -46,10 +46,10 @@ static_resources:
                 route_config:
                   virtual_hosts:
                     - name: default
-                      domains: ["*"]
+                      domains: ["*.plantdex.ml"]
                       routes:
                         - match: { prefix: "/" }
-                          route: { cluster: plants-app-prod, idle_timeout: 15s }
+                          route: { cluster: plants-app, idle_timeout: 15s }
                 http_filters:
                   - name: envoy.filters.http.router
           transport_socket:
@@ -65,19 +65,19 @@ static_resources:
                   tls_minimum_protocol_version: "TLSv1_3"
 
   clusters:
-    - name: plants-app-prod
+    - name: plants-app
       connect_timeout: 15s
       type: logical_dns
       dns_lookup_family: v4_only
       per_connection_buffer_limit_bytes: 32768 # 32 KiB
       load_assignment:
-        cluster_name: plants-app-prod
+        cluster_name: plants-app
         endpoints:
           - lb_endpoints:
               - endpoint:
                   address:
                     socket_address:
-                      { address: plants-app-prod, port_value: 443 }
+                      { address: plants-app, port_value: 443 }
       http2_protocol_options:
         initial_stream_window_size: 65536 # 64 KiB
         initial_connection_window_size: 1048576 # 1 MiB
@@ -85,7 +85,7 @@ static_resources:
         name: envoy.transport_sockets.tls
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
-          sni: plants-app-prod
+          sni: plants-app
 
 layered_runtime:
   layers:

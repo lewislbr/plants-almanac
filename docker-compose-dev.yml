@@ -1,32 +1,32 @@
 version: "3.8"
 
 services:
-  plants-app-dev:
+  plants-app:
     build:
       context: ./plants/app
       dockerfile: Dockerfile.dev
-    image: plantdex_plants-app-dev
-    container_name: plantdex_plants-app-dev
+    image: lewislbr/plantdex_plants-app:dev
+    container_name: plants-app
     env_file:
       - plants/.env
     ports:
       - "127.0.0.1:4040:4040"
 
-  plants-db-dev:
+  plants-db:
     build:
       context: ./plants/db
       dockerfile: Dockerfile.dev
-    image: plantdex_plants-db-dev
-    container_name: plantdex_plants-db-dev
+    image: lewislbr/plantdex_plants-db:dev
+    container_name: plants-db
     volumes:
       - plants-db:/data/db
 
-  plants-proxy-dev:
+  plants-proxy:
     build:
       context: ./plants/proxy
       dockerfile: Dockerfile.dev
-    image: plantdex_plants-proxy-dev
-    container_name: plantdex_plants-proxy-dev
+    image: lewislbr/plantdex_plants-proxy:dev
+    container_name: plants-proxy
     environment:
       - ENVOY_UID=777
       - ENVOY_GID=777
@@ -34,12 +34,12 @@ services:
       - "127.0.0.1:9901:9901"
       - "127.0.0.1:10000:10000"
 
-  web-app-dev:
+  web-app:
     build:
       context: ./web
       dockerfile: Dockerfile.dev
-    image: plantdex_web-app-dev
-    container_name: plantdex_web-app-dev
+    image: lewislbr/plantdex_web-app:dev
+    container_name: web-app
     env_file:
       - web/.env
     ports:
