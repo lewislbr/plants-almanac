@@ -22,7 +22,7 @@ static_resources:
                     - name: plants-app
                       domains: ["*"]
                       routes:
-                        - match: { prefix: "/" }
+                        - match: { prefix: "/plants" }
                           route: { cluster: plants-app }
                 http_filters:
                   - name: envoy.filters.http.router
@@ -38,5 +38,4 @@ static_resources:
           - lb_endpoints:
               - endpoint:
                   address:
-                    socket_address:
-                      { address: plants-app, port_value: 4040 }
+                    socket_address: { address: plants-app, port_value: 4040 }

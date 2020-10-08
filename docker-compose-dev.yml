@@ -1,6 +1,19 @@
 version: "3.8"
 
 services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile.dev
+    image: lewislbr/plantdex_api-gateway:dev
+    container_name: api-gateway
+    environment:
+      - ENVOY_UID=777
+      - ENVOY_GID=777
+    ports:
+      - "127.0.0.1:9901:9901"
+      - "127.0.0.1:10000:10000"
+
   plants-app:
     build:
       context: ./plants/app
@@ -20,19 +33,6 @@ services:
     container_name: plants-db
     volumes:
       - plants-db:/data/db
-
-  plants-proxy:
-    build:
-      context: ./plants/proxy
-      dockerfile: Dockerfile.dev
-    image: lewislbr/plantdex_plants-proxy:dev
-    container_name: plants-proxy
-    environment:
-      - ENVOY_UID=777
-      - ENVOY_GID=777
-    ports:
-      - "127.0.0.1:9901:9901"
-      - "127.0.0.1:10000:10000"
 
   web-app:
     build:

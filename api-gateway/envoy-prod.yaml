@@ -48,7 +48,7 @@ static_resources:
                     - name: default
                       domains: ["*.plantdex.ml"]
                       routes:
-                        - match: { prefix: "/" }
+                        - match: { prefix: "/plants" }
                           route: { cluster: plants-app, idle_timeout: 15s }
                 http_filters:
                   - name: envoy.filters.http.router
@@ -76,8 +76,7 @@ static_resources:
           - lb_endpoints:
               - endpoint:
                   address:
-                    socket_address:
-                      { address: plants-app, port_value: 443 }
+                    socket_address: { address: plants-app, port_value: 443 }
       http2_protocol_options:
         initial_stream_window_size: 65536 # 64 KiB
         initial_connection_window_size: 1048576 # 1 MiB

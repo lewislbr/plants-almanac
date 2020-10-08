@@ -29,7 +29,7 @@ func Start() error {
 		Playground: true,
 	})
 
-	router.POST("/", httpWrapper(graphqlHandler))
+	router.POST("/plants", httpWrapper(graphqlHandler))
 
 	if isDevelopment {
 		router.GET("/playground", httpWrapper(playgroundHandler))
