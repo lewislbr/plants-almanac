@@ -12,8 +12,8 @@ defaults:
     working-directory: plants/app
 
 jobs:
-  build-push-app:
-    name: Build and push the app Docker image to Docker Hub
+  build-push:
+    name: Build and push the Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -28,7 +28,7 @@ jobs:
   deploy:
     name: Deploy the Docker image to DigitalOcean
     runs-on: ubuntu-latest
-    needs: [build-push-app]
+    needs: build-push
     steps:
       - name: Log in, add environment variables, and deploy image
         uses: appleboy/ssh-action@master
