@@ -34,15 +34,18 @@ jobs:
       - name: Log in and deploy image
         uses: appleboy/ssh-action@master
         env:
+          API_URL: ${{ secrets.API_URL }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           WEB_APP_NAME: ${{ secrets.WEB_APP_NAME }}
         with:
           host: ${{ secrets.DIGITALOCEAN_WEB_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_KEY }}
-          envs: DOCKER_USERNAME, WEB_APP_NAME
+          envs: API_URL, DOCKER_USERNAME, WEB_APP_NAME
           script: |
+            rm .env
+            echo "API_URL=$API_URL" >> .env
             docker pull $DOCKER_USERNAME/plantdex_$WEB_APP_NAME:prod
             docker rm -f $WEB_APP_NAME
-            docker run -d -p 80:80 -p 443:443 --restart unless-stopped -v certbot-etc:/etc/letsencrypt -v $PWD/dhkey:/etc/ssl/certs --name $WEB_APP_NAME $DOCKER_USERNAME/plantdex_$WEB_APP_NAME:prod
+            docker run -d -p 80:80 -p 443:443 --restart unless-stopped -v certbot-etc:/etc/letsencrypt -v $PWD/dhkey:/etc/ssl/certs --env-file .env --name $WEB_APP_NAME $DOCKER_USERNAME/plantdex_$WEB_APP_NAME:prod
             docker system prune -f

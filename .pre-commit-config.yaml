@@ -5,8 +5,15 @@ repos:
       - id: go-docker
         name: go
         language: docker_image
-        entry: lewislbr/plantdex_plants-app:dev sh -c "cd plants/app && gofmt -l -s -w ."
+        entry: golang:1-alpine sh -c "cd plants/app && gofmt -l -s -w ."
         files: plants/app/
+        verbose: true
+
+      - id: go-docker
+        name: go
+        language: docker_image
+        entry: golang:1-alpine sh -c "cd web/server && gofmt -l -s -w ."
+        files: web/server/
         verbose: true
 
       - id: typescript-docker
