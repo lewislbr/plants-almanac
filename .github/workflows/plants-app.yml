@@ -53,7 +53,6 @@ jobs:
             echo "PLANTS_MONGODB_PRODUCTION_URI=$PLANTS_MONGODB_PRODUCTION_URI" >> .env
             echo "WEB_PRODUCTION_URL=$WEB_PRODUCTION_URL" >> .env
             docker pull $DOCKER_USERNAME/plantdex_$PLANTS_APP_NAME:prod
-            docker network create --internal plants
             docker rm -f $PLANTS_APP_NAME
             docker run -d -p 443:443 --network plants --restart unless-stopped -v ~/tls:/etc/tls --env-file .env --name $PLANTS_APP_NAME $DOCKER_USERNAME/plantdex_$PLANTS_APP_NAME:prod
             docker system prune -f --volumes

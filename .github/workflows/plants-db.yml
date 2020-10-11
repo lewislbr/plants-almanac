@@ -42,7 +42,6 @@ jobs:
           envs: DOCKER_USERNAME, PLANTS_DB_NAME
           script: |
             docker pull $DOCKER_USERNAME/plantdex_$PLANTS_DB_NAME:prod
-            docker network create --internal plants
             docker rm -f $PLANTS_DB_NAME
             docker run -d --network plants --restart unless-stopped -v plants-db:/data/db --name $PLANTS_DB_NAME $DOCKER_USERNAME/plantdex_$PLANTS_DB_NAME:prod --config /etc/mongod.conf
             docker system prune -f --volumes

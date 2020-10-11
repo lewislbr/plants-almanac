@@ -42,7 +42,6 @@ jobs:
           envs: API_GATEWAY_NAME, DOCKER_USERNAME
           script: |
             docker pull $DOCKER_USERNAME/plantdex_$API_GATEWAY_NAME:prod
-            docker network create --internal plants
             docker rm -f $API_GATEWAY_NAME
             docker run -d -p 443:10000 --network plants --restart unless-stopped -v ~/tls:/etc/tls -e ENVOY_UID=777 -e ENVOY_GID=777 --name $API_GATEWAY_NAME $DOCKER_USERNAME/plantdex_$API_GATEWAY_NAME:prod
             docker network connect bridge $API_GATEWAY_NAME
