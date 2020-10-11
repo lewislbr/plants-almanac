@@ -17,8 +17,8 @@ func main() {
 
 	fmt.Println("Web server ready ✅")
 
-	go http.ListenAndServeTLS(":443", "/etc/letsencrypt/live/plantdex.ml/fullchain.pem", "/etc/letsencrypt/live/plantdex.ml/privkey.pem", corsWrapper(httpWrapper(fs)))
-	http.ListenAndServe(":80", corsWrapper(httpWrapper(http.HandlerFunc(redirectToHTTPS))))
+	go http.ListenAndServeTLS(":443", "/etc/letsencrypt/live/plantdex.ml/fullchain.pem", "/etc/letsencrypt/live/plantdex.ml/privkey.pem", corsMiddleware(responseMiddleware(fs)))
+	http.ListenAndServe(":80", corsMiddleware(responseMiddleware(http.HandlerFunc(redirectToHTTPS))))
 }
 
 func redirectToHTTPS(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +28,7 @@ func redirectToHTTPS(w http.ResponseWriter, r *http.Request) {
 		http.StatusMovedPermanently)
 }
 
-func httpWrapper(h http.Handler) http.HandlerFunc {
+func responseMiddleware(h http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Server", "go")
 
@@ -36,7 +36,7 @@ func httpWrapper(h http.Handler) http.HandlerFunc {
 	}
 }
 
-func corsWrapper(h http.Handler) http.HandlerFunc {
+func corsMiddleware(h http.Handler) http.HandlerFunc {
 	apiURL := os.Getenv("API_URL")
 
 	return func(w http.ResponseWriter, r *http.Request) {

@@ -29,19 +29,19 @@ func Start() error {
 		Playground: true,
 	})
 
-	router.POST("/plants", httpWrapper(graphqlHandler))
+	router.POST("/plants", responseMiddleware(graphqlHandler))
 
 	if isDevelopment {
-		router.GET("/playground", httpWrapper(playgroundHandler))
+		router.GET("/playground", responseMiddleware(playgroundHandler))
 	}
 
 	fmt.Println("Server ready ✅")
 
 	var err error
 	if isDevelopment {
-		err = http.ListenAndServe(":"+port, corsWrapper(router))
+		err = http.ListenAndServe(":"+port, corsMiddleware(router))
 	} else {
-		err = http.ListenAndServeTLS(":443", "etc/tls/server.crt", "etc/tls/server.key", corsWrapper(router))
+		err = http.ListenAndServeTLS(":443", "etc/tls/server.crt", "etc/tls/server.key", corsMiddleware(router))
 	}
 	if err != nil {
 		return err
@@ -50,13 +50,13 @@ func Start() error {
 	return nil
 }
 
-func httpWrapper(h http.Handler) httprouter.Handle {
+func responseMiddleware(h http.Handler) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		h.ServeHTTP(w, r)
 	}
 }
 
-func corsWrapper(h http.Handler) http.HandlerFunc {
+func corsMiddleware(h http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var origin string
 		if isDevelopment {
