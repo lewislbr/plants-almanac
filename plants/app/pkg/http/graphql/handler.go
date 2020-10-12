@@ -41,7 +41,12 @@ func Start() error {
 	if isDevelopment {
 		err = http.ListenAndServe(":"+port, corsMiddleware(router))
 	} else {
-		err = http.ListenAndServeTLS(":443", "etc/tls/server.crt", "etc/tls/server.key", corsMiddleware(router))
+		err = http.ListenAndServeTLS(
+			":443",
+			"etc/tls/server.crt",
+			"etc/tls/server.key",
+			corsMiddleware(router),
+		)
 	}
 	if err != nil {
 		return err
@@ -71,8 +76,10 @@ func corsMiddleware(h http.Handler) http.HandlerFunc {
 
 		if !isDevelopment {
 			w.Header().Add("Content-Security-Policy", "default-src 'self'")
-			w.Header().Add("Strict-Transport-Security",
-				"max-age=63072000; includeSubDomains; preload")
+			w.Header().Add(
+				"Strict-Transport-Security",
+				"max-age=63072000; includeSubDomains; preload",
+			)
 		}
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusNoContent)

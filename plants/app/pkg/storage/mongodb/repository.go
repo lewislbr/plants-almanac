@@ -27,7 +27,10 @@ func connectDatabase() *mongo.Collection {
 
 	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
 	collectionName := os.Getenv("PLANTS_COLLECTION_NAME")
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(mongodbURI))
+	client, err := mongo.Connect(
+		context.TODO(),
+		options.Client().ApplyURI(mongodbURI),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}

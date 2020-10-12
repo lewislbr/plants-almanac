@@ -11,7 +11,10 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-func getPlants(s list.Service) func(_ graphql.ResolveParams) (interface{}, error) {
+func getPlants(s list.Service) func(_ graphql.ResolveParams) (
+	interface{},
+	error,
+) {
 	return func(_ graphql.ResolveParams) (interface{}, error) {
 		plants := s.GetPlants()
 
@@ -19,7 +22,10 @@ func getPlants(s list.Service) func(_ graphql.ResolveParams) (interface{}, error
 	}
 }
 
-func getPlant(s list.Service) func(p graphql.ResolveParams) (interface{}, error) {
+func getPlant(s list.Service) func(p graphql.ResolveParams) (
+	interface{},
+	error,
+) {
 	return func(p graphql.ResolveParams) (interface{}, error) {
 		id := p.Args["_id"].(string)
 		plant := s.GetPlant(id)
@@ -28,7 +34,10 @@ func getPlant(s list.Service) func(p graphql.ResolveParams) (interface{}, error)
 	}
 }
 
-func addPlant(s add.Service) func(p graphql.ResolveParams) (interface{}, error) {
+func addPlant(s add.Service) func(p graphql.ResolveParams) (
+	interface{},
+	error,
+) {
 	return func(p graphql.ResolveParams) (interface{}, error) {
 		plant := entity.Plant{}
 
@@ -60,7 +69,13 @@ func addPlant(s add.Service) func(p graphql.ResolveParams) (interface{}, error) 
 	}
 }
 
-func editPlant(s edit.Service, s2 list.Service) func(p graphql.ResolveParams) (interface{}, error) {
+func editPlant(
+	s edit.Service,
+	s2 list.Service,
+) func(p graphql.ResolveParams) (
+	interface{},
+	error,
+) {
 	return func(p graphql.ResolveParams) (interface{}, error) {
 		id := p.Args["_id"].(string)
 		existingPlant := s2.GetPlant(id)
@@ -108,7 +123,10 @@ func editPlant(s edit.Service, s2 list.Service) func(p graphql.ResolveParams) (i
 	}
 }
 
-func deletePlant(s delete.Service) func(p graphql.ResolveParams) (interface{}, error) {
+func deletePlant(s delete.Service) func(p graphql.ResolveParams) (
+	interface{},
+	error,
+) {
 	return func(p graphql.ResolveParams) (interface{}, error) {
 		id := p.Args["_id"].(string)
 		result := s.DeletePlant(id)
