@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -71,12 +72,35 @@ func redirectToHTTPS() {
 
 func serveSPA(directory string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		p := filepath.Join(directory, filepath.Clean(r.URL.Path))
+		file := filepath.Join(directory, filepath.Clean(r.URL.Path))
+		_, err := os.Stat(file)
+		acceptedEncodings := r.Header.Get("Accept-Encoding")
+		brotliExtension := ".br"
 
-		if _, err := os.Stat(p); err != nil {
-			http.ServeFile(w, r, filepath.Join(directory, "index.html"))
+		if filepath.Clean(r.URL.Path) == "/" {
+			file = file + "/index.html"
+		}
+		if os.IsNotExist(err) {
+			file = filepath.Join(directory, "index.html")
+		}
+		if strings.Contains(acceptedEncodings, "br") {
+			w.Header().Add("Content-Encoding", "br")
+			w.Header().Add("Vary", "Accept-Encoding")
+
+			switch {
+			case strings.Contains(file, ".html"):
+				w.Header().Add("Content-Type", "text/html")
+			case strings.Contains(file, ".css"):
+				w.Header().Add("Content-Type", "text/css")
+			case strings.Contains(file, ".js"):
+				w.Header().Add("Content-Type", "application/javascript")
+			case strings.Contains(file, ".svg"):
+				w.Header().Add("Content-Type", "image/svg+xml")
+			}
+
+			http.ServeFile(w, r, file+brotliExtension)
 		} else {
-			http.ServeFile(w, r, p)
+			http.ServeFile(w, r, file)
 		}
 	}
 }
