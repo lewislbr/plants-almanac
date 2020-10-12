@@ -1,11 +1,13 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -13,18 +15,58 @@ import (
 func main() {
 	godotenv.Load()
 
-	fmt.Println("Web server ready ✅")
-
-	go http.ListenAndServeTLS(
-		":443",
-		"/etc/letsencrypt/live/plantdex.ml/fullchain.pem",
-		"/etc/letsencrypt/live/plantdex.ml/privkey.pem",
+	httpsServer := newHTTPSServer(
 		corsMiddleware(responseMiddleware(serveSPA("dist"))),
 	)
-	http.ListenAndServe(
-		":80",
-		corsMiddleware(responseMiddleware(http.HandlerFunc(redirectToHTTPS))),
+
+	redirectToHTTPS()
+
+	fmt.Println("Web server ready ✅")
+
+	httpsServer.ListenAndServeTLS(
+		"/etc/letsencrypt/live/plantdex.ml/fullchain.pem",
+		"/etc/letsencrypt/live/plantdex.ml/privkey.pem",
 	)
+}
+
+func newHTTPSServer(handler http.Handler) *http.Server {
+	return &http.Server{
+		Addr:         ":443",
+		Handler:      handler,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  120 * time.Second,
+		TLSConfig: &tls.Config{
+			NextProtos:       []string{"h2"},
+			MinVersion:       tls.VersionTLS13,
+			CurvePreferences: []tls.CurveID{tls.CurveP256, tls.X25519},
+			CipherSuites: []uint16{
+				tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+				tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+				tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+				tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+				tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+				tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+			},
+			PreferServerCipherSuites: true,
+		},
+	}
+}
+
+func redirectToHTTPS() {
+	redirectServer := &http.Server{
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Connection", "close")
+			url := "https://" + r.Host + r.URL.String()
+			http.Redirect(w, r, url, http.StatusMovedPermanently)
+		}),
+	}
+
+	go func() {
+		log.Fatal(redirectServer.ListenAndServe())
+	}()
 }
 
 func serveSPA(directory string) http.HandlerFunc {
@@ -37,17 +79,6 @@ func serveSPA(directory string) http.HandlerFunc {
 			http.ServeFile(w, r, p)
 		}
 	}
-}
-
-func redirectToHTTPS(w http.ResponseWriter, r *http.Request) {
-	domain := strings.Split(r.Host, ":")[0]
-
-	http.Redirect(
-		w,
-		r,
-		"https://"+domain+r.URL.Path,
-		http.StatusMovedPermanently,
-	)
 }
 
 func responseMiddleware(h http.Handler) http.HandlerFunc {
