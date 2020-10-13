@@ -71,8 +71,8 @@ func corsMiddleware(h http.Handler) http.HandlerFunc {
 		}
 
 		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Origin")
-		w.Header().Add("Access-Control-Max-Age", "86400")
 		w.Header().Add("Access-Control-Allow-Origin", origin)
+		w.Header().Add("Access-Control-Max-Age", "86400")
 
 		if !isDevelopment {
 			w.Header().Add("Content-Security-Policy", "default-src 'self'")

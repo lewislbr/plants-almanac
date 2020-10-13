@@ -32,37 +32,37 @@ func main() {
 
 func newHTTPSServer(handler http.Handler) *http.Server {
 	return &http.Server{
-		Addr:         ":443",
-		Handler:      handler,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  120 * time.Second,
+		Addr:        ":443",
+		Handler:     handler,
+		IdleTimeout: 120 * time.Second,
+		ReadTimeout: 5 * time.Second,
 		TLSConfig: &tls.Config{
-			NextProtos:       []string{"h2"},
-			MinVersion:       tls.VersionTLS13,
-			CurvePreferences: []tls.CurveID{tls.CurveP256, tls.X25519},
 			CipherSuites: []uint16{
-				tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-				tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-				tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
-				tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
 				tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+				tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+				tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 				tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+				tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+				tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
 			},
+			CurvePreferences:         []tls.CurveID{tls.CurveP256, tls.X25519},
+			MinVersion:               tls.VersionTLS13,
+			NextProtos:               []string{"h2"},
 			PreferServerCipherSuites: true,
 		},
+		WriteTimeout: 10 * time.Second,
 	}
 }
 
 func redirectToHTTPS() {
 	redirectServer := &http.Server{
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 5 * time.Second,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Connection", "close")
 			url := "https://" + r.Host + r.URL.String()
 			http.Redirect(w, r, url, http.StatusMovedPermanently)
 		}),
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
 	}
 
 	go func() {
@@ -72,35 +72,37 @@ func redirectToHTTPS() {
 
 func serveSPA(directory string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		file := filepath.Join(directory, filepath.Clean(r.URL.Path))
-		_, err := os.Stat(file)
+		requestedPath := filepath.Join(directory, filepath.Clean(r.URL.Path))
 		acceptedEncodings := r.Header.Get("Accept-Encoding")
-		brotliExtension := ".br"
+		brotli := "br"
 
 		if filepath.Clean(r.URL.Path) == "/" {
-			file = file + "/index.html"
+			requestedPath = requestedPath + "/index.html"
 		}
-		if os.IsNotExist(err) {
-			file = filepath.Join(directory, "index.html")
+		if _, err := os.Stat(requestedPath); os.IsNotExist(err) {
+			requestedPath = filepath.Join(directory, "index.html")
 		}
-		if strings.Contains(acceptedEncodings, "br") {
-			w.Header().Add("Content-Encoding", "br")
-			w.Header().Add("Vary", "Accept-Encoding")
-
-			switch {
-			case strings.Contains(file, ".html"):
-				w.Header().Add("Content-Type", "text/html")
-			case strings.Contains(file, ".css"):
-				w.Header().Add("Content-Type", "text/css")
-			case strings.Contains(file, ".js"):
-				w.Header().Add("Content-Type", "application/javascript")
-			case strings.Contains(file, ".svg"):
-				w.Header().Add("Content-Type", "image/svg+xml")
+		if strings.Contains(acceptedEncodings, brotli) {
+			serveCompressedFile := func(mimeType string) {
+				w.Header().Add("Content-Encoding", brotli)
+				w.Header().Add("Content-Type", mimeType)
+				http.ServeFile(w, r, requestedPath+".br")
 			}
 
-			http.ServeFile(w, r, file+brotliExtension)
+			switch filepath.Ext(requestedPath) {
+			case ".html":
+				serveCompressedFile("text/html")
+			case ".css":
+				serveCompressedFile("text/css")
+			case ".js":
+				serveCompressedFile("application/javascript")
+			case ".svg":
+				serveCompressedFile("image/svg+xml")
+			default:
+				http.ServeFile(w, r, requestedPath)
+			}
 		} else {
-			http.ServeFile(w, r, file)
+			http.ServeFile(w, r, requestedPath)
 		}
 	}
 }

@@ -20,12 +20,12 @@ data "template_file" "cloud-init" {
 
 resource "digitalocean_droplet" "plantdex" {
   image = "docker-20-04"
+  ipv6 = true
+  monitoring = true
   name = "plantdex"
+  private_networking = false
   region = "fra1"
   size = "s-1vcpu-1gb"
-  monitoring = true
-  ipv6 = true
-  private_networking = false
   ssh_keys = [
     var.do_ssh_key_fingerprint
   ]
