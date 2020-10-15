@@ -1,14 +1,14 @@
-import * as React from "react";
+import * as React from "react"
 
 export function Alert({
   deletePlant,
   setAlertOpen,
 }: {
-  deletePlant: (event: React.SyntheticEvent) => Promise<void>;
-  setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  deletePlant: (event: React.SyntheticEvent) => Promise<void>
+  setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>
 }): JSX.Element {
   function closeAlert(): void {
-    setAlertOpen(false);
+    setAlertOpen(false)
   }
 
   return (
@@ -33,5 +33,5 @@ export function Alert({
         </button>
       </div>
     </div>
-  );
+  )
 }

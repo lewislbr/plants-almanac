@@ -1,9 +1,9 @@
-import * as React from "react";
-import {NavLink} from "react-router-dom";
+import * as React from "react"
+import {NavLink} from "react-router-dom"
 
 const ActiveNavLink = {
   boxShadow: "0px 3px 0 0 lightgreen",
-};
+}
 
 export function Header(): JSX.Element {
   return (
@@ -31,5 +31,5 @@ export function Header(): JSX.Element {
         </nav>
       </div>
     </header>
-  );
+  )
 }

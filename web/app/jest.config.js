@@ -5,4 +5,4 @@ module.exports = {
   },
   setupFilesAfterEnv: ["@testing-library/jest-dom/extend-expect"],
   testMatch: ["<rootDir>/src/**/?(*.)test.ts?(x)"],
-};
+}

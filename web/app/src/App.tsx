@@ -1,6 +1,6 @@
-import * as React from "react";
-import {BrowserRouter, Route, Switch} from "react-router-dom";
-import {Header} from "./components";
+import * as React from "react"
+import {BrowserRouter, Route, Switch} from "react-router-dom"
+import {Header} from "./components"
 
 const AddPlant = React.lazy(() =>
   import("./views/AddPlant" /* webpackChunkName: 'AddPlant' */).then(
@@ -8,21 +8,21 @@ const AddPlant = React.lazy(() =>
       default: AddPlant,
     }),
   ),
-);
+)
 const PlantDetails = React.lazy(() =>
   import("./views/PlantDetails" /* webpackChunkName: 'PlantDetails' */).then(
     ({PlantDetails}) => ({
       default: PlantDetails,
     }),
   ),
-);
+)
 const Plants = React.lazy(() =>
   import("./views/Plants" /* webpackChunkName: 'Plants' */).then(
     ({Plants}) => ({
       default: Plants,
     }),
   ),
-);
+)
 
 export function App(): JSX.Element {
   return (
@@ -38,5 +38,5 @@ export function App(): JSX.Element {
         </React.Suspense>
       </main>
     </BrowserRouter>
-  );
+  )
 }

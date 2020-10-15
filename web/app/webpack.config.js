@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const webpack = require("webpack");
-const path = require("path");
-const Dotenv = require("dotenv-webpack");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const CompressionPlugin = require("compression-webpack-plugin");
+const webpack = require("webpack")
+const path = require("path")
+const Dotenv = require("dotenv-webpack")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+const TerserPlugin = require("terser-webpack-plugin")
+const CompressionPlugin = require("compression-webpack-plugin")
 
 module.exports = (env, options) => {
-  const isDevelopment = options.mode !== "production";
+  const isDevelopment = options.mode !== "production"
 
-  process.env.NODE_ENV = options.mode;
+  process.env.NODE_ENV = options.mode
 
   return {
     mode: isDevelopment ? "development" : "production",
@@ -195,5 +195,5 @@ module.exports = (env, options) => {
       ignored: /node_modules/,
       poll: true,
     },
-  };
-};
+  }
+}

@@ -1,20 +1,20 @@
-import * as React from "react";
-import {useAddMutation} from "../graphql/types";
+import * as React from "react"
+import {useAddMutation} from "../graphql/types"
 
 export function AddPlant({history}: {history: any}): JSX.Element {
-  const [addPlant] = useAddMutation();
-  const nameElement = React.useRef<HTMLInputElement>(null);
-  const otherNamesElement = React.useRef<HTMLInputElement>(null);
-  const descriptionElement = React.useRef<HTMLTextAreaElement>(null);
-  const plantSeasonElement = React.useRef<HTMLInputElement>(null);
-  const harvestSeasonElement = React.useRef<HTMLInputElement>(null);
-  const pruneSeasonElement = React.useRef<HTMLInputElement>(null);
-  const tipsElement = React.useRef<HTMLTextAreaElement>(null);
+  const [addPlant] = useAddMutation()
+  const nameElement = React.useRef<HTMLInputElement>(null)
+  const otherNamesElement = React.useRef<HTMLInputElement>(null)
+  const descriptionElement = React.useRef<HTMLTextAreaElement>(null)
+  const plantSeasonElement = React.useRef<HTMLInputElement>(null)
+  const harvestSeasonElement = React.useRef<HTMLInputElement>(null)
+  const pruneSeasonElement = React.useRef<HTMLInputElement>(null)
+  const tipsElement = React.useRef<HTMLTextAreaElement>(null)
 
   async function submitAddPlant(
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> {
-    event.preventDefault();
+    event.preventDefault()
 
     const newPlant = {
       name: nameElement.current?.value || "",
@@ -24,11 +24,11 @@ export function AddPlant({history}: {history: any}): JSX.Element {
       harvestSeason: harvestSeasonElement.current?.value || null,
       pruneSeason: pruneSeasonElement.current?.value || null,
       tips: tipsElement.current?.value || null,
-    };
+    }
 
-    await addPlant({variables: newPlant});
+    await addPlant({variables: newPlant})
 
-    history.push("/");
+    history.push("/")
   }
 
   return (
@@ -79,5 +79,5 @@ export function AddPlant({history}: {history: any}): JSX.Element {
         </form>
       </section>
     </>
-  );
+  )
 }

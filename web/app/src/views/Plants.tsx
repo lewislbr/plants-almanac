@@ -1,14 +1,14 @@
-import * as React from "react";
-import {Link} from "react-router-dom";
-import {PlantCard} from "../components";
-import {usePlantsQuery} from "../graphql/types";
+import * as React from "react"
+import {Link} from "react-router-dom"
+import {PlantCard} from "../components"
+import {usePlantsQuery} from "../graphql/types"
 
 export function Plants(): JSX.Element {
-  const {data, loading, error, refetch} = usePlantsQuery();
+  const {data, loading, error, refetch} = usePlantsQuery()
 
   React.useEffect(() => {
-    refetch();
-  }, [refetch]);
+    refetch()
+  }, [refetch])
 
   return (
     <>
@@ -22,7 +22,7 @@ export function Plants(): JSX.Element {
           <p>{"ERROR"}</p>
         ) : (
           <div>
-            {data?.plants?.map(plant => (
+            {data?.plants?.map((plant) => (
               <Link to={`/${plant?._id}`} key={plant?._id || 0}>
                 <PlantCard {...{name: plant?.name}} />
               </Link>
@@ -31,5 +31,5 @@ export function Plants(): JSX.Element {
         )}
       </section>
     </>
-  );
+  )
 }

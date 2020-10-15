@@ -1,32 +1,32 @@
-import * as React from "react";
-import {Alert} from "../components";
-import {usePlantQuery, useDeleteMutation} from "../graphql/types";
+import * as React from "react"
+import {Alert} from "../components"
+import {usePlantQuery, useDeleteMutation} from "../graphql/types"
 
 export function PlantDetails({
   history,
   match,
 }: {
-  history: any;
-  match: any;
+  history: any
+  match: any
 }): JSX.Element {
   const {data, loading, error} = usePlantQuery({
     variables: {_id: match.params._id},
-  });
-  const [deletePlant] = useDeleteMutation();
-  const [alertOpen, setAlertOpen] = React.useState(false);
+  })
+  const [deletePlant] = useDeleteMutation()
+  const [alertOpen, setAlertOpen] = React.useState(false)
 
   function openAlert(): void {
-    setAlertOpen(true);
+    setAlertOpen(true)
   }
 
   async function submitDeletePlant(event: React.SyntheticEvent): Promise<void> {
-    event.preventDefault();
+    event.preventDefault()
 
     await deletePlant({
       variables: {_id: data?.plant?._id as string},
-    });
+    })
 
-    history.push("/");
+    history.push("/")
   }
 
   return (
@@ -79,5 +79,5 @@ export function PlantDetails({
         </>
       )}
     </>
-  );
+  )
 }
