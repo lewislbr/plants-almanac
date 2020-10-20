@@ -34,6 +34,17 @@ services:
     volumes:
       - plants-db:/data/db
 
+  users-app:
+    build:
+      context: ./users/app
+      dockerfile: Dockerfile.dev
+    image: lewislbr/plantdex_users-app:dev
+    container_name: users-app
+    env_file:
+      - users/.env
+    ports:
+      - "127.0.0.1:4041:4041"
+
   web-app:
     build:
       context: ./web

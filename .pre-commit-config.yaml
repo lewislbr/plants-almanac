@@ -3,21 +3,28 @@ repos:
   - repo: local
     hooks:
       - id: go-docker
-        name: go
+        name: go-plants-app
         language: docker_image
         entry: golang:1-alpine sh -c "cd plants/app && gofmt -l -s -w ."
         files: plants/app/
         verbose: true
 
       - id: go-docker
-        name: go
+        name: go-users-app
+        language: docker_image
+        entry: golang:1-alpine sh -c "cd users/app && gofmt -l -s -w ."
+        files: users/app/
+        verbose: true
+
+      - id: go-docker
+        name: go-web-server
         language: docker_image
         entry: golang:1-alpine sh -c "cd web/server && gofmt -l -s -w ."
         files: web/server/
         verbose: true
 
       - id: typescript-docker
-        name: typescript
+        name: typescript-web-app
         language: docker_image
         pass_filenames: false
         entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run typecheck"
@@ -25,7 +32,7 @@ repos:
         verbose: true
 
       - id: eslint-docker
-        name: eslint
+        name: eslint-web-app
         language: docker_image
         entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run lint"
         exclude_types: [css, html, json]
@@ -33,7 +40,7 @@ repos:
         verbose: true
 
       - id: prettier-docker
-        name: prettier
+        name: prettier-web-app
         language: docker_image
         entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run format"
         files: web/app/

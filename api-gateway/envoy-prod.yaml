@@ -21,7 +21,7 @@ static_resources:
   listeners:
     - name: listener_0
       address:
-        socket_address: { address: 0.0.0.0, port_value: 10000 }
+        socket_address: {address: 0.0.0.0, port_value: 10000}
       listener_filters:
         - name: "envoy.filters.listener.tls_inspector"
           typed_config: {}
@@ -48,8 +48,10 @@ static_resources:
                     - name: default
                       domains: ["*.plantdex.ml"]
                       routes:
-                        - match: { prefix: "/plants" }
-                          route: { cluster: plants-app, idle_timeout: 15s }
+                        - match: {prefix: "/plants"}
+                          route: {cluster: plants-app, idle_timeout: 15s}
+                        - match: {prefix: "/users"}
+                          route: {cluster: users-app, idle_timeout: 15s}
                 http_filters:
                   - name: envoy.filters.http.router
           transport_socket:
@@ -58,8 +60,8 @@ static_resources:
               "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
               common_tls_context:
                 tls_certificates:
-                  certificate_chain: { filename: "/etc/tls/fullchain.pem" }
-                  private_key: { filename: "/etc/tls/privkey.pem" }
+                  certificate_chain: {filename: "/etc/tls/fullchain.pem"}
+                  private_key: {filename: "/etc/tls/privkey.pem"}
                 alpn_protocols: ["h2"]
                 tls_params:
                   tls_minimum_protocol_version: "TLSv1_3"
@@ -76,7 +78,27 @@ static_resources:
           - lb_endpoints:
               - endpoint:
                   address:
-                    socket_address: { address: plants-app, port_value: 443 }
+                    socket_address: {address: plants-app, port_value: 443}
+      http2_protocol_options:
+        initial_stream_window_size: 65536 # 64 KiB
+        initial_connection_window_size: 1048576 # 1 MiB
+      transport_socket:
+        name: envoy.transport_sockets.tls
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+          sni: plants-app
+    - name: users-app
+      connect_timeout: 15s
+      type: logical_dns
+      dns_lookup_family: v4_only
+      per_connection_buffer_limit_bytes: 32768 # 32 KiB
+      load_assignment:
+        cluster_name: users-app
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address: {address: users-app, port_value: 443}
       http2_protocol_options:
         initial_stream_window_size: 65536 # 64 KiB
         initial_connection_window_size: 1048576 # 1 MiB
