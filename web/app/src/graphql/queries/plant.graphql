@@ -1,12 +1,12 @@
-query Plant($_id: ID!) {
-  plant(_id: $_id) {
-    _id
+query Plant($id: ID!) {
+  plant(id: $id) {
+    id
     name
-    otherNames
+    other_names
     description
-    plantSeason
-    harvestSeason
-    pruneSeason
+    plant_season
+    harvest_season
+    prune_season
     tips
   }
 }

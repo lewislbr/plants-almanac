@@ -22,39 +22,39 @@ export type Mutation = {
 }
 
 export type MutationAddArgs = {
-  harvestSeason?: Maybe<Scalars["String"]>
-  pruneSeason?: Maybe<Scalars["String"]>
+  prune_season?: Maybe<Scalars["String"]>
   tips?: Maybe<Scalars["String"]>
   name: Scalars["String"]
-  otherNames?: Maybe<Scalars["String"]>
+  other_names?: Maybe<Scalars["String"]>
   description?: Maybe<Scalars["String"]>
-  plantSeason?: Maybe<Scalars["String"]>
+  plant_season?: Maybe<Scalars["String"]>
+  harvest_season?: Maybe<Scalars["String"]>
 }
 
 export type MutationDeleteArgs = {
-  _id: Scalars["ID"]
+  id: Scalars["ID"]
 }
 
 export type MutationEditArgs = {
+  id: Scalars["ID"]
   name?: Maybe<Scalars["String"]>
-  otherNames?: Maybe<Scalars["String"]>
+  other_names?: Maybe<Scalars["String"]>
   description?: Maybe<Scalars["String"]>
-  plantSeason?: Maybe<Scalars["String"]>
-  harvestSeason?: Maybe<Scalars["String"]>
-  pruneSeason?: Maybe<Scalars["String"]>
+  plant_season?: Maybe<Scalars["String"]>
+  harvest_season?: Maybe<Scalars["String"]>
+  prune_season?: Maybe<Scalars["String"]>
   tips?: Maybe<Scalars["String"]>
-  _id: Scalars["ID"]
 }
 
 export type Plant = {
   __typename?: "Plant"
-  _id?: Maybe<Scalars["ID"]>
   description?: Maybe<Scalars["String"]>
-  harvestSeason?: Maybe<Scalars["String"]>
+  harvest_season?: Maybe<Scalars["String"]>
+  id?: Maybe<Scalars["ID"]>
   name?: Maybe<Scalars["String"]>
-  otherNames?: Maybe<Scalars["String"]>
-  plantSeason?: Maybe<Scalars["String"]>
-  pruneSeason?: Maybe<Scalars["String"]>
+  other_names?: Maybe<Scalars["String"]>
+  plant_season?: Maybe<Scalars["String"]>
+  prune_season?: Maybe<Scalars["String"]>
   tips?: Maybe<Scalars["String"]>
 }
 
@@ -67,23 +67,23 @@ export type Query = {
 }
 
 export type QueryPlantArgs = {
-  _id: Scalars["ID"]
+  id: Scalars["ID"]
 }
 
 export type AddMutationVariables = {
   name: Scalars["String"]
-  otherNames?: Maybe<Scalars["String"]>
+  other_names?: Maybe<Scalars["String"]>
   description?: Maybe<Scalars["String"]>
-  plantSeason?: Maybe<Scalars["String"]>
-  harvestSeason?: Maybe<Scalars["String"]>
-  pruneSeason?: Maybe<Scalars["String"]>
+  plant_season?: Maybe<Scalars["String"]>
+  harvest_season?: Maybe<Scalars["String"]>
+  prune_season?: Maybe<Scalars["String"]>
   tips?: Maybe<Scalars["String"]>
 }
 
 export type AddMutation = {__typename?: "Mutation"} & Pick<Mutation, "add">
 
 export type DeleteMutationVariables = {
-  _id: Scalars["ID"]
+  id: Scalars["ID"]
 }
 
 export type DeleteMutation = {__typename?: "Mutation"} & Pick<
@@ -92,20 +92,20 @@ export type DeleteMutation = {__typename?: "Mutation"} & Pick<
 >
 
 export type PlantQueryVariables = {
-  _id: Scalars["ID"]
+  id: Scalars["ID"]
 }
 
 export type PlantQuery = {__typename?: "Query"} & {
   plant?: Maybe<
     {__typename?: "Plant"} & Pick<
       Plant,
-      | "_id"
+      | "id"
       | "name"
-      | "otherNames"
+      | "other_names"
       | "description"
-      | "plantSeason"
-      | "harvestSeason"
-      | "pruneSeason"
+      | "plant_season"
+      | "harvest_season"
+      | "prune_season"
       | "tips"
     >
   >
@@ -115,27 +115,27 @@ export type PlantsQueryVariables = {}
 
 export type PlantsQuery = {__typename?: "Query"} & {
   plants?: Maybe<
-    Array<Maybe<{__typename?: "Plant"} & Pick<Plant, "_id" | "name">>>
+    Array<Maybe<{__typename?: "Plant"} & Pick<Plant, "id" | "name">>>
   >
 }
 
 export const AddDocument = gql`
   mutation Add(
     $name: String!
-    $otherNames: String
+    $other_names: String
     $description: String
-    $plantSeason: String
-    $harvestSeason: String
-    $pruneSeason: String
+    $plant_season: String
+    $harvest_season: String
+    $prune_season: String
     $tips: String
   ) {
     add(
       name: $name
-      otherNames: $otherNames
+      other_names: $other_names
       description: $description
-      plantSeason: $plantSeason
-      harvestSeason: $harvestSeason
-      pruneSeason: $pruneSeason
+      plant_season: $plant_season
+      harvest_season: $harvest_season
+      prune_season: $prune_season
       tips: $tips
     )
   }
@@ -159,11 +159,11 @@ export type AddMutationFn = ApolloReactCommon.MutationFunction<
  * const [addMutation, { data, loading, error }] = useAddMutation({
  *   variables: {
  *      name: // value for 'name'
- *      otherNames: // value for 'otherNames'
+ *      other_names: // value for 'other_names'
  *      description: // value for 'description'
- *      plantSeason: // value for 'plantSeason'
- *      harvestSeason: // value for 'harvestSeason'
- *      pruneSeason: // value for 'pruneSeason'
+ *      plant_season: // value for 'plant_season'
+ *      harvest_season: // value for 'harvest_season'
+ *      prune_season: // value for 'prune_season'
  *      tips: // value for 'tips'
  *   },
  * });
@@ -186,8 +186,8 @@ export type AddMutationOptions = ApolloReactCommon.BaseMutationOptions<
   AddMutationVariables
 >
 export const DeleteDocument = gql`
-  mutation Delete($_id: ID!) {
-    delete(_id: $_id)
+  mutation Delete($id: ID!) {
+    delete(id: $id)
   }
 `
 export type DeleteMutationFn = ApolloReactCommon.MutationFunction<
@@ -208,7 +208,7 @@ export type DeleteMutationFn = ApolloReactCommon.MutationFunction<
  * @example
  * const [deleteMutation, { data, loading, error }] = useDeleteMutation({
  *   variables: {
- *      _id: // value for '_id'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -232,15 +232,15 @@ export type DeleteMutationOptions = ApolloReactCommon.BaseMutationOptions<
   DeleteMutationVariables
 >
 export const PlantDocument = gql`
-  query Plant($_id: ID!) {
-    plant(_id: $_id) {
-      _id
+  query Plant($id: ID!) {
+    plant(id: $id) {
+      id
       name
-      otherNames
+      other_names
       description
-      plantSeason
-      harvestSeason
-      pruneSeason
+      plant_season
+      harvest_season
+      prune_season
       tips
     }
   }
@@ -258,7 +258,7 @@ export const PlantDocument = gql`
  * @example
  * const { data, loading, error } = usePlantQuery({
  *   variables: {
- *      _id: // value for '_id'
+ *      id: // value for 'id'
  *   },
  * });
  */
@@ -293,7 +293,7 @@ export type PlantQueryResult = ApolloReactCommon.QueryResult<
 export const PlantsDocument = gql`
   query Plants {
     plants {
-      _id
+      id
       name
     }
   }

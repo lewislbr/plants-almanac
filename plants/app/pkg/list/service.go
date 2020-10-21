@@ -1,34 +1,34 @@
 package list
 
-import "plants/pkg/entity"
+import p "plants/pkg/plant"
 
-// Service provides item list operations
+// Service provides plant list operations
 type Service interface {
-	GetPlants() []*entity.Plant
-	GetPlant(string) *entity.Plant
+	ListPlants() []*p.Plant
+	ListPlant(p.ID) *p.Plant
 }
 
-// Repository provides access to the item storage
+// Repository provides access to the plant storage
 type Repository interface {
-	FindAll() []*entity.Plant
-	FindOne(string) *entity.Plant
+	FindAll() []*p.Plant
+	FindOne(p.ID) *p.Plant
 }
 
 type service struct {
 	r Repository
 }
 
-// NewService creates a list service with the necessary dependencies
-func NewService(r Repository) Service {
-	return &service{r}
-}
-
-// GetPlants returns all plants
-func (s *service) GetPlants() []*entity.Plant {
+// ListPlants returns all plants
+func (s *service) ListPlants() []*p.Plant {
 	return s.r.FindAll()
 }
 
-// GetPlant returns a plant
-func (s *service) GetPlant(id string) *entity.Plant {
+// ListPlant returns a plant
+func (s *service) ListPlant(id p.ID) *p.Plant {
 	return s.r.FindOne(id)
+}
+
+// NewService creates a list service with the necessary dependencies
+func NewService(r Repository) Service {
+	return &service{r}
 }

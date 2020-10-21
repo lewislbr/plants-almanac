@@ -18,11 +18,11 @@ export function AddPlant({history}: {history: any}): JSX.Element {
 
     const newPlant = {
       name: nameElement.current?.value || "",
-      otherNames: otherNamesElement.current?.value || null,
+      other_names: otherNamesElement.current?.value || null,
       description: descriptionElement.current?.value || null,
-      plantSeason: plantSeasonElement.current?.value || null,
-      harvestSeason: harvestSeasonElement.current?.value || null,
-      pruneSeason: pruneSeasonElement.current?.value || null,
+      plant_season: plantSeasonElement.current?.value || null,
+      harvest_season: harvestSeasonElement.current?.value || null,
+      prune_season: pruneSeasonElement.current?.value || null,
       tips: tipsElement.current?.value || null,
     }
 

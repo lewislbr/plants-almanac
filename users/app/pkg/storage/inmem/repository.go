@@ -1,38 +1,38 @@
 package inmem
 
 import (
-	"users/pkg/entity"
+	u "users/pkg/user"
 )
 
-func makeFakeDatabase() map[string]entity.User {
-	database := make(map[string]entity.User)
+func makeFakeDatabase() map[string]u.User {
+	database := make(map[string]u.User)
 
 	return database
 }
 
 var fakeDatabase = makeFakeDatabase()
 
-// Storage keeps data in memory
+// Storage provides methods to store data in memory
 type Storage struct{}
 
 // FindOne returns the queried user
-func (s *Storage) FindOne(id string) (*entity.User, bool) {
-	result, ok := fakeDatabase[id]
+func (s *Storage) FindOne(id u.ID) (*u.User, bool) {
+	result, ok := fakeDatabase[string(id)]
 
 	return &result, ok
 }
 
-// InsertOne adds an user
-func (s *Storage) InsertOne(user entity.User) {
-	fakeDatabase[user.ID] = user
+// InsertOne adds a user
+func (s *Storage) InsertOne(user u.User) {
+	fakeDatabase[string(user.ID)] = user
 }
 
 // EditOne modifies the queried user
-func (s *Storage) EditOne(id string, user entity.User) {
-	fakeDatabase[id] = user
+func (s *Storage) EditOne(id u.ID, user u.User) {
+	fakeDatabase[string(id)] = user
 }
 
-// DeleteOne deletes an user
-func (s *Storage) DeleteOne(id string) {
-	delete(fakeDatabase, id)
+// DeleteOne deletes a user
+func (s *Storage) DeleteOne(id u.ID) {
+	delete(fakeDatabase, string(id))
 }

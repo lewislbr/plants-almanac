@@ -1,37 +1,34 @@
 package list
 
 import (
-	"users/pkg/entity"
-	"errors"
+	u "users/pkg/user"
 )
-
-var errNotFound = errors.New("user not found")
 
 // Service provides user list operations
 type Service interface {
-	GetUser(string) (*entity.User, error)
+	ListUser(u.ID) (*u.User, error)
 }
 
 // Repository provides access to the user storage
 type Repository interface {
-	FindOne(string) (*entity.User, bool)
+	FindOne(u.ID) (*u.User, bool)
 }
 
 type service struct {
 	r Repository
 }
 
-// NewService creates a list service with the necessary dependencies
-func NewService(r Repository) Service {
-	return &service{r}
-}
-
-// GetUser returns an user
-func (s *service) GetUser(id string) (*entity.User, error) {
+// ListUser returns a user
+func (s *service) ListUser(id u.ID) (*u.User, error) {
 	user, ok := s.r.FindOne(id)
 	if !ok {
-		return nil, errNotFound
+		return nil, u.ErrNotFound
 	}
 
 	return user, nil
+}
+
+// NewService creates a list service with the necessary dependencies
+func NewService(r Repository) Service {
+	return &service{r}
 }

@@ -27,7 +27,7 @@ repos:
         name: typescript-web-app
         language: docker_image
         pass_filenames: false
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run typecheck"
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run ts"
         files: web/app/
         verbose: true
 

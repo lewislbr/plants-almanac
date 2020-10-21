@@ -18,25 +18,25 @@ var plantType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Plant",
 		Fields: graphql.Fields{
-			"_id": &graphql.Field{
+			"id": &graphql.Field{
 				Type: graphql.ID,
 			},
 			"name": &graphql.Field{
 				Type: graphql.String,
 			},
-			"otherNames": &graphql.Field{
+			"other_names": &graphql.Field{
 				Type: graphql.String,
 			},
 			"description": &graphql.Field{
 				Type: graphql.String,
 			},
-			"plantSeason": &graphql.Field{
+			"plant_season": &graphql.Field{
 				Type: graphql.String,
 			},
-			"harvestSeason": &graphql.Field{
+			"harvest_season": &graphql.Field{
 				Type: graphql.String,
 			},
-			"pruneSeason": &graphql.Field{
+			"prune_season": &graphql.Field{
 				Type: graphql.String,
 			},
 			"tips": &graphql.Field{
@@ -62,7 +62,7 @@ func init() {
 				Type:        plantType,
 				Description: "Returns a plant",
 				Args: graphql.FieldConfigArgument{
-					"_id": &graphql.ArgumentConfig{
+					"id": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.ID),
 					},
 				},
@@ -81,19 +81,19 @@ func init() {
 					"name": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.String),
 					},
-					"otherNames": &graphql.ArgumentConfig{
+					"other_names": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
 					"description": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
-					"plantSeason": &graphql.ArgumentConfig{
+					"plant_season": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
-					"harvestSeason": &graphql.ArgumentConfig{
+					"harvest_season": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
-					"pruneSeason": &graphql.ArgumentConfig{
+					"prune_season": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
 					"tips": &graphql.ArgumentConfig{
@@ -106,25 +106,25 @@ func init() {
 				Type:        graphql.Int,
 				Description: "Edits a plant",
 				Args: graphql.FieldConfigArgument{
-					"_id": &graphql.ArgumentConfig{
+					"id": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.ID),
 					},
 					"name": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
-					"otherNames": &graphql.ArgumentConfig{
+					"other_names": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
 					"description": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
-					"plantSeason": &graphql.ArgumentConfig{
+					"plant_season": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
-					"harvestSeason": &graphql.ArgumentConfig{
+					"harvest_season": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
-					"pruneSeason": &graphql.ArgumentConfig{
+					"prune_season": &graphql.ArgumentConfig{
 						Type: graphql.String,
 					},
 					"tips": &graphql.ArgumentConfig{
@@ -137,7 +137,7 @@ func init() {
 				Type:        graphql.Int,
 				Description: "Deletes a plant",
 				Args: graphql.FieldConfigArgument{
-					"_id": &graphql.ArgumentConfig{
+					"id": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.ID),
 					},
 				},

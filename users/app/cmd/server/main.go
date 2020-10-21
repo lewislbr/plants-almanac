@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"users/pkg/http/rest"
+	"users/pkg/api/rest"
 )
 
 func main() {

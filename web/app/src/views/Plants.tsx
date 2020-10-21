@@ -23,7 +23,7 @@ export function Plants(): JSX.Element {
         ) : (
           <div>
             {data?.plants?.map((plant) => (
-              <Link to={`/${plant?._id}`} key={plant?._id || 0}>
+              <Link to={`/${plant?.id}`} key={plant?.id || 0}>
                 <PlantCard {...{name: plant?.name}} />
               </Link>
             ))}

@@ -1,26 +1,27 @@
 package rest
 
 import (
-	"users/pkg/add"
-	"users/pkg/delete"
+	"io"
 	"users/pkg/edit"
-	"users/pkg/entity"
-	"users/pkg/list"
+	u "users/pkg/user"
+
 	"encoding/json"
 	"net/http"
+	"users/pkg/add"
+	"users/pkg/delete"
+	"users/pkg/list"
 
 	"github.com/julienschmidt/httprouter"
 )
 
-func getUser(s list.Service) func(
+func getUser(ls list.Service) func(
 	w http.ResponseWriter,
 	r *http.Request,
 	ps httprouter.Params,
 ) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		id := ps.ByName("id")
-
-		user, err := s.GetUser(id)
+		user, err := ls.ListUser(u.ID(id))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
@@ -32,23 +33,23 @@ func getUser(s list.Service) func(
 	}
 }
 
-func addUser(s add.Service) func(
+func addUser(as add.Service) func(
 	w http.ResponseWriter,
 	r *http.Request,
 	ps httprouter.Params,
 ) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		var user entity.User
+		var user u.User
 
 		json.NewDecoder(r.Body).Decode(&user)
 
-		s.AddUser(user)
+		as.AddUser(user)
 
-		w.Write([]byte(user.Name + " added"))
+		io.WriteString(w, user.Name+" added")
 	}
 }
 
-func editUser(s edit.Service) func(
+func editUser(es edit.Service) func(
 	w http.ResponseWriter,
 	r *http.Request,
 	ps httprouter.Params,
@@ -56,34 +57,33 @@ func editUser(s edit.Service) func(
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		id := ps.ByName("id")
 
-		var user entity.User
+		var user u.User
 
 		json.NewDecoder(r.Body).Decode(&user)
 
-		err := s.EditUser(id, user)
+		err := es.EditUser(u.ID(id), user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
 
-		w.Write([]byte(user.Name + " updated"))
+		io.WriteString(w, user.Name+" updated")
 	}
 }
 
-func deleteUser(s delete.Service) func(
+func deleteUser(ds delete.Service) func(
 	w http.ResponseWriter,
 	r *http.Request,
 	ps httprouter.Params,
 ) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		id := ps.ByName("id")
-
-		err := s.DeleteUser(id)
+		err := ds.DeleteUser(u.ID(id))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
 
-		w.Write([]byte(id + " deleted"))
+		io.WriteString(w, id+" deleted")
 	}
 }

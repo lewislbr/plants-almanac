@@ -1,27 +1,27 @@
 package edit
 
-import "plants/pkg/entity"
+import p "plants/pkg/plant"
 
-// Service provides item edit operations
+// Service provides plant edit operations
 type Service interface {
-	EditPlant(string, entity.Plant) int64
+	EditPlant(p.ID, p.Plant) int64
 }
 
-// Repository provides access to the item storage
+// Repository provides access to the plant storage
 type Repository interface {
-	EditOne(string, entity.Plant) int64
+	EditOne(p.ID, p.Plant) int64
 }
 
 type service struct {
 	r Repository
 }
 
+// EditPlant edits a plant
+func (s *service) EditPlant(id p.ID, plant p.Plant) int64 {
+	return s.r.EditOne(id, plant)
+}
+
 // NewService creates an edit service with the necessary dependencies
 func NewService(r Repository) Service {
 	return &service{r}
-}
-
-// EditPlant edits a plant
-func (s *service) EditPlant(id string, new entity.Plant) int64 {
-	return s.r.EditOne(id, new)
 }

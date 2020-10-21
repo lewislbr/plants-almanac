@@ -10,7 +10,7 @@ export function PlantDetails({
   match: any
 }): JSX.Element {
   const {data, loading, error} = usePlantQuery({
-    variables: {_id: match.params._id},
+    variables: {id: match.params.id},
   })
   const [deletePlant] = useDeleteMutation()
   const [alertOpen, setAlertOpen] = React.useState(false)
@@ -23,7 +23,7 @@ export function PlantDetails({
     event.preventDefault()
 
     await deletePlant({
-      variables: {_id: data?.plant?._id as string},
+      variables: {id: data?.plant?.id as string},
     })
 
     history.push("/")
@@ -43,7 +43,7 @@ export function PlantDetails({
           <section className="mb-12">
             <h5 className="data-title">{"Other Names:"}</h5>
             <p className="data-body">
-              {data?.plant?.otherNames || "No data yet"}
+              {data?.plant?.other_names || "No data yet"}
             </p>
             <h5 className="data-title">{"Description:"}</h5>
             <p className="data-body">
@@ -51,15 +51,15 @@ export function PlantDetails({
             </p>
             <h5 className="data-title">{"Plant Season:"}</h5>
             <p className="data-body">
-              {data?.plant?.plantSeason || "No data yet"}
+              {data?.plant?.plant_season || "No data yet"}
             </p>
             <h5 className="data-title">{"Harvest Season:"}</h5>
             <p className="data-body">
-              {data?.plant?.harvestSeason || "No data yet"}
+              {data?.plant?.harvest_season || "No data yet"}
             </p>
             <h5 className="data-title">{"Prune Season:"}</h5>
             <p className="data-body">
-              {data?.plant?.pruneSeason || "No data yet"}
+              {data?.plant?.prune_season || "No data yet"}
             </p>
             <h5 className="data-title">{"Tips:"}</h5>
             <p className="data-body">{data?.plant?.tips || "No data yet"}</p>

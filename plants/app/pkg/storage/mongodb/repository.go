@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"plants/pkg/entity"
+	p "plants/pkg/plant"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,64 +28,59 @@ func connectDatabase() *mongo.Collection {
 	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
 	collectionName := os.Getenv("PLANTS_COLLECTION_NAME")
 	client, err := mongo.Connect(
-		context.TODO(),
+		context.Background(),
 		options.Client().ApplyURI(mongodbURI),
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = client.Ping(context.TODO(), nil)
+	err = client.Ping(context.Background(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Database ready ✅")
+	fmt.Println("Plants database ready ✅")
 
 	return client.Database(databaseName).Collection(collectionName)
 }
 
 var collection = connectDatabase()
 
-// Storage stores data in MongoDB Atlas
+// Storage provides methods to store data in MongoDB
 type Storage struct{}
 
-// FindAll returns all the items
-func (s *Storage) FindAll() []*entity.Plant {
-	var result []*entity.Plant
+// FindAll returns all the plants
+func (s *Storage) FindAll() []*p.Plant {
+	var results []*p.Plant
 
-	cursor, err := collection.Find(context.TODO(), bson.M{})
+	cursor, err := collection.Find(context.Background(), bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for cursor.Next(context.TODO()) {
-		var item *entity.Plant
-		err := cursor.Decode(&item)
-		if err != nil {
-			log.Fatal(err)
-		}
-		result = append(result, item)
+	if err := cursor.All(context.Background(), &results); err != nil {
+		log.Fatal(err)
 	}
 
-	return result
+	return results
 }
 
-// FindOne retuns the queried item
-func (s *Storage) FindOne(id string) *entity.Plant {
-	var result *entity.Plant
+// FindOne retuns the queried plant
+func (s *Storage) FindOne(id p.ID) *p.Plant {
+	var result *p.Plant
 
 	filter := bson.M{"_id": id}
-	item := collection.FindOne(context.TODO(), filter)
+	singleResult := collection.FindOne(context.Background(), filter)
 
-	item.Decode(&result)
+	singleResult.Decode(&result)
 
 	return result
 }
 
-// InsertOne adds an item
-func (s *Storage) InsertOne(item entity.Plant) interface{} {
-	result, err := collection.InsertOne(context.TODO(), item)
+// InsertOne adds a plant
+func (s *Storage) InsertOne(plant p.Plant) interface{} {
+	result, err := collection.InsertOne(context.Background(), plant)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,21 +88,21 @@ func (s *Storage) InsertOne(item entity.Plant) interface{} {
 	return result.InsertedID
 }
 
-// EditOne modifies the queried item
-func (s *Storage) EditOne(id string, updated entity.Plant) int64 {
+// EditOne modifies the queried plant
+func (s *Storage) EditOne(id p.ID, plant p.Plant) int64 {
 	filter := bson.M{"_id": id}
 	update := bson.M{
 		"$set": bson.M{
-			"name":          updated.Name,
-			"otherNames":    updated.OtherNames,
-			"description":   updated.Description,
-			"plantSeason":   updated.PlantSeason,
-			"harvestSeason": updated.HarvestSeason,
-			"pruneSeason":   updated.PruneSeason,
-			"tips":          updated.Tips,
+			"name":           plant.Name,
+			"other_names":    plant.OtherNames,
+			"description":    plant.Description,
+			"plant_season":   plant.PlantSeason,
+			"harvest_season": plant.HarvestSeason,
+			"prune_season":   plant.PruneSeason,
+			"tips":           plant.Tips,
 		},
 	}
-	result, err := collection.UpdateOne(context.TODO(), filter, update)
+	result, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -115,10 +110,10 @@ func (s *Storage) EditOne(id string, updated entity.Plant) int64 {
 	return result.ModifiedCount
 }
 
-// DeleteOne deletes an item
-func (s *Storage) DeleteOne(id string) int64 {
+// DeleteOne deletes a plant
+func (s *Storage) DeleteOne(id p.ID) int64 {
 	filter := bson.M{"_id": id}
-	result, err := collection.DeleteOne(context.TODO(), filter)
+	result, err := collection.DeleteOne(context.Background(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}

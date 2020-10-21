@@ -1,3 +1,3 @@
-mutation Delete($_id: ID!) {
-  delete(_id: $_id)
+mutation Delete($id: ID!) {
+  delete(id: $id)
 }

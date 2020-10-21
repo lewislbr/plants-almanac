@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"plants/pkg/http/graphql"
+	"plants/pkg/api/graphql"
 )
 
 func main() {

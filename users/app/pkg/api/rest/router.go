@@ -20,7 +20,7 @@ var a = add.NewService(&inmem.Storage{})
 var e = edit.NewService(&inmem.Storage{})
 var d = delete.NewService(&inmem.Storage{})
 
-// Start initializes the REST endpoints
+// Start initializes the REST API
 func Start() error {
 	godotenv.Load()
 
@@ -34,7 +34,7 @@ func Start() error {
 	router.PUT(endpointRoot+"/:id", editUser(e))
 	router.DELETE(endpointRoot+"/:id", deleteUser(d))
 
-	fmt.Printf("Server ready at http://localhost:%s ✅\n", port)
+	fmt.Printf("Users API ready ✅")
 
 	err := http.ListenAndServe(":"+port, corsMiddleware(router))
 	if err != nil {

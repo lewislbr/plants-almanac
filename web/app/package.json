@@ -4,8 +4,8 @@
   "scripts": {
     "start": "webpack-dev-server --mode=development",
     "build": "rm -rf dist && webpack --mode=production",
-    "gqltypes": "graphql-codegen",
-    "typecheck": "tsc",
+    "gql": "graphql-codegen",
+    "ts": "tsc",
     "test": "jest",
     "lint": "eslint --ext .js,.ts,.tsx .",
     "format": "prettier --write --check \"!.cache\" \"!dist\" ."

@@ -12,7 +12,7 @@ import (
 
 var isDevelopment = os.Getenv("MODE") == "development"
 
-// Start initalizes the GraphQL endpoints
+// Start initalizes the GraphQL API
 func Start() error {
 	godotenv.Load()
 
@@ -35,7 +35,7 @@ func Start() error {
 		router.GET("/playground", responseMiddleware(playgroundHandler))
 	}
 
-	fmt.Println("Server ready ✅")
+	fmt.Println("Plants API ready ✅")
 
 	var err error
 	if isDevelopment {

@@ -32,8 +32,8 @@ export function App(): JSX.Element {
         <React.Suspense fallback={<div>{"Loading..."}</div>}>
           <Switch>
             <Route exact path="/" component={Plants} />
-            <Route path="/addplant" component={AddPlant} />
-            <Route path="/:_id" component={PlantDetails} />
+            <Route path="/add-plant" component={AddPlant} />
+            <Route path="/:id" component={PlantDetails} />
           </Switch>
         </React.Suspense>
       </main>

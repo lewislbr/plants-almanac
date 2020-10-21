@@ -22,7 +22,7 @@ export function Header(): JSX.Element {
             {"Plants"}
           </NavLink>
           <NavLink
-            to="/addplant"
+            to="/add-plant"
             activeStyle={ActiveNavLink}
             className="ml-3 tracking-tight"
           >

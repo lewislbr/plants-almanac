@@ -1,40 +1,37 @@
 package delete
 
 import (
-	"users/pkg/entity"
-	"errors"
+	u "users/pkg/user"
 )
-
-var errNotFound = errors.New("user not found")
 
 // Service provides user delete operations
 type Service interface {
-	DeleteUser(string) error
+	DeleteUser(u.ID) error
 }
 
 // Repository provides access to the user storage
 type Repository interface {
-	DeleteOne(string)
-	FindOne(string) (*entity.User, bool)
+	DeleteOne(u.ID)
+	FindOne(u.ID) (*u.User, bool)
 }
 
 type service struct {
 	r Repository
 }
 
-// NewService creates a delete service with the necessary dependencies
-func NewService(r Repository) Service {
-	return &service{r}
-}
-
-// DeleteUser deletes an user
-func (s *service) DeleteUser(id string) error {
+// DeleteUser deletes a user
+func (s *service) DeleteUser(id u.ID) error {
 	_, ok := s.r.FindOne(id)
 	if !ok {
-		return errNotFound
+		return u.ErrNotFound
 	}
 
 	s.r.DeleteOne(id)
 
 	return nil
+}
+
+// NewService creates a delete service with the necessary dependencies
+func NewService(r Repository) Service {
+	return &service{r}
 }
