@@ -73,8 +73,6 @@ func redirectToHTTPS() {
 func serveSPA(directory string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestedPath := filepath.Join(directory, filepath.Clean(r.URL.Path))
-		acceptedEncodings := r.Header.Get("Accept-Encoding")
-		brotli := "br"
 
 		if filepath.Clean(r.URL.Path) == "/" {
 			requestedPath = requestedPath + "/index.html"
@@ -82,6 +80,10 @@ func serveSPA(directory string) http.HandlerFunc {
 		if _, err := os.Stat(requestedPath); os.IsNotExist(err) {
 			requestedPath = filepath.Join(directory, "index.html")
 		}
+
+		acceptedEncodings := r.Header.Get("Accept-Encoding")
+		brotli := "br"
+
 		if strings.Contains(acceptedEncodings, brotli) {
 			serveCompressedFile := func(mimeType string) {
 				w.Header().Add("Content-Encoding", brotli)
@@ -116,9 +118,9 @@ func responseMiddleware(h http.Handler) http.HandlerFunc {
 }
 
 func corsMiddleware(h http.Handler) http.HandlerFunc {
-	apiURL := os.Getenv("API_URL")
-
 	return func(w http.ResponseWriter, r *http.Request) {
+		apiURL := os.Getenv("API_URL")
+
 		w.Header().Add("Content-Security-Policy", "default-src 'self' "+apiURL)
 		w.Header().Add("Referrer-Policy", "strict-origin-when-cross-origin")
 		w.Header().Add(

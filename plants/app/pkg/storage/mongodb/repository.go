@@ -13,11 +13,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var isDevelopment = os.Getenv("MODE") == "development"
-
 func connectDatabase() *mongo.Collection {
 	godotenv.Load()
 
+	var isDevelopment = os.Getenv("MODE") == "development"
 	var mongodbURI string
 	if isDevelopment {
 		mongodbURI = os.Getenv("PLANTS_MONGODB_DEVELOPMENT_URI")
@@ -25,8 +24,6 @@ func connectDatabase() *mongo.Collection {
 		mongodbURI = os.Getenv("PLANTS_MONGODB_PRODUCTION_URI")
 	}
 
-	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
-	collectionName := os.Getenv("PLANTS_COLLECTION_NAME")
 	client, err := mongo.Connect(
 		context.Background(),
 		options.Client().ApplyURI(mongodbURI),
@@ -42,6 +39,9 @@ func connectDatabase() *mongo.Collection {
 
 	fmt.Println("Plants database ready ✅")
 
+	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
+	collectionName := os.Getenv("PLANTS_COLLECTION_NAME")
+
 	return client.Database(databaseName).Collection(collectionName)
 }
 
@@ -52,12 +52,12 @@ type Storage struct{}
 
 // FindAll returns all the plants
 func (s *Storage) FindAll() []*p.Plant {
-	var results []*p.Plant
-
 	cursor, err := collection.Find(context.Background(), bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	var results []*p.Plant
 
 	if err := cursor.All(context.Background(), &results); err != nil {
 		log.Fatal(err)
@@ -68,10 +68,10 @@ func (s *Storage) FindAll() []*p.Plant {
 
 // FindOne retuns the queried plant
 func (s *Storage) FindOne(id p.ID) *p.Plant {
-	var result *p.Plant
-
 	filter := bson.M{"_id": id}
 	singleResult := collection.FindOne(context.Background(), filter)
+
+	var result *p.Plant
 
 	singleResult.Decode(&result)
 

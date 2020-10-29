@@ -14,7 +14,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func getUser(ls list.Service) func(
+func listUser(ls list.Service) func(
 	w http.ResponseWriter,
 	r *http.Request,
 	ps httprouter.Params,
@@ -55,12 +55,11 @@ func editUser(es edit.Service) func(
 	ps httprouter.Params,
 ) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		id := ps.ByName("id")
-
 		var user u.User
 
 		json.NewDecoder(r.Body).Decode(&user)
 
+		id := ps.ByName("id")
 		err := es.EditUser(u.ID(id), user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)

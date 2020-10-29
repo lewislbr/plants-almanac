@@ -10,7 +10,7 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-func getPlants(ls list.Service) func(_ graphql.ResolveParams) (
+func listPlants(ls list.Service) func(_ graphql.ResolveParams) (
 	interface{},
 	error,
 ) {
@@ -21,7 +21,7 @@ func getPlants(ls list.Service) func(_ graphql.ResolveParams) (
 	}
 }
 
-func getPlant(ls list.Service) func(ps graphql.ResolveParams) (
+func listPlant(ls list.Service) func(ps graphql.ResolveParams) (
 	interface{},
 	error,
 ) {

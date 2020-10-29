@@ -16,8 +16,6 @@ var isDevelopment = os.Getenv("MODE") == "development"
 func Start() error {
 	godotenv.Load()
 
-	router := httprouter.New()
-	port := os.Getenv("PLANTS_APP_PORT")
 	graphqlHandler := handler.New(&handler.Config{
 		Schema:     &schema,
 		Pretty:     false,
@@ -29,6 +27,8 @@ func Start() error {
 		Playground: true,
 	})
 
+	router := httprouter.New()
+
 	router.POST("/plants", responseMiddleware(graphqlHandler))
 
 	if isDevelopment {
@@ -39,6 +39,8 @@ func Start() error {
 
 	var err error
 	if isDevelopment {
+		port := os.Getenv("PLANTS_APP_PORT")
+
 		err = http.ListenAndServe(":"+port, corsMiddleware(router))
 	} else {
 		err = http.ListenAndServeTLS(

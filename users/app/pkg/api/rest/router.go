@@ -28,7 +28,7 @@ func Start() error {
 	port := os.Getenv("USERS_APP_PORT")
 	endpointRoot := "/users"
 
-	router.GET(endpointRoot+"/:id", getUser(l))
+	router.GET(endpointRoot+"/:id", listUser(l))
 	router.POST(endpointRoot+"/", addUser(a))
 	router.PATCH(endpointRoot+"/:id", editUser(e))
 	router.PUT(endpointRoot+"/:id", editUser(e))
