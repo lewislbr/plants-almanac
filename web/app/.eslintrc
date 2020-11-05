@@ -10,10 +10,9 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:jest/recommended",
-    "plugin:testing-library/react",
-    "plugin:jest-dom/recommended"
+    "plugin:testing-library/react"
   ],
-  "ignorePatterns": [".cache", "dist", "src/graphql"],
+  "ignorePatterns": ["dist", "src/graphql"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -26,8 +25,7 @@
     "react",
     "react-hooks",
     "jest",
-    "testing-library",
-    "jest-dom"
+    "testing-library"
   ],
   "rules": {
     "react/button-has-type": "error",

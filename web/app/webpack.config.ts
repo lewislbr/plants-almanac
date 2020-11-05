@@ -3,13 +3,13 @@
 const webpack = require("webpack")
 const path = require("path")
 const Dotenv = require("dotenv-webpack")
+const TerserPlugin = require("terser-webpack-plugin")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin")
-const TerserPlugin = require("terser-webpack-plugin")
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const CompressionPlugin = require("compression-webpack-plugin")
 
-module.exports = (env, options) => {
+module.exports = (env: any, options: {mode: string | undefined}) => {
   const isDevelopment = options.mode !== "production"
 
   process.env.NODE_ENV = options.mode
@@ -52,8 +52,10 @@ module.exports = (env, options) => {
             {
               loader: "postcss-loader",
               options: {
-                ident: "postcss",
-                plugins: [require("tailwindcss"), require("autoprefixer")],
+                postcssOptions: {
+                  ident: "postcss",
+                  plugins: [require("tailwindcss"), require("autoprefixer")],
+                },
               },
             },
           ],
@@ -99,24 +101,14 @@ module.exports = (env, options) => {
     },
     devtool: isDevelopment ? "eval-cheap-module-source-map" : "source-map",
     optimization: {
-      minimizer: [
-        new OptimizeCssAssetsPlugin({
-          cssProcessorOptions: {
-            map: {
-              annotation: true,
-              inline: false,
-            },
-          },
-        }),
-        new TerserPlugin(),
-      ],
+      minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
       runtimeChunk: {
         name: "runtime",
       },
       splitChunks: {
         chunks: "all",
         cacheGroups: {
-          vendor: {
+          defaultVendors: {
             name: "vendors",
             test: /[\\/]node_modules[\\/]/,
           },
@@ -167,21 +159,27 @@ module.exports = (env, options) => {
               algorithm: "brotliCompress",
               compressionOptions: {level: 11},
               filename: "[name][ext].br",
-              test: /\.(js|css|html|svg)$/,
+              minRatio: Number.MAX_SAFE_INTEGER,
+              test: /\.(html|css|js|svg)$/,
+              threshold: 0,
             }),
           ]),
       ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin()] : []),
     ],
     stats: {
       assetsSort: "!size",
-      builtAt: false,
-      children: false,
+      colors: true,
       entrypoints: false,
       errors: true,
       errorDetails: true,
-      hash: false,
+      groupAssetsByChunk: false,
+      groupAssetsByExtension: false,
+      groupAssetsByInfo: false,
+      groupAssetsByPath: false,
       modules: false,
+      relatedAssets: true,
       timings: false,
+      version: false,
     },
     devServer: {
       contentBase: "dist",

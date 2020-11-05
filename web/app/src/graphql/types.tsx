@@ -1,7 +1,7 @@
-import gql from "graphql-tag"
-import * as ApolloReactCommon from "@apollo/client"
-import * as ApolloReactHooks from "@apollo/client"
+import {gql} from "@apollo/client"
+import * as Apollo from "@apollo/client"
 export type Maybe<T> = T | null
+export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string
@@ -22,13 +22,13 @@ export type Mutation = {
 }
 
 export type MutationAddArgs = {
-  prune_season?: Maybe<Scalars["String"]>
   tips?: Maybe<Scalars["String"]>
   name: Scalars["String"]
   other_names?: Maybe<Scalars["String"]>
   description?: Maybe<Scalars["String"]>
   plant_season?: Maybe<Scalars["String"]>
   harvest_season?: Maybe<Scalars["String"]>
+  prune_season?: Maybe<Scalars["String"]>
 }
 
 export type MutationDeleteArgs = {
@@ -36,26 +36,14 @@ export type MutationDeleteArgs = {
 }
 
 export type MutationEditArgs = {
+  other_names?: Maybe<Scalars["String"]>
+  description?: Maybe<Scalars["String"]>
+  plant_season?: Maybe<Scalars["String"]>
+  harvest_season?: Maybe<Scalars["String"]>
+  prune_season?: Maybe<Scalars["String"]>
+  tips?: Maybe<Scalars["String"]>
   id: Scalars["ID"]
   name?: Maybe<Scalars["String"]>
-  other_names?: Maybe<Scalars["String"]>
-  description?: Maybe<Scalars["String"]>
-  plant_season?: Maybe<Scalars["String"]>
-  harvest_season?: Maybe<Scalars["String"]>
-  prune_season?: Maybe<Scalars["String"]>
-  tips?: Maybe<Scalars["String"]>
-}
-
-export type Plant = {
-  __typename?: "Plant"
-  description?: Maybe<Scalars["String"]>
-  harvest_season?: Maybe<Scalars["String"]>
-  id?: Maybe<Scalars["ID"]>
-  name?: Maybe<Scalars["String"]>
-  other_names?: Maybe<Scalars["String"]>
-  plant_season?: Maybe<Scalars["String"]>
-  prune_season?: Maybe<Scalars["String"]>
-  tips?: Maybe<Scalars["String"]>
 }
 
 export type Query = {
@@ -70,7 +58,19 @@ export type QueryPlantArgs = {
   id: Scalars["ID"]
 }
 
-export type AddMutationVariables = {
+export type Plant = {
+  __typename?: "Plant"
+  description?: Maybe<Scalars["String"]>
+  harvest_season?: Maybe<Scalars["String"]>
+  id?: Maybe<Scalars["ID"]>
+  name?: Maybe<Scalars["String"]>
+  other_names?: Maybe<Scalars["String"]>
+  plant_season?: Maybe<Scalars["String"]>
+  prune_season?: Maybe<Scalars["String"]>
+  tips?: Maybe<Scalars["String"]>
+}
+
+export type AddMutationVariables = Exact<{
   name: Scalars["String"]
   other_names?: Maybe<Scalars["String"]>
   description?: Maybe<Scalars["String"]>
@@ -78,22 +78,22 @@ export type AddMutationVariables = {
   harvest_season?: Maybe<Scalars["String"]>
   prune_season?: Maybe<Scalars["String"]>
   tips?: Maybe<Scalars["String"]>
-}
+}>
 
 export type AddMutation = {__typename?: "Mutation"} & Pick<Mutation, "add">
 
-export type DeleteMutationVariables = {
+export type DeleteMutationVariables = Exact<{
   id: Scalars["ID"]
-}
+}>
 
 export type DeleteMutation = {__typename?: "Mutation"} & Pick<
   Mutation,
   "delete"
 >
 
-export type PlantQueryVariables = {
+export type PlantQueryVariables = Exact<{
   id: Scalars["ID"]
-}
+}>
 
 export type PlantQuery = {__typename?: "Query"} & {
   plant?: Maybe<
@@ -111,7 +111,7 @@ export type PlantQuery = {__typename?: "Query"} & {
   >
 }
 
-export type PlantsQueryVariables = {}
+export type PlantsQueryVariables = Exact<{[key: string]: never}>
 
 export type PlantsQuery = {__typename?: "Query"} & {
   plants?: Maybe<
@@ -140,7 +140,7 @@ export const AddDocument = gql`
     )
   }
 `
-export type AddMutationFn = ApolloReactCommon.MutationFunction<
+export type AddMutationFn = Apollo.MutationFunction<
   AddMutation,
   AddMutationVariables
 >
@@ -169,19 +169,16 @@ export type AddMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useAddMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    AddMutation,
-    AddMutationVariables
-  >,
+  baseOptions?: Apollo.MutationHookOptions<AddMutation, AddMutationVariables>,
 ) {
-  return ApolloReactHooks.useMutation<AddMutation, AddMutationVariables>(
+  return Apollo.useMutation<AddMutation, AddMutationVariables>(
     AddDocument,
     baseOptions,
   )
 }
 export type AddMutationHookResult = ReturnType<typeof useAddMutation>
-export type AddMutationResult = ApolloReactCommon.MutationResult<AddMutation>
-export type AddMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type AddMutationResult = Apollo.MutationResult<AddMutation>
+export type AddMutationOptions = Apollo.BaseMutationOptions<
   AddMutation,
   AddMutationVariables
 >
@@ -190,7 +187,7 @@ export const DeleteDocument = gql`
     delete(id: $id)
   }
 `
-export type DeleteMutationFn = ApolloReactCommon.MutationFunction<
+export type DeleteMutationFn = Apollo.MutationFunction<
   DeleteMutation,
   DeleteMutationVariables
 >
@@ -213,21 +210,19 @@ export type DeleteMutationFn = ApolloReactCommon.MutationFunction<
  * });
  */
 export function useDeleteMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
+  baseOptions?: Apollo.MutationHookOptions<
     DeleteMutation,
     DeleteMutationVariables
   >,
 ) {
-  return ApolloReactHooks.useMutation<DeleteMutation, DeleteMutationVariables>(
+  return Apollo.useMutation<DeleteMutation, DeleteMutationVariables>(
     DeleteDocument,
     baseOptions,
   )
 }
 export type DeleteMutationHookResult = ReturnType<typeof useDeleteMutation>
-export type DeleteMutationResult = ApolloReactCommon.MutationResult<
-  DeleteMutation
->
-export type DeleteMutationOptions = ApolloReactCommon.BaseMutationOptions<
+export type DeleteMutationResult = Apollo.MutationResult<DeleteMutation>
+export type DeleteMutationOptions = Apollo.BaseMutationOptions<
   DeleteMutation,
   DeleteMutationVariables
 >
@@ -263,30 +258,24 @@ export const PlantDocument = gql`
  * });
  */
 export function usePlantQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    PlantQuery,
-    PlantQueryVariables
-  >,
+  baseOptions: Apollo.QueryHookOptions<PlantQuery, PlantQueryVariables>,
 ) {
-  return ApolloReactHooks.useQuery<PlantQuery, PlantQueryVariables>(
+  return Apollo.useQuery<PlantQuery, PlantQueryVariables>(
     PlantDocument,
     baseOptions,
   )
 }
 export function usePlantLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    PlantQuery,
-    PlantQueryVariables
-  >,
+  baseOptions?: Apollo.LazyQueryHookOptions<PlantQuery, PlantQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<PlantQuery, PlantQueryVariables>(
+  return Apollo.useLazyQuery<PlantQuery, PlantQueryVariables>(
     PlantDocument,
     baseOptions,
   )
 }
 export type PlantQueryHookResult = ReturnType<typeof usePlantQuery>
 export type PlantLazyQueryHookResult = ReturnType<typeof usePlantLazyQuery>
-export type PlantQueryResult = ApolloReactCommon.QueryResult<
+export type PlantQueryResult = Apollo.QueryResult<
   PlantQuery,
   PlantQueryVariables
 >
@@ -315,30 +304,24 @@ export const PlantsDocument = gql`
  * });
  */
 export function usePlantsQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    PlantsQuery,
-    PlantsQueryVariables
-  >,
+  baseOptions?: Apollo.QueryHookOptions<PlantsQuery, PlantsQueryVariables>,
 ) {
-  return ApolloReactHooks.useQuery<PlantsQuery, PlantsQueryVariables>(
+  return Apollo.useQuery<PlantsQuery, PlantsQueryVariables>(
     PlantsDocument,
     baseOptions,
   )
 }
 export function usePlantsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    PlantsQuery,
-    PlantsQueryVariables
-  >,
+  baseOptions?: Apollo.LazyQueryHookOptions<PlantsQuery, PlantsQueryVariables>,
 ) {
-  return ApolloReactHooks.useLazyQuery<PlantsQuery, PlantsQueryVariables>(
+  return Apollo.useLazyQuery<PlantsQuery, PlantsQueryVariables>(
     PlantsDocument,
     baseOptions,
   )
 }
 export type PlantsQueryHookResult = ReturnType<typeof usePlantsQuery>
 export type PlantsLazyQueryHookResult = ReturnType<typeof usePlantsLazyQuery>
-export type PlantsQueryResult = ApolloReactCommon.QueryResult<
+export type PlantsQueryResult = Apollo.QueryResult<
   PlantsQuery,
   PlantsQueryVariables
 >
