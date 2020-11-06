@@ -1,8 +1,31 @@
 import * as React from "react"
-import {useAddMutation} from "../graphql/types"
+import {gql, useMutation} from "@apollo/client"
+import {Add} from "../graphql"
+
+const ADD = gql`
+  mutation Add(
+    $name: String!
+    $other_names: String
+    $description: String
+    $plant_season: String
+    $harvest_season: String
+    $prune_season: String
+    $tips: String
+  ) {
+    add(
+      name: $name
+      other_names: $other_names
+      description: $description
+      plant_season: $plant_season
+      harvest_season: $harvest_season
+      prune_season: $prune_season
+      tips: $tips
+    )
+  }
+`
 
 export function AddPlant({history}: {history: any}): JSX.Element {
-  const [addPlant] = useAddMutation()
+  const [addPlant] = useMutation<Add>(ADD)
   const nameElement = React.useRef<HTMLInputElement>(null)
   const otherNamesElement = React.useRef<HTMLInputElement>(null)
   const descriptionElement = React.useRef<HTMLTextAreaElement>(null)

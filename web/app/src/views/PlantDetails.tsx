@@ -1,6 +1,28 @@
 import * as React from "react"
+import {gql, useMutation, useQuery} from "@apollo/client"
 import {Alert} from "../components"
-import {usePlantQuery, useDeleteMutation} from "../graphql/types"
+import {Delete, Plant} from "../graphql"
+
+const PLANT = gql`
+  query Plant($id: ID!) {
+    plant(id: $id) {
+      id
+      name
+      other_names
+      description
+      plant_season
+      harvest_season
+      prune_season
+      tips
+    }
+  }
+`
+
+const DELETE = gql`
+  mutation Delete($id: ID!) {
+    delete(id: $id)
+  }
+`
 
 export function PlantDetails({
   history,
@@ -9,10 +31,10 @@ export function PlantDetails({
   history: any
   match: any
 }): JSX.Element {
-  const {data, loading, error} = usePlantQuery({
+  const {data, loading, error} = useQuery<Plant>(PLANT, {
     variables: {id: match.params.id},
   })
-  const [deletePlant] = useDeleteMutation()
+  const [deletePlant] = useMutation<Delete>(DELETE)
   const [alertOpen, setAlertOpen] = React.useState(false)
 
   function openAlert(): void {

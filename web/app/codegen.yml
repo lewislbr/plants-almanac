@@ -1,8 +1,0 @@
-schema: "http://localhost:4040/plants"
-documents: "src/graphql/**/*.graphql"
-generates:
-  "src/graphql/types.tsx":
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"

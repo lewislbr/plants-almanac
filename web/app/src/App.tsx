@@ -9,17 +9,17 @@ const AddPlant = React.lazy(() =>
     }),
   ),
 )
+const AllPlants = React.lazy(() =>
+  import("./views/AllPlants" /* webpackChunkName: 'AllPlants' */).then(
+    ({AllPlants}) => ({
+      default: AllPlants,
+    }),
+  ),
+)
 const PlantDetails = React.lazy(() =>
   import("./views/PlantDetails" /* webpackChunkName: 'PlantDetails' */).then(
     ({PlantDetails}) => ({
       default: PlantDetails,
-    }),
-  ),
-)
-const Plants = React.lazy(() =>
-  import("./views/Plants" /* webpackChunkName: 'Plants' */).then(
-    ({Plants}) => ({
-      default: Plants,
     }),
   ),
 )
@@ -31,7 +31,7 @@ export function App(): JSX.Element {
       <main className="max-w-5xl mx-auto p-5pc">
         <React.Suspense fallback={<div>{"Loading..."}</div>}>
           <Switch>
-            <Route exact path="/" component={Plants} />
+            <Route exact path="/" component={AllPlants} />
             <Route path="/add-plant" component={AddPlant} />
             <Route path="/:id" component={PlantDetails} />
           </Switch>

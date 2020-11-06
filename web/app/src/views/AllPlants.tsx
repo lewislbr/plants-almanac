@@ -1,10 +1,20 @@
 import * as React from "react"
 import {Link} from "react-router-dom"
+import {gql, useQuery} from "@apollo/client"
 import {PlantCard} from "../components"
-import {usePlantsQuery} from "../graphql/types"
+import {Plants} from "../graphql"
 
-export function Plants(): JSX.Element {
-  const {data, loading, error, refetch} = usePlantsQuery()
+const PLANTS = gql`
+  query Plants {
+    plants {
+      id
+      name
+    }
+  }
+`
+
+export function AllPlants(): JSX.Element {
+  const {data, loading, error, refetch} = useQuery<Plants>(PLANTS)
 
   React.useEffect(() => {
     refetch()
