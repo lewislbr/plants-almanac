@@ -18,12 +18,12 @@ type service struct {
 	r Repository
 }
 
-// ListPlants returns all plants
+// ListPlants lists all plants
 func (s *service) ListPlants() []*p.Plant {
 	return s.r.FindAll()
 }
 
-// ListPlant returns a plant
+// ListPlant lists a plant
 func (s *service) ListPlant(id p.ID) *p.Plant {
 	return s.r.FindOne(id)
 }

@@ -18,7 +18,7 @@ type service struct {
 	r Repository
 }
 
-// ListUser returns a user
+// ListUser lists a user
 func (s *service) ListUser(id u.ID) (*u.User, error) {
 	user, ok := s.r.FindOne(id)
 	if !ok {

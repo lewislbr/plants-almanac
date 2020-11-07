@@ -9,7 +9,7 @@
 
 export interface Delete {
   /**
-   * Deletes a plant
+   * Deletes a plant by using its ID, returning an integer with the numbers of plants deleted.
    */
   delete: number | null
 }

@@ -53,12 +53,12 @@ func init() {
 		Fields: graphql.Fields{
 			"plants": &graphql.Field{
 				Type:        graphql.NewList(plantType),
-				Description: "Returns all plants",
+				Description: "Lists all plants, returning an array of objects with the existing plants, or an empty array if there are none.",
 				Resolve:     listPlants(l),
 			},
 			"plant": &graphql.Field{
 				Type:        plantType,
-				Description: "Returns a plant",
+				Description: "Lists a plant by using its ID, returning an object with the plant, or null if it does not exist.",
 				Args: graphql.FieldConfigArgument{
 					"id": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.ID),
@@ -74,7 +74,7 @@ func init() {
 		Fields: graphql.Fields{
 			"add": &graphql.Field{
 				Type:        graphql.ID,
-				Description: "Adds a plant",
+				Description: "Adds a plant by using a name, and any other value for the available fields, returning the newly created plant ID",
 				Args: graphql.FieldConfigArgument{
 					"name": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.String),
@@ -102,7 +102,7 @@ func init() {
 			},
 			"edit": &graphql.Field{
 				Type:        graphql.Int,
-				Description: "Edits a plant",
+				Description: "Edits a plant by using its ID, and adding any new values for the existing fields, returning an integer with the numbers of plants edited.",
 				Args: graphql.FieldConfigArgument{
 					"id": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.ID),
@@ -133,7 +133,7 @@ func init() {
 			},
 			"delete": &graphql.Field{
 				Type:        graphql.Int,
-				Description: "Deletes a plant",
+				Description: "Deletes a plant by using its ID, returning an integer with the numbers of plants deleted.",
 				Args: graphql.FieldConfigArgument{
 					"id": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.ID),

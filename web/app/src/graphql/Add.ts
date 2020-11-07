@@ -9,7 +9,7 @@
 
 export interface Add {
   /**
-   * Adds a plant
+   * Adds a plant by using a name, and any other value for the available fields, returning the newly created plant ID
    */
   add: string | null
 }

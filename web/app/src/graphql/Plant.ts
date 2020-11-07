@@ -21,7 +21,7 @@ export interface Plant_plant {
 
 export interface Plant {
   /**
-   * Returns a plant
+   * Lists a plant by using its ID, returning an object with the plant, or null if it does not exist.
    */
   plant: Plant_plant | null
 }

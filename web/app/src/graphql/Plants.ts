@@ -15,7 +15,7 @@ export interface Plants_plants {
 
 export interface Plants {
   /**
-   * Returns all plants
+   * Lists all plants, returning an array of objects with the existing plants, or an empty array if there are none.
    */
   plants: (Plants_plants | null)[] | null
 }
