@@ -4,12 +4,12 @@ on:
   push:
     branches: [master]
     paths:
-      - "api-gateway/**"
+      - "services/api-gateway/**"
   workflow_dispatch:
 
 defaults:
   run:
-    working-directory: api-gateway
+    working-directory: services/api-gateway
 
 jobs:
   build-push:
@@ -19,7 +19,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@master
       - name: Build image
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.API_GATEWAY_NAME }}":prod -f Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.API_GATEWAY_NAME }}":prod -f ../../devops/docker/api-gateway/Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image

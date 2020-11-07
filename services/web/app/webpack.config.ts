@@ -120,17 +120,9 @@ module.exports = (env: any, options: {mode: string | undefined}) => {
       hints: false,
     },
     plugins: [
-      ...(isDevelopment
-        ? [
-            new Dotenv({
-              path: "../.env",
-            }),
-          ]
-        : [
-            new Dotenv({
-              path: ".env",
-            }),
-          ]),
+      new Dotenv({
+        path: ".env",
+      }),
       new HtmlWebpackPlugin({
         minify: isDevelopment
           ? false

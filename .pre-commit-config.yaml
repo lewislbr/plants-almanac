@@ -5,43 +5,43 @@ repos:
       - id: go-docker
         name: go-plants-app
         language: docker_image
-        entry: golang:1-alpine sh -c "cd plants/app && gofmt -l -s -w ."
-        files: plants/app/
+        entry: golang:1-alpine sh -c "cd services/plants/app && gofmt -l -s -w ."
+        files: services/plants/app/
         verbose: true
 
       - id: go-docker
         name: go-users-app
         language: docker_image
-        entry: golang:1-alpine sh -c "cd users/app && gofmt -l -s -w ."
-        files: users/app/
+        entry: golang:1-alpine sh -c "cd services/users/app && gofmt -l -s -w ."
+        files: services/users/app/
         verbose: true
 
       - id: go-docker
         name: go-web-server
         language: docker_image
-        entry: golang:1-alpine sh -c "cd web/server && gofmt -l -s -w ."
-        files: web/server/
+        entry: golang:1-alpine sh -c "cd services/web/server && gofmt -l -s -w ."
+        files: services/web/server/
         verbose: true
 
       - id: typescript-docker
         name: typescript-web-app
         language: docker_image
         pass_filenames: false
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run ts"
-        files: web/app/
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd services/web/app && npm run ts"
+        files: services/web/app/
         verbose: true
 
       - id: eslint-docker
         name: eslint-web-app
         language: docker_image
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run lint"
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd services/web/app && npm run lint"
         exclude_types: [css, html, json]
-        files: web/app/
+        files: services/web/app/
         verbose: true
 
       - id: prettier-docker
         name: prettier-web-app
         language: docker_image
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd web/app && npm run format"
-        files: web/app/
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd services/web/app && npm run format"
+        files: services/web/app/
         verbose: true

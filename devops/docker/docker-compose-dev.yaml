@@ -3,8 +3,8 @@ version: "3.8"
 services:
   api-gateway:
     build:
-      context: ./api-gateway
-      dockerfile: Dockerfile.dev
+      context: ../../services/api-gateway
+      dockerfile: ../../devops/docker/api-gateway/Dockerfile.dev
     image: lewislbr/plantdex_api-gateway:dev
     container_name: api-gateway
     environment:
@@ -16,19 +16,19 @@ services:
 
   plants-app:
     build:
-      context: ./plants/app
-      dockerfile: Dockerfile.dev
+      context: ../../services/plants/app
+      dockerfile: ../../../devops/docker/plants/app/Dockerfile.dev
     image: lewislbr/plantdex_plants-app:dev
     container_name: plants-app
     env_file:
-      - plants/.env
+      - ../../services/plants/.env
     ports:
       - "127.0.0.1:4040:4040"
 
   plants-db:
     build:
-      context: ./plants/db
-      dockerfile: Dockerfile.dev
+      context: ../../services/plants/db
+      dockerfile: ../../../devops/docker/plants/db/Dockerfile.dev
     image: lewislbr/plantdex_plants-db:dev
     container_name: plants-db
     volumes:
@@ -36,27 +36,26 @@ services:
 
   users-app:
     build:
-      context: ./users/app
-      dockerfile: Dockerfile.dev
+      context: ../../services/users/app
+      dockerfile: ../../../devops/docker/users/app/Dockerfile.dev
     image: lewislbr/plantdex_users-app:dev
     container_name: users-app
     env_file:
-      - users/.env
+      - ../../services/users/.env
     ports:
       - "127.0.0.1:4041:4041"
 
   web-app:
     build:
-      context: ./web
-      dockerfile: Dockerfile.dev
+      context: ../../services/web
+      dockerfile: ../../devops/docker/web/Dockerfile.dev
     image: lewislbr/plantdex_web-app:dev
     container_name: web-app
-    env_file:
-      - web/.env
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - ./web:/usr/src/app
+      - ../../services/web/app:/usr/src/app
+      - ../../services/web/.env:/usr/src/app/.env
 
 volumes:
   plants-db:
