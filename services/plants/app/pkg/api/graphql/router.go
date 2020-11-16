@@ -14,7 +14,7 @@ var isDevelopment = os.Getenv("MODE") == "development"
 
 // Start initalizes the GraphQL API
 func Start() error {
-	godotenv.Load()
+	godotenv.Load(".plants-env")
 
 	graphqlHandler := handler.New(&handler.Config{
 		Schema:     &schema,
@@ -37,19 +37,8 @@ func Start() error {
 
 	fmt.Println("Plants API ready ✅")
 
-	var err error
-	if isDevelopment {
-		port := os.Getenv("PLANTS_APP_PORT")
-
-		err = http.ListenAndServe(":"+port, corsMiddleware(router))
-	} else {
-		err = http.ListenAndServeTLS(
-			":443",
-			"etc/tls/server.crt",
-			"etc/tls/server.key",
-			corsMiddleware(router),
-		)
-	}
+	port := os.Getenv("PLANTS_APP_PORT")
+	err := http.ListenAndServe(":"+port, corsMiddleware(router))
 	if err != nil {
 		return err
 	}

@@ -22,7 +22,7 @@ var d = delete.NewService(&inmem.Storage{})
 
 // Start initializes the REST API
 func Start() error {
-	godotenv.Load()
+	godotenv.Load(".users-env")
 
 	router := httprouter.New()
 	port := os.Getenv("USERS_APP_PORT")

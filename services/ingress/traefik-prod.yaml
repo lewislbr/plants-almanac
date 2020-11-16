@@ -1,0 +1,18 @@
+entryPoints:
+  http:
+    address: :80
+  https:
+    address: :443
+
+certificatesResolvers:
+  default:
+    acme:
+      email: billobera@gmail.com
+      storage: acme.json
+      httpChallenge:
+        entryPoint: http
+
+providers:
+  file:
+    filename: etc/traefik/routes.yaml
+    watch: true

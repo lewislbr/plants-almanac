@@ -178,7 +178,7 @@ module.exports = (env: any, options: {mode: string | undefined}) => {
       historyApiFallback: true,
       host: "0.0.0.0",
       hot: true,
-      port: process.env.WEB_APP_PORT,
+      port: 3000,
     },
     watchOptions: {
       aggregateTimeout: 300,

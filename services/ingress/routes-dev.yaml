@@ -1,0 +1,17 @@
+http:
+  routers:
+    plants-app:
+      rule: "PathPrefix(`/plants`)"
+      service: plants-app
+    web-app:
+      rule: "PathPrefix(`/`)"
+      service: web-app
+  services:
+    plants-app:
+      loadBalancer:
+        servers:
+          - url: "http://plants-app:4040/"
+    web-app:
+      loadBalancer:
+        servers:
+          - url: "http://web-app:3000/"

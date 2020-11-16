@@ -1,18 +1,15 @@
 version: "3.8"
 
 services:
-  api-gateway:
+  ingress:
     build:
-      context: ../../services/api-gateway
-      dockerfile: ../../devops/docker/api-gateway/Dockerfile.dev
-    image: lewislbr/plantdex_api-gateway:dev
-    container_name: api-gateway
-    environment:
-      - ENVOY_UID=777
-      - ENVOY_GID=777
+      context: ../../services/ingress
+      dockerfile: ../../devops/docker/ingress/Dockerfile.dev
+    image: lewislbr/plantdex_ingress:dev
+    container_name: ingress
     ports:
-      - "127.0.0.1:9901:9901"
-      - "127.0.0.1:10000:10000"
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:8080:8080"
 
   plants-app:
     build:
@@ -52,7 +49,7 @@ services:
     image: lewislbr/plantdex_web-app:dev
     container_name: web-app
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:3000:3000"
     volumes:
       - ../../services/web/app:/usr/src/app
       - ../../services/web/.env:/usr/src/app/.env

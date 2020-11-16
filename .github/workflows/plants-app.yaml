@@ -11,6 +11,10 @@ defaults:
   run:
     working-directory: services/plants/app
 
+env:
+  PLANTS_APP_NAME: plants-app
+  PLANTS_APP_PORT: 4040
+
 jobs:
   build-push:
     name: Build and push the Docker image to Docker Hub
@@ -19,11 +23,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@master
       - name: Build image
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.PLANTS_APP_NAME }}":prod -f ../../../devops/docker/plants/app/Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"$PLANTS_APP_NAME":prod -f ../../../devops/docker/plants/app/Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image
-        run: docker push "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.PLANTS_APP_NAME }}":prod
+        run: docker push "${{ secrets.DOCKER_USERNAME }}"/plantdex_"$PLANTS_APP_NAME":prod
   deploy:
     name: Deploy the Docker image to DigitalOcean
     runs-on: ubuntu-latest
@@ -33,25 +37,25 @@ jobs:
         uses: appleboy/ssh-action@master
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          PLANTS_APP_NAME: ${{ secrets.PLANTS_APP_NAME }}
-          PLANTS_APP_PORT: ${{ secrets.PLANTS_APP_PORT }}
+          PLANTS_APP_NAME: ${{ env.PLANTS_APP_NAME }}
+          PLANTS_APP_PORT: ${{ env.PLANTS_APP_PORT }}
           PLANTS_COLLECTION_NAME: ${{ secrets.PLANTS_COLLECTION_NAME }}
           PLANTS_DATABASE_NAME: ${{ secrets.PLANTS_DATABASE_NAME }}
           PLANTS_MONGODB_PRODUCTION_URI: ${{ secrets.PLANTS_MONGODB_PRODUCTION_URI }}
           WEB_PRODUCTION_URL: ${{ secrets.WEB_PRODUCTION_URL }}
         with:
-          host: ${{ secrets.DIGITALOCEAN_PLANTS_HOST }}
+          host: ${{ secrets.DIGITALOCEAN_PLANTDEX_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_KEY }}
           envs: DOCKER_USERNAME, PLANTS_APP_NAME, PLANTS_APP_PORT, PLANTS_COLLECTION_NAME, PLANTS_DATABASE_NAME, PLANTS_MONGODB_PRODUCTION_URI, PLANTS_PROXY_NAME, WEB_PRODUCTION_URL
           script: |
-            rm .env
-            echo "PLANTS_APP_PORT=$PLANTS_APP_PORT" >> .env
-            echo "PLANTS_COLLECTION_NAME=$PLANTS_COLLECTION_NAME" >> .env
-            echo "PLANTS_DATABASE_NAME=$PLANTS_DATABASE_NAME" >> .env
-            echo "PLANTS_MONGODB_PRODUCTION_URI=$PLANTS_MONGODB_PRODUCTION_URI" >> .env
-            echo "WEB_PRODUCTION_URL=$WEB_PRODUCTION_URL" >> .env
-            docker pull $DOCKER_USERNAME/plantdex_$PLANTS_APP_NAME:prod
-            docker rm -f $PLANTS_APP_NAME
-            docker run -d -p 443:443 --network plants --restart unless-stopped -v ~/tls:/etc/tls --env-file .env --name $PLANTS_APP_NAME $DOCKER_USERNAME/plantdex_$PLANTS_APP_NAME:prod
+            rm .plants-env
+            echo PLANTS_APP_PORT="$PLANTS_APP_PORT" >> .plants-env
+            echo PLANTS_COLLECTION_NAME="$PLANTS_COLLECTION_NAME" >> .plants-env
+            echo PLANTS_DATABASE_NAME="$PLANTS_DATABASE_NAME" >> .plants-env
+            echo PLANTS_MONGODB_PRODUCTION_URI="$PLANTS_MONGODB_PRODUCTION_URI" >> .plants-env
+            echo WEB_PRODUCTION_URL="$WEB_PRODUCTION_URL" >> .plants-env
+            docker pull "$DOCKER_USERNAME"/plantdex_"$PLANTS_APP_NAME":prod
+            docker rm -f "$PLANTS_APP_NAME"
+            docker run -d -p "$PLANTS_APP_PORT":"$PLANTS_APP_PORT" --network plantdex --restart unless-stopped --env-file .plants-env --name "$PLANTS_APP_NAME" "$DOCKER_USERNAME"/plantdex_"$PLANTS_APP_NAME":prod
             docker system prune -f --volumes

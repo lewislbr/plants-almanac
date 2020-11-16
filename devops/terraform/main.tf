@@ -2,7 +2,6 @@ terraform {
   required_providers {
     digitalocean = {
       source = "digitalocean/digitalocean"
-      version = "~> 1.22.1"
     }
   }
 }
@@ -12,10 +11,6 @@ variable "do_ssh_key_fingerprint" {}
 
 provider "digitalocean" {
   token = var.do_api_token
-}
-
-data "template_file" "cloud-init" {
-  template = file("${path.module}/cloud-init.yml")
 }
 
 resource "digitalocean_droplet" "plantdex" {
@@ -29,7 +24,7 @@ resource "digitalocean_droplet" "plantdex" {
   ssh_keys = [
     var.do_ssh_key_fingerprint
   ]
-  user_data = data.template_file.cloud-init.rendered
+  user_data = file("${path.module}/cloud-init.yml")
 }
 
 output "public_ipv4" {

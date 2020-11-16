@@ -1,0 +1,4 @@
+FROM traefik:latest
+COPY traefik-dev.yaml /etc/traefik/traefik.yaml
+COPY routes-dev.yaml /etc/traefik/routes.yaml
+

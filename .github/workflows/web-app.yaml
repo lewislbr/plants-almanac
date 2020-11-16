@@ -11,6 +11,10 @@ defaults:
   run:
     working-directory: services/web
 
+env:
+  WEB_APP_NAME: web-app
+  WEB_APP_PORT: 3000
+
 jobs:
   build-push:
     name: Build and push the Docker image to Docker Hub
@@ -19,13 +23,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@master
       - name: Add environment variables
-        run: echo "PLANTS_PRODUCTION_URL=${{ secrets.PLANTS_PRODUCTION_URL }}" >> .env
+        run: echo PLANTS_PRODUCTION_URL="${{ secrets.PLANTS_PRODUCTION_URL }}" >> .env
       - name: Build image
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.WEB_APP_NAME }}":prod -f ../../devops/docker/web/Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"$WEB_APP_NAME":prod -f ../../devops/docker/web/Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image
-        run: docker push "${{ secrets.DOCKER_USERNAME }}"/plantdex_"${{ secrets.WEB_APP_NAME }}":prod
+        run: docker push "${{ secrets.DOCKER_USERNAME }}"/plantdex_"$WEB_APP_NAME":prod
   deploy:
     name: Deploy the Docker image to DigitalOcean
     runs-on: ubuntu-latest
@@ -36,16 +40,18 @@ jobs:
         env:
           API_URL: ${{ secrets.API_URL }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          WEB_APP_NAME: ${{ secrets.WEB_APP_NAME }}
+          WEB_APP_NAME: ${{ env.WEB_APP_NAME }}
+          WEB_APP_PORT: ${{ env.WEB_APP_PORT }}
         with:
-          host: ${{ secrets.DIGITALOCEAN_WEB_HOST }}
+          host: ${{ secrets.DIGITALOCEAN_PLANTDEX_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_KEY }}
-          envs: API_URL, DOCKER_USERNAME, WEB_APP_NAME
+          envs: API_URL, DOCKER_USERNAME, WEB_APP_NAME, WEB_APP_PORT
           script: |
-            rm .env
-            echo "API_URL=$API_URL" >> .env
-            docker pull $DOCKER_USERNAME/plantdex_$WEB_APP_NAME:prod
-            docker rm -f $WEB_APP_NAME
-            docker run -d -p 80:80 -p 443:443 --restart unless-stopped -v certbot-etc:/etc/letsencrypt -v $PWD/dhkey:/etc/ssl/certs --env-file .env --name $WEB_APP_NAME $DOCKER_USERNAME/plantdex_$WEB_APP_NAME:prod
+            rm .web-env
+            echo API_URL="$API_URL" >> .web-env
+            echo WEB_APP_PORT="$WEB_APP_PORT" >> .web-env
+            docker pull "$DOCKER_USERNAME"/plantdex_"$WEB_APP_NAME":prod
+            docker rm -f "$WEB_APP_NAME"
+            docker run -d -p "$WEB_APP_PORT":"$WEB_APP_PORT" --network plantdex --restart unless-stopped --env-file .web-env --name "$WEB_APP_NAME" "$DOCKER_USERNAME"/plantdex_"$WEB_APP_NAME":prod
             docker system prune -f

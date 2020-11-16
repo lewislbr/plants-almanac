@@ -1,0 +1,33 @@
+http:
+  routers:
+    plants-app:
+      rule: "Host(`api.plantdex.ml`) && PathPrefix(`/plants`)"
+      service: plants-app
+      tls:
+        certResolver: default
+        options: default
+    web-app:
+      rule: "Host(`plantdex.ml`) && PathPrefix(`/`)"
+      service: web-app
+      tls:
+        certResolver: default
+        options: default
+  services:
+    plants-app:
+      loadBalancer:
+        servers:
+          - url: "http://plants-app:4040/"
+    web-app:
+      loadBalancer:
+        servers:
+          - url: "http://web-app:3000/"
+  middlewares:
+    test-redirectscheme:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS13

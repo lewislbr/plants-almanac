@@ -14,7 +14,7 @@ import (
 )
 
 func connectDatabase() *mongo.Collection {
-	godotenv.Load()
+	godotenv.Load(".plants-env")
 
 	var isDevelopment = os.Getenv("MODE") == "development"
 	var mongodbURI string
