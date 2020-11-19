@@ -3,15 +3,25 @@ http:
     plants-app:
       rule: "Host(`api.plantdex.ml`) && PathPrefix(`/plants`)"
       service: plants-app
+      middlewares:
+        - "redirect-https"
+        - "base-headers"
+        - "plants-app-headers"
+        - "gzip"
       tls:
         certResolver: default
         options: default
     web-app:
       rule: "Host(`plantdex.ml`) && PathPrefix(`/`)"
       service: web-app
+      middlewares:
+        - "redirect-https"
+        - "base-headers"
+        - "web-app-headers"
       tls:
         certResolver: default
         options: default
+
   services:
     plants-app:
       loadBalancer:
@@ -21,11 +31,34 @@ http:
       loadBalancer:
         servers:
           - url: "http://web-app:3000/"
+
   middlewares:
-    test-redirectscheme:
+    redirect-https:
       redirectScheme:
         scheme: https
         permanent: true
+    base-headers:
+      headers:
+        customResponseHeaders:
+          Server: "traefik"
+          Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
+    plants-app-headers:
+      headers:
+        customResponseHeaders:
+          Access-Control-Allow-Headers: "Content-Type, Origin"
+          Access-Control-Allow-Origin: "https://plantdex.ml"
+          Access-Control-Max-Age: "86400"
+          Content-Security-Policy: "default-src 'self'"
+    web-app-headers:
+      headers:
+        customResponseHeaders:
+          Content-Security-Policy: "default-src 'self' https://api.plantdex.ml"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          X-Content-Type-Options: "nosniff"
+          X-Frame-Options: "SAMEORIGIN"
+          X-XSS-Protection: "1; mode=block"
+    gzip:
+      compress: {}
 
 tls:
   options:

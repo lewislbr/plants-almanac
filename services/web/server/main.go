@@ -17,7 +17,7 @@ func main() {
 	fmt.Println("Web server ready ✅")
 
 	port := os.Getenv("WEB_APP_PORT")
-	err := http.ListenAndServe(":"+port, corsMiddleware(serveSPA("dist")))
+	err := http.ListenAndServe(":"+port, serveSPA("dist"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,28 +59,5 @@ func serveSPA(directory string) http.HandlerFunc {
 		} else {
 			http.ServeFile(w, r, requestedPath)
 		}
-	}
-}
-
-func corsMiddleware(h http.Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		apiURL := os.Getenv("API_URL")
-
-		w.Header().Add("Content-Security-Policy", "default-src 'self' "+apiURL)
-		w.Header().Add("Referrer-Policy", "strict-origin-when-cross-origin")
-		w.Header().Add(
-			"Strict-Transport-Security",
-			"max-age=63072000; includeSubDomains; preload",
-		)
-		w.Header().Add("X-Content-Type-Options", "nosniff")
-		w.Header().Add("X-Frame-Options", "SAMEORIGIN")
-		w.Header().Add("X-XSS-Protection", "1; mode=block")
-
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		h.ServeHTTP(w, r)
 	}
 }

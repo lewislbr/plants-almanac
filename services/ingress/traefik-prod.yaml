@@ -8,7 +8,6 @@ certificatesResolvers:
   default:
     acme:
       email: billobera@gmail.com
-      storage: acme.json
       httpChallenge:
         entryPoint: http
 
