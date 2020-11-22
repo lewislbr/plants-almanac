@@ -26,17 +26,19 @@ const PlantDetails = React.lazy(() =>
 
 export function App(): JSX.Element {
   return (
-    <BrowserRouter>
-      <Header />
-      <main className="max-w-5xl mx-auto p-5pc">
-        <React.Suspense fallback={<div>{"Loading..."}</div>}>
-          <Switch>
-            <Route exact path="/" component={AllPlants} />
-            <Route path="/add-plant" component={AddPlant} />
-            <Route path="/:id" component={PlantDetails} />
-          </Switch>
-        </React.Suspense>
-      </main>
-    </BrowserRouter>
+    <React.StrictMode>
+      <BrowserRouter>
+        <Header />
+        <main className="max-w-5xl mx-auto p-5pc">
+          <React.Suspense fallback={<div>{"Loading..."}</div>}>
+            <Switch>
+              <Route exact path="/" component={AllPlants} />
+              <Route path="/add-plant" component={AddPlant} />
+              <Route path="/:id" component={PlantDetails} />
+            </Switch>
+          </React.Suspense>
+        </main>
+      </BrowserRouter>
+    </React.StrictMode>
   )
 }
