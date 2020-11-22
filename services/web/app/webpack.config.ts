@@ -9,7 +9,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const CompressionPlugin = require("compression-webpack-plugin")
 
-module.exports = (env: any, options: {mode: string | undefined}) => {
+module.exports = (env: unknown, options: {mode: string | undefined}) => {
   const isDevelopment = options.mode !== "production"
 
   process.env.NODE_ENV = options.mode
@@ -54,7 +54,7 @@ module.exports = (env: any, options: {mode: string | undefined}) => {
               options: {
                 postcssOptions: {
                   ident: "postcss",
-                  plugins: [require("tailwindcss"), require("autoprefixer")],
+                  plugins: [require("autoprefixer")],
                 },
               },
             },

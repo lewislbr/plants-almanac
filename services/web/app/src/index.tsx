@@ -1,5 +1,7 @@
-import * as React from "react"
-import * as ReactDOM from "react-dom"
+import React from "react"
+import ReactDOM from "react-dom"
+import {Router} from "react-router"
+import {createBrowserHistory} from "history"
 import {
   ApolloClient,
   ApolloProvider,
@@ -9,7 +11,8 @@ import {
 import {App} from "./App"
 import "./styles.css"
 
-const client = new ApolloClient({
+export const history = createBrowserHistory()
+export const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
     uri:
@@ -20,9 +23,11 @@ const client = new ApolloClient({
 })
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
+  <Router history={history}>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </Router>,
   document.getElementById("root"),
 )
 

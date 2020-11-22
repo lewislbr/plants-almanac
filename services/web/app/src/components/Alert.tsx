@@ -1,11 +1,13 @@
-import * as React from "react"
+import React, {Dispatch, SetStateAction} from "react"
 
 export function Alert({
   deletePlant,
+  id,
   setAlertOpen,
 }: {
-  deletePlant: (event: React.SyntheticEvent) => Promise<void>
-  setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>
+  deletePlant: (id: string) => Promise<void>
+  id: string
+  setAlertOpen: Dispatch<SetStateAction<boolean>>
 }): JSX.Element {
   function closeAlert(): void {
     setAlertOpen(false)
@@ -19,7 +21,7 @@ export function Alert({
         </p>
         <button
           className="button button-danger mb-4"
-          onClick={deletePlant}
+          onClick={(): Promise<void> => deletePlant(id)}
           type="button"
         >
           {"Delete"}

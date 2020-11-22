@@ -1,61 +1,41 @@
-import * as React from "react"
-import {gql, useMutation, useQuery} from "@apollo/client"
+import React, {useEffect, useState} from "react"
+import {useParams} from "react-router-dom"
 import {Alert} from "../components"
-import {Delete, Plant} from "../graphql"
+import {deleteOne, listOne} from "../services"
+import {Plant} from "../graphql"
+import {DataStatus} from "../constants"
 
-const PLANT = gql`
-  query Plant($id: ID!) {
-    plant(id: $id) {
-      id
-      name
-      other_names
-      description
-      plant_season
-      harvest_season
-      prune_season
-      tips
-    }
-  }
-`
+export function PlantDetails(): JSX.Element {
+  const [data, setData] = useState({} as Plant)
+  const [dataStatus, setDataStatus] = useState(DataStatus.Idle)
+  const [alertOpen, setAlertOpen] = useState(false)
+  const {id} = useParams<{id: string}>()
 
-const DELETE = gql`
-  mutation Delete($id: ID!) {
-    delete(id: $id)
-  }
-`
+  useEffect(() => {
+    setDataStatus(DataStatus.Loading)
+    ;(async (): Promise<void> => {
+      try {
+        const result = await listOne(id)
 
-export function PlantDetails({
-  history,
-  match,
-}: {
-  history: any
-  match: any
-}): JSX.Element {
-  const {data, loading, error} = useQuery<Plant>(PLANT, {
-    variables: {id: match.params.id},
-  })
-  const [deletePlant] = useMutation<Delete>(DELETE)
-  const [alertOpen, setAlertOpen] = React.useState(false)
+        setData(result.data as Plant)
+        setDataStatus(DataStatus.Success)
+      } catch (error) {
+        setDataStatus(DataStatus.Error)
+
+        console.error(error)
+      }
+    })()
+  }, [id])
 
   function openAlert(): void {
     setAlertOpen(true)
   }
 
-  async function submitDeletePlant(event: React.SyntheticEvent): Promise<void> {
-    event.preventDefault()
-
-    await deletePlant({
-      variables: {id: data?.plant?.id as string},
-    })
-
-    history.push("/")
-  }
-
   return (
     <>
-      {loading ? (
+      {dataStatus === DataStatus.Loading ? (
         <p>{"Loading..."}</p>
-      ) : error ? (
+      ) : dataStatus === DataStatus.Error ? (
         <p>{"ERROR"}</p>
       ) : (
         <>
@@ -87,16 +67,12 @@ export function PlantDetails({
             <p className="data-body">{data?.plant?.tips || "No data yet"}</p>
           </section>
           <div className="flex justify-center">
-            <button
-              className="button button-danger"
-              type="button"
-              onClick={openAlert}
-            >
+            <button className="button button-danger" onClick={openAlert}>
               {"Delete plant"}
             </button>
           </div>
           {alertOpen ? (
-            <Alert {...{deletePlant: submitDeletePlant, setAlertOpen}} />
+            <Alert {...{deletePlant: deleteOne, id, setAlertOpen}} />
           ) : null}
         </>
       )}
