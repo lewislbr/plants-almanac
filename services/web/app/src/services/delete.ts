@@ -8,7 +8,19 @@ const DELETE = gql`
 `
 
 export async function deleteOne(id: string): Promise<void> {
-  await client.mutate({mutation: DELETE, variables: {id: id}})
+  await client.mutate({
+    mutation: DELETE,
+    update(cache) {
+      cache.modify({
+        fields: {
+          plants(_, {DELETE}): unknown {
+            return DELETE
+          },
+        },
+      })
+    },
+    variables: {id: id},
+  })
 
   history.push("/")
 }

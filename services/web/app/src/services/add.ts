@@ -38,7 +38,24 @@ export async function addOne(plant: Record<string, unknown>): Promise<void> {
     tips: plant.tips || null,
   }
 
-  await client.mutate({mutation: ADD, variables: plantDTO})
+  await client.mutate({
+    mutation: ADD,
+    update(cache, {data: {add}}) {
+      cache.modify({
+        fields: {
+          plants(existingPlantRefs = []): unknown[] {
+            const newPlantRef = cache.writeQuery({
+              data: add,
+              query: ADD,
+            })
+
+            return [...existingPlantRefs, newPlantRef]
+          },
+        },
+      })
+    },
+    variables: plantDTO,
+  })
 
   history.push("/")
 }
