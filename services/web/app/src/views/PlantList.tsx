@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {Link} from "react-router-dom"
 import {PlantCard} from "../components"
-import {listAll} from "../services"
+import {listAll} from "../services/plant"
 import {Plants} from "../graphql"
 import {DataStatus} from "../constants"
 

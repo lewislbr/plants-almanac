@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {useParams} from "react-router-dom"
 import {Alert} from "../components"
-import {deleteOne, listOne} from "../services"
+import {deleteOne, listOne} from "../services/plant"
 import {Plant} from "../graphql"
 import {DataStatus} from "../constants"
 

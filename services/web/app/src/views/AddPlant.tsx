@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useState} from "react"
-import {addOne} from "../services"
+import {addOne} from "../services/plant"
 
 export function AddPlant(): JSX.Element {
   const [name, setName] = useState("")
