@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from "react"
-import {Link} from "react-router-dom"
+import {Link as RouterLink} from "react-router-dom"
+import {Link, Typography} from "@material-ui/core"
+import {Skeleton} from "@material-ui/lab"
 import {PlantCard} from "../components"
 import {listAll} from "../services/plant"
 import {Plants} from "../graphql"
@@ -27,18 +29,24 @@ export function PlantList(): JSX.Element {
 
   return (
     <>
-      <section>
-        <h1 className="page-title">{"Plants"}</h1>
-      </section>
+      <Typography gutterBottom variant="h1">
+        {"Plants"}
+      </Typography>
       <section className="mt-8">
         {dataStatus === DataStatus.Loading ? (
-          <p>{"Loading..."}</p>
+          <>
+            <Skeleton animation="wave" height={50} />
+            <Skeleton animation="wave" height={50} />
+            <Skeleton animation="wave" height={50} />
+            <Skeleton animation="wave" height={50} />
+            <Skeleton animation="wave" height={50} />
+          </>
         ) : dataStatus === DataStatus.Error ? (
-          <p>{"ERROR"}</p>
+          <Typography>{"ERROR"}</Typography>
         ) : (
           <div>
-            {data?.plants?.map((plant) => (
-              <Link to={`/${plant?.id}`} key={plant?.id}>
+            {data.plants?.map((plant) => (
+              <Link component={RouterLink} key={plant?.id} to={`/${plant?.id}`}>
                 <PlantCard {...{name: plant?.name}} />
               </Link>
             ))}

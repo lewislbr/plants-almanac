@@ -5,8 +5,6 @@ const path = require("path")
 const Dotenv = require("dotenv-webpack")
 const TerserPlugin = require("terser-webpack-plugin")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const CompressionPlugin = require("compression-webpack-plugin")
 
 module.exports = (env: unknown, options: {mode: string | undefined}) => {
@@ -36,29 +34,6 @@ module.exports = (env: unknown, options: {mode: string | undefined}) => {
               cacheDirectory: true,
             },
           },
-        },
-        {
-          test: /\.css$/,
-          use: [
-            {loader: MiniCssExtractPlugin.loader},
-            {
-              loader: "css-loader",
-              options: {
-                importLoaders: 1,
-                modules: false,
-                sourceMap: true,
-              },
-            },
-            {
-              loader: "postcss-loader",
-              options: {
-                postcssOptions: {
-                  ident: "postcss",
-                  plugins: [require("autoprefixer")],
-                },
-              },
-            },
-          ],
         },
         {
           test: /\.(woff|woff2|eot|ttf|otf)$/,
@@ -101,7 +76,7 @@ module.exports = (env: unknown, options: {mode: string | undefined}) => {
     },
     devtool: isDevelopment ? "eval-cheap-module-source-map" : "source-map",
     optimization: {
-      minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+      minimizer: [new TerserPlugin()],
       runtimeChunk: {
         name: "runtime",
       },
@@ -140,9 +115,6 @@ module.exports = (env: unknown, options: {mode: string | undefined}) => {
               useShortDoctype: true,
             },
         template: "./src/index.html",
-      }),
-      new MiniCssExtractPlugin({
-        filename: isDevelopment ? "[name].css" : "[name].[contenthash:8].css",
       }),
       ...(isDevelopment
         ? []

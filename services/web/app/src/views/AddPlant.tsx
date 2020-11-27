@@ -1,4 +1,5 @@
 import React, {ChangeEvent, useState} from "react"
+import {Button, TextField, Typography} from "@material-ui/core"
 import {addOne} from "../services/plant"
 
 export function AddPlant(): JSX.Element {
@@ -47,90 +48,85 @@ export function AddPlant(): JSX.Element {
     setTips(event.target.value)
   }
 
+  async function addPlant(): Promise<void> {
+    await addOne(plantState)
+  }
+
   return (
     <>
-      <section>
-        <div>
-          <h1 className="page-title">{"Add Plant"}</h1>
-        </div>
-      </section>
-      <section>
-        <div>
-          <label className="label">
-            {"Name"}{" "}
-            <span className="text-gray-500 text-xs">{"(Required)"}</span>
-          </label>
-          <input
-            className="input"
-            onChange={updateName}
-            required
-            type="text"
-            value={name}
-          />
-        </div>
-        <div>
-          <label className="label">{"Other Names"}</label>
-          <input
-            className="input"
-            onChange={updateOtherNames}
-            type="text"
-            value={otherNames}
-          />
-        </div>
-        <div>
-          <label className="label">{"Description"}</label>
-          <textarea
-            className="input"
-            onChange={updateDescription}
-            rows={4}
-            value={description}
-          />
-        </div>
-        <div>
-          <label className="label">{"Plant Season"}</label>
-          <input
-            className="input"
-            onChange={updatePlantSeason}
-            type="text"
-            value={plantSeason}
-          />
-        </div>
-        <div>
-          <label className="label">{"Harvest Season"}</label>
-          <input
-            className="input"
-            onChange={updateHarvestSeason}
-            type="text"
-            value={harvestSeason}
-          />
-        </div>
-        <div>
-          <label className="label">{"Prune Season"}</label>
-          <input
-            className="input"
-            onChange={updatePruneSeason}
-            type="text"
-            value={pruneSeason}
-          />
-        </div>
-        <div>
-          <label className="label">{"Tips"}</label>
-          <textarea
-            className="input"
-            onChange={updateTips}
-            rows={4}
-            value={tips}
-          />
-        </div>
-        <div className="flex justify-center pt-6">
-          <button
-            className="button button-primary"
-            onClick={(): Promise<void> => addOne(plantState)}
-          >
-            {"Add plant"}
-          </button>
-        </div>
-      </section>
+      <Typography gutterBottom variant="h1">
+        {"Add Plant"}
+      </Typography>
+      <TextField
+        label="Name"
+        fullWidth
+        margin={"dense"}
+        onChange={updateName}
+        required
+        value={name}
+        variant="outlined"
+      />
+      <TextField
+        label="Other names"
+        fullWidth
+        margin={"dense"}
+        onChange={updateOtherNames}
+        value={otherNames}
+        variant="outlined"
+      />
+      <TextField
+        label="Description"
+        fullWidth
+        margin={"dense"}
+        multiline
+        onChange={updateDescription}
+        rows={4}
+        value={description}
+        variant="outlined"
+      />
+      <TextField
+        label="Plant season"
+        fullWidth
+        margin={"dense"}
+        onChange={updatePlantSeason}
+        value={plantSeason}
+        variant="outlined"
+      />
+      <TextField
+        label="Harvest season"
+        fullWidth
+        margin={"dense"}
+        onChange={updateHarvestSeason}
+        value={harvestSeason}
+        variant="outlined"
+      />
+      <TextField
+        label="Prune season"
+        fullWidth
+        margin={"dense"}
+        onChange={updatePruneSeason}
+        value={pruneSeason}
+        variant="outlined"
+      />
+      <TextField
+        label="Tips"
+        fullWidth
+        margin={"dense"}
+        multiline
+        onChange={updateTips}
+        rows={4}
+        value={tips}
+        variant="outlined"
+      />
+      <Button
+        color="primary"
+        fullWidth
+        onClick={addPlant}
+        style={{marginTop: "30px"}}
+        variant="contained"
+      >
+        {"Add plant"}
+      </Button>
     </>
   )
 }

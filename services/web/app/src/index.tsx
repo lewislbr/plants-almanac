@@ -8,8 +8,9 @@ import {
   HttpLink,
   InMemoryCache,
 } from "@apollo/client"
+import {CssBaseline, ThemeProvider} from "@material-ui/core"
 import {App} from "./App"
-import "./styles.css"
+import {theme} from "./theme"
 
 export const history = createBrowserHistory()
 export const client = new ApolloClient({
@@ -25,7 +26,10 @@ export const client = new ApolloClient({
 ReactDOM.render(
   <Router history={history}>
     <ApolloProvider client={client}>
-      <App />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
     </ApolloProvider>
   </Router>,
   document.getElementById("root"),

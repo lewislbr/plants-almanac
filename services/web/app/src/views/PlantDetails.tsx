@@ -1,6 +1,15 @@
 import React, {useEffect, useState} from "react"
 import {useParams} from "react-router-dom"
-import {Alert} from "../components"
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Typography,
+} from "@material-ui/core"
 import {deleteOne, listOne} from "../services/plant"
 import {Plant} from "../graphql"
 import {DataStatus} from "../constants"
@@ -31,49 +40,113 @@ export function PlantDetails(): JSX.Element {
     setAlertOpen(true)
   }
 
+  function closeAlert(): void {
+    setAlertOpen(false)
+  }
+
+  async function deletePlant(): Promise<void> {
+    await deleteOne(id)
+  }
+
   return (
     <>
       {dataStatus === DataStatus.Loading ? (
-        <p>{"Loading..."}</p>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "100px",
+          }}
+        >
+          <CircularProgress />
+        </div>
       ) : dataStatus === DataStatus.Error ? (
-        <p>{"ERROR"}</p>
+        <Typography>{"ERROR"}</Typography>
       ) : (
         <>
+          <Typography gutterBottom variant="h1">
+            {data.plant?.name}
+          </Typography>
           <section>
-            <h1 className="page-title">{data?.plant?.name}</h1>
+            <div style={{marginBottom: "30px"}}>
+              <Typography gutterBottom variant="h6">
+                {"Other Names"}
+              </Typography>
+              <Typography gutterBottom variant="body1">
+                {data.plant?.other_names || "No data yet"}
+              </Typography>
+            </div>
+            <div style={{marginBottom: "30px"}}>
+              <Typography gutterBottom variant="h6">
+                {"Description"}
+              </Typography>
+              <Typography gutterBottom variant="body1">
+                {data.plant?.description || "No data yet"}
+              </Typography>
+            </div>
+            <div style={{marginBottom: "30px"}}>
+              <Typography gutterBottom variant="h6">
+                {"Plant Season"}
+              </Typography>
+              <Typography gutterBottom variant="body1">
+                {data.plant?.plant_season || "No data yet"}
+              </Typography>
+            </div>
+            <div style={{marginBottom: "30px"}}>
+              <Typography gutterBottom variant="h6">
+                {"Harvest Season"}
+              </Typography>
+              <Typography gutterBottom variant="body1">
+                {data.plant?.harvest_season || "No data yet"}
+              </Typography>
+            </div>
+            <div style={{marginBottom: "30px"}}>
+              <Typography gutterBottom variant="h6">
+                {"Prune Season"}
+              </Typography>
+              <Typography gutterBottom variant="body1">
+                {data.plant?.prune_season || "No data yet"}
+              </Typography>
+            </div>
+            <div style={{marginBottom: "30px"}}>
+              <Typography gutterBottom variant="h6">
+                {"Tips"}
+              </Typography>
+              <Typography gutterBottom variant="body1">
+                {data.plant?.tips || "No data yet"}
+              </Typography>
+            </div>
           </section>
-          <section className="mb-12">
-            <h5 className="data-title">{"Other Names:"}</h5>
-            <p className="data-body">
-              {data?.plant?.other_names || "No data yet"}
-            </p>
-            <h5 className="data-title">{"Description:"}</h5>
-            <p className="data-body">
-              {data?.plant?.description || "No data yet"}
-            </p>
-            <h5 className="data-title">{"Plant Season:"}</h5>
-            <p className="data-body">
-              {data?.plant?.plant_season || "No data yet"}
-            </p>
-            <h5 className="data-title">{"Harvest Season:"}</h5>
-            <p className="data-body">
-              {data?.plant?.harvest_season || "No data yet"}
-            </p>
-            <h5 className="data-title">{"Prune Season:"}</h5>
-            <p className="data-body">
-              {data?.plant?.prune_season || "No data yet"}
-            </p>
-            <h5 className="data-title">{"Tips:"}</h5>
-            <p className="data-body">{data?.plant?.tips || "No data yet"}</p>
-          </section>
-          <div className="flex justify-center">
-            <button className="button button-danger" onClick={openAlert}>
-              {"Delete plant"}
-            </button>
-          </div>
-          {alertOpen ? (
-            <Alert {...{deletePlant: deleteOne, id, setAlertOpen}} />
-          ) : null}
+          <Button
+            color="secondary"
+            fullWidth
+            onClick={openAlert}
+            style={{marginTop: "30px"}}
+            variant="contained"
+          >
+            {"Delete plant"}
+          </Button>
+          <Dialog onClose={closeAlert} open={alertOpen}>
+            <DialogTitle>{"Delete plant"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {"The plant will be deleted."}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={closeAlert}>
+                {"Cancel"}
+              </Button>
+              <Button
+                autoFocus
+                color="primary"
+                onClick={deletePlant}
+                variant="contained"
+              >
+                {"Delete"}
+              </Button>
+            </DialogActions>
+          </Dialog>
         </>
       )}
     </>

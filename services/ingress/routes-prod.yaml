@@ -52,7 +52,7 @@ http:
     web-app-headers:
       headers:
         customResponseHeaders:
-          Content-Security-Policy: "default-src 'self' https://api.plantdex.ml"
+          Content-Security-Policy: "default-src 'self' https://api.plantdex.ml; style-src 'unsafe-inline'"
           Referrer-Policy: "strict-origin-when-cross-origin"
           X-Content-Type-Options: "nosniff"
           X-Frame-Options: "SAMEORIGIN"
