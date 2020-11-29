@@ -5,22 +5,22 @@ import {Skeleton} from "@material-ui/lab"
 import {PlantCard} from "../components"
 import {listAll} from "../services/plant"
 import {Plants} from "../graphql"
-import {DataStatus} from "../constants"
+import {FetchStatus} from "../constants"
 
 export function PlantList(): JSX.Element {
   const [data, setData] = useState({} as Plants)
-  const [dataStatus, setDataStatus] = useState(DataStatus.Idle)
+  const [fetchStatus, setFetchStatus] = useState(FetchStatus.Idle)
 
   useEffect(() => {
-    setDataStatus(DataStatus.Loading)
+    setFetchStatus(FetchStatus.Loading)
     ;(async (): Promise<void> => {
       try {
         const result = await listAll()
 
         setData(result.data as Plants)
-        setDataStatus(DataStatus.Success)
+        setFetchStatus(FetchStatus.Success)
       } catch (error) {
-        setDataStatus(DataStatus.Error)
+        setFetchStatus(FetchStatus.Error)
 
         console.error(error)
       }
@@ -32,16 +32,16 @@ export function PlantList(): JSX.Element {
       <Typography gutterBottom variant="h1">
         {"Plants"}
       </Typography>
-      <section className="mt-8">
-        {dataStatus === DataStatus.Loading ? (
+      <section>
+        {fetchStatus === FetchStatus.Loading ? (
           <>
-            <Skeleton animation="wave" height={50} />
-            <Skeleton animation="wave" height={50} />
-            <Skeleton animation="wave" height={50} />
-            <Skeleton animation="wave" height={50} />
-            <Skeleton animation="wave" height={50} />
+            <Skeleton animation="wave" height={80} />
+            <Skeleton animation="wave" height={80} />
+            <Skeleton animation="wave" height={80} />
+            <Skeleton animation="wave" height={80} />
+            <Skeleton animation="wave" height={80} />
           </>
-        ) : dataStatus === DataStatus.Error ? (
+        ) : fetchStatus === FetchStatus.Error ? (
           <Typography>{"ERROR"}</Typography>
         ) : (
           <div>

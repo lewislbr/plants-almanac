@@ -1,7 +1,5 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import {Router} from "react-router"
-import {createBrowserHistory} from "history"
 import {
   ApolloClient,
   ApolloProvider,
@@ -12,7 +10,6 @@ import {CssBaseline, ThemeProvider} from "@material-ui/core"
 import {App} from "./App"
 import {theme} from "./theme"
 
-export const history = createBrowserHistory()
 export const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
@@ -24,14 +21,12 @@ export const client = new ApolloClient({
 })
 
 ReactDOM.render(
-  <Router history={history}>
-    <ApolloProvider client={client}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <App />
-      </ThemeProvider>
-    </ApolloProvider>
-  </Router>,
+  <ApolloProvider client={client}>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <App />
+    </ThemeProvider>
+  </ApolloProvider>,
   document.getElementById("root"),
 )
 

@@ -1,35 +1,28 @@
 import React, {useEffect, useState} from "react"
-import {useParams} from "react-router-dom"
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Typography,
-} from "@material-ui/core"
+import {useHistory, useParams} from "react-router-dom"
+import {Button, CircularProgress, Typography} from "@material-ui/core"
+import {Alert} from "../components"
 import {deleteOne, listOne} from "../services/plant"
 import {Plant} from "../graphql"
-import {DataStatus} from "../constants"
+import {FetchStatus} from "../constants"
 
 export function PlantDetails(): JSX.Element {
   const [data, setData] = useState({} as Plant)
-  const [dataStatus, setDataStatus] = useState(DataStatus.Idle)
+  const [fetchStatus, setFetchStatus] = useState(FetchStatus.Idle)
   const [alertOpen, setAlertOpen] = useState(false)
   const {id} = useParams<{id: string}>()
+  const history = useHistory()
 
   useEffect(() => {
-    setDataStatus(DataStatus.Loading)
+    setFetchStatus(FetchStatus.Loading)
     ;(async (): Promise<void> => {
       try {
         const result = await listOne(id)
 
         setData(result.data as Plant)
-        setDataStatus(DataStatus.Success)
+        setFetchStatus(FetchStatus.Success)
       } catch (error) {
-        setDataStatus(DataStatus.Error)
+        setFetchStatus(FetchStatus.Error)
 
         console.error(error)
       }
@@ -45,12 +38,18 @@ export function PlantDetails(): JSX.Element {
   }
 
   async function deletePlant(): Promise<void> {
-    await deleteOne(id)
+    try {
+      await deleteOne(id)
+
+      history.push("/")
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
     <>
-      {dataStatus === DataStatus.Loading ? (
+      {fetchStatus === FetchStatus.Loading ? (
         <div
           style={{
             display: "flex",
@@ -60,7 +59,7 @@ export function PlantDetails(): JSX.Element {
         >
           <CircularProgress />
         </div>
-      ) : dataStatus === DataStatus.Error ? (
+      ) : fetchStatus === FetchStatus.Error ? (
         <Typography>{"ERROR"}</Typography>
       ) : (
         <>
@@ -126,27 +125,13 @@ export function PlantDetails(): JSX.Element {
           >
             {"Delete plant"}
           </Button>
-          <Dialog onClose={closeAlert} open={alertOpen}>
-            <DialogTitle>{"Delete plant"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                {"The plant will be deleted."}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={closeAlert}>
-                {"Cancel"}
-              </Button>
-              <Button
-                autoFocus
-                color="primary"
-                onClick={deletePlant}
-                variant="contained"
-              >
-                {"Delete"}
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <Alert
+            action={deletePlant}
+            cancel={closeAlert}
+            message={data.plant?.name + " will be deleted."}
+            open={alertOpen}
+            title={"Delete plant"}
+          />
         </>
       )}
     </>

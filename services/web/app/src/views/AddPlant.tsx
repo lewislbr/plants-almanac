@@ -1,4 +1,5 @@
 import React, {ChangeEvent, useState} from "react"
+import {useHistory} from "react-router-dom"
 import {Button, TextField, Typography} from "@material-ui/core"
 import {addOne} from "../services/plant"
 
@@ -19,6 +20,7 @@ export function AddPlant(): JSX.Element {
     pruneSeason,
     tips,
   }
+  const history = useHistory()
 
   function updateName(event: ChangeEvent<HTMLInputElement>): void {
     setName(event.target.value)
@@ -49,7 +51,13 @@ export function AddPlant(): JSX.Element {
   }
 
   async function addPlant(): Promise<void> {
-    await addOne(plantState)
+    try {
+      await addOne(plantState)
+
+      history.push("/")
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (

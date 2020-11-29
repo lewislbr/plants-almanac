@@ -1,5 +1,5 @@
 import {ApolloQueryResult, gql} from "@apollo/client"
-import {client, history} from "../index"
+import {client} from "../index"
 
 export async function addOne(plant: Record<string, unknown>): Promise<void> {
   const ADD = gql`
@@ -56,8 +56,6 @@ export async function addOne(plant: Record<string, unknown>): Promise<void> {
     },
     variables: plantDTO,
   })
-
-  history.push("/")
 }
 
 export async function listAll(): Promise<ApolloQueryResult<unknown>> {
@@ -112,6 +110,4 @@ export async function deleteOne(id: string): Promise<void> {
     },
     variables: {id: id},
   })
-
-  history.push("/")
 }

@@ -1,4 +1,4 @@
-export enum DataStatus {
+export enum FetchStatus {
   Idle,
   Loading,
   Success,

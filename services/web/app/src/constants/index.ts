@@ -1,1 +1,1 @@
-export {DataStatus} from "./data-status"
+export {FetchStatus} from "./fetch-status"
