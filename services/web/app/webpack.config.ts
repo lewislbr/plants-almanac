@@ -3,7 +3,6 @@
 const webpack = require("webpack")
 const path = require("path")
 const Dotenv = require("dotenv-webpack")
-const TerserPlugin = require("terser-webpack-plugin")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const CompressionPlugin = require("compression-webpack-plugin")
 
@@ -35,48 +34,10 @@ module.exports = (env: unknown, options: {mode: string | undefined}) => {
             },
           },
         },
-        {
-          test: /\.(woff|woff2|eot|ttf|otf)$/,
-          use: ["file-loader"],
-        },
-        {
-          test: /\.(png|jpe?g|gif|svg)$/,
-          use: [
-            {
-              loader: "file-loader",
-              options: {
-                outputPath: "images",
-              },
-            },
-            {
-              loader: "image-webpack-loader",
-              options: {
-                mozjpeg: {
-                  progressive: true,
-                  quality: 65,
-                },
-                optipng: {
-                  enabled: false,
-                },
-                pngquant: {
-                  quality: "65-90",
-                  speed: 4,
-                },
-                gifsicle: {
-                  interlaced: false,
-                },
-                webp: {
-                  quality: 75,
-                },
-              },
-            },
-          ],
-        },
       ],
     },
     devtool: isDevelopment ? "eval-cheap-module-source-map" : "source-map",
     optimization: {
-      minimizer: [new TerserPlugin()],
       runtimeChunk: {
         name: "runtime",
       },
