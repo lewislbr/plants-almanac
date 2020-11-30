@@ -1,26 +1,35 @@
 package rest
 
 import (
-	"io"
-	"users/pkg/edit"
-	u "users/pkg/user"
-
 	"encoding/json"
+	"io"
 	"net/http"
+
 	"users/pkg/add"
 	"users/pkg/delete"
+	"users/pkg/edit"
 	"users/pkg/list"
+	u "users/pkg/user"
 
 	"github.com/julienschmidt/httprouter"
 )
 
-func listUser(ls list.Service) func(
-	w http.ResponseWriter,
-	r *http.Request,
-	ps httprouter.Params,
-) {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		id := ps.ByName("id")
+func addUser(as add.Service) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var user u.User
+
+		json.NewDecoder(r.Body).Decode(&user)
+
+		as.AddUser(user)
+
+		io.WriteString(w, user.Name+" added")
+	}
+}
+
+func listUser(ls list.Service) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		params := httprouter.ParamsFromContext(r.Context())
+		id := params.ByName("id")
 		user, err := ls.ListUser(u.ID(id))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
@@ -33,33 +42,14 @@ func listUser(ls list.Service) func(
 	}
 }
 
-func addUser(as add.Service) func(
-	w http.ResponseWriter,
-	r *http.Request,
-	ps httprouter.Params,
-) {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func editUser(es edit.Service) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		var user u.User
 
 		json.NewDecoder(r.Body).Decode(&user)
 
-		as.AddUser(user)
-
-		io.WriteString(w, user.Name+" added")
-	}
-}
-
-func editUser(es edit.Service) func(
-	w http.ResponseWriter,
-	r *http.Request,
-	ps httprouter.Params,
-) {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		var user u.User
-
-		json.NewDecoder(r.Body).Decode(&user)
-
-		id := ps.ByName("id")
+		params := httprouter.ParamsFromContext(r.Context())
+		id := params.ByName("id")
 		err := es.EditUser(u.ID(id), user)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
@@ -73,10 +63,10 @@ func editUser(es edit.Service) func(
 func deleteUser(ds delete.Service) func(
 	w http.ResponseWriter,
 	r *http.Request,
-	ps httprouter.Params,
 ) {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		id := ps.ByName("id")
+	return func(w http.ResponseWriter, r *http.Request) {
+		params := httprouter.ParamsFromContext(r.Context())
+		id := params.ByName("id")
 		err := ds.DeleteUser(u.ID(id))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)

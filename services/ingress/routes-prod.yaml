@@ -11,6 +11,17 @@ http:
       tls:
         certResolver: default
         options: default
+    users-app:
+      rule: "Host(`api.plantdex.ml`) && PathPrefix(`/users`)"
+      service: plants-app
+      middlewares:
+        - "redirect-https"
+        - "base-headers"
+        - "users-app-headers"
+        - "gzip"
+      tls:
+        certResolver: default
+        options: default
     web-app:
       rule: "Host(`plantdex.ml`) && PathPrefix(`/`)"
       service: web-app
@@ -27,6 +38,10 @@ http:
       loadBalancer:
         servers:
           - url: "http://plants-app:4040/"
+    users-app:
+      loadBalancer:
+        servers:
+          - url: "http://users-app:4041/"
     web-app:
       loadBalancer:
         servers:
@@ -46,6 +61,15 @@ http:
       headers:
         customResponseHeaders:
           Access-Control-Allow-Headers: "Content-Type, Origin"
+          Access-Control-Allow-Methods: "POST"
+          Access-Control-Allow-Origin: "https://plantdex.ml"
+          Access-Control-Max-Age: "86400"
+          Content-Security-Policy: "default-src 'self'"
+    users-app-headers:
+      headers:
+        customResponseHeaders:
+          Access-Control-Allow-Headers: "Content-Type, Origin"
+          Access-Control-Allow-Methods: "GET, POST, PATCH, DELETE"
           Access-Control-Allow-Origin: "https://plantdex.ml"
           Access-Control-Max-Age: "86400"
           Content-Security-Policy: "default-src 'self'"

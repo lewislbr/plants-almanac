@@ -42,8 +42,8 @@ var plantType = graphql.NewObject(
 		},
 	},
 )
-var l = list.NewService(&mongodb.Storage{})
 var a = add.NewService(&mongodb.Storage{})
+var l = list.NewService(&mongodb.Storage{})
 var e = edit.NewService(&mongodb.Storage{})
 var d = delete.NewService(&mongodb.Storage{})
 

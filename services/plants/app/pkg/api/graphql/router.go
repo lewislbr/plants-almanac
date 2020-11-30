@@ -29,10 +29,10 @@ func Start() error {
 
 	router := httprouter.New()
 
-	router.POST("/plants", responseMiddleware(graphqlHandler))
+	router.Handler("POST", "/plants", graphqlHandler)
 
 	if isDevelopment {
-		router.GET("/playground", responseMiddleware(playgroundHandler))
+		router.Handler("GET", "/playground", playgroundHandler)
 	}
 
 	fmt.Println("Plants API ready ✅")
@@ -44,10 +44,4 @@ func Start() error {
 	}
 
 	return nil
-}
-
-func responseMiddleware(h http.Handler) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		h.ServeHTTP(w, r)
-	}
 }

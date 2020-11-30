@@ -5,6 +5,11 @@ http:
       service: plants-app
       middlewares:
         - "base-headers"
+    users-app:
+      rule: "PathPrefix(`/users`)"
+      service: users-app
+      middlewares:
+        - "base-headers"
     web-app:
       rule: "PathPrefix(`/`)"
       service: web-app
@@ -14,6 +19,10 @@ http:
       loadBalancer:
         servers:
           - url: "http://plants-app:4040/"
+    users-app:
+      loadBalancer:
+        servers:
+          - url: "http://plants-app:4041/"
     web-app:
       loadBalancer:
         servers:
