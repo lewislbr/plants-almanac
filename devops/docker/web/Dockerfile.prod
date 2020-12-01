@@ -7,16 +7,5 @@ COPY app .env ./
 ENV NODE_ENV=production
 RUN npm run build
 
-FROM golang:1-alpine AS server
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64
-WORKDIR /usr/src/app
-COPY server ./
-RUN go build -ldflags '-s -w' main.go
-
-FROM scratch
+FROM lewislbr/gss:latest
 COPY --from=app /usr/src/app/dist ./dist
-COPY --from=server /usr/src/app/main ./
-ENTRYPOINT ["/main"]

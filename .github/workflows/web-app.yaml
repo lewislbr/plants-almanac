@@ -48,10 +48,7 @@ jobs:
           key: ${{ secrets.DIGITALOCEAN_KEY }}
           envs: API_URL, DOCKER_USERNAME, WEB_APP_NAME, WEB_APP_PORT
           script: |
-            rm .web-env
-            echo API_URL="$API_URL" >> .web-env
-            echo WEB_APP_PORT="$WEB_APP_PORT" >> .web-env
             docker pull "$DOCKER_USERNAME"/plantdex_"$WEB_APP_NAME":prod
             docker rm -f "$WEB_APP_NAME"
-            docker run -d -p "$WEB_APP_PORT":"$WEB_APP_PORT" --network plantdex --restart unless-stopped --env-file .web-env --name "$WEB_APP_NAME" "$DOCKER_USERNAME"/plantdex_"$WEB_APP_NAME":prod
+            docker run -d -p "$WEB_APP_PORT":"$WEB_APP_PORT" --network plantdex --restart unless-stopped --name "$WEB_APP_NAME" "$DOCKER_USERNAME"/plantdex_"$WEB_APP_NAME":prod -p "$WEB_APP_PORT"
             docker system prune -f
