@@ -55,8 +55,8 @@ http:
     base-headers:
       headers:
         customResponseHeaders:
-          Server: "traefik"
           Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
+          Via: "traefik"
     plants-app-headers:
       headers:
         customResponseHeaders:
@@ -65,6 +65,7 @@ http:
           Access-Control-Allow-Origin: "https://plantdex.ml"
           Access-Control-Max-Age: "86400"
           Content-Security-Policy: "default-src 'self'"
+          Server: "Go"
     users-app-headers:
       headers:
         customResponseHeaders:
@@ -73,11 +74,13 @@ http:
           Access-Control-Allow-Origin: "https://plantdex.ml"
           Access-Control-Max-Age: "86400"
           Content-Security-Policy: "default-src 'self'"
+          Server: "Go"
     web-app-headers:
       headers:
         customResponseHeaders:
           Content-Security-Policy: "default-src 'self' https://api.plantdex.ml; style-src 'unsafe-inline'"
           Referrer-Policy: "strict-origin-when-cross-origin"
+          Server: "GSS"
           X-Content-Type-Options: "nosniff"
           X-Frame-Options: "SAMEORIGIN"
           X-XSS-Protection: "1; mode=block"

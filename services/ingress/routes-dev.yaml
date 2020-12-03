@@ -3,13 +3,9 @@ http:
     plants-app:
       rule: "PathPrefix(`/plants`)"
       service: plants-app
-      middlewares:
-        - "base-headers"
     users-app:
       rule: "PathPrefix(`/users`)"
       service: users-app
-      middlewares:
-        - "base-headers"
     web-app:
       rule: "PathPrefix(`/`)"
       service: web-app
@@ -27,9 +23,3 @@ http:
       loadBalancer:
         servers:
           - url: "http://web-app:3000/"
-
-  middlewares:
-    base-headers:
-      headers:
-        customResponseHeaders:
-          Server: "traefik"
