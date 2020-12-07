@@ -10,6 +10,8 @@
 export interface Plant_plant {
   __typename: "Plant"
   id: string | null
+  created_at: any | null
+  edited_at: any | null
   name: string | null
   other_names: string | null
   description: string | null

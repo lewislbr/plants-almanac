@@ -50,6 +50,16 @@ var collection = connectDatabase()
 // Storage provides methods to store data in MongoDB
 type Storage struct{}
 
+// InsertOne adds a plant
+func (s *Storage) InsertOne(plant p.Plant) interface{} {
+	result, err := collection.InsertOne(context.Background(), plant)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return result.InsertedID
+}
+
 // FindAll returns all the plants
 func (s *Storage) FindAll() []*p.Plant {
 	cursor, err := collection.Find(context.Background(), bson.M{})
@@ -78,21 +88,13 @@ func (s *Storage) FindOne(id p.ID) *p.Plant {
 	return result
 }
 
-// InsertOne adds a plant
-func (s *Storage) InsertOne(plant p.Plant) interface{} {
-	result, err := collection.InsertOne(context.Background(), plant)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return result.InsertedID
-}
-
-// EditOne modifies the queried plant
-func (s *Storage) EditOne(id p.ID, plant p.Plant) int64 {
+// UpdateOne modifies the queried plant
+func (s *Storage) UpdateOne(id p.ID, plant p.Plant) int64 {
 	filter := bson.M{"_id": id}
 	update := bson.M{
 		"$set": bson.M{
+			"created_at":     plant.CreatedAt,
+			"edited_at":      plant.EditedAt,
 			"name":           plant.Name,
 			"other_names":    plant.OtherNames,
 			"description":    plant.Description,

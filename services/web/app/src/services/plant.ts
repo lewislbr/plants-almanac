@@ -64,6 +64,8 @@ export async function listAll(): Promise<ApolloQueryResult<unknown>> {
     query Plants {
       plants {
         id
+        created_at
+        edited_at
         name
       }
     }
@@ -77,6 +79,8 @@ export async function listOne(id: string): Promise<ApolloQueryResult<unknown>> {
     query Plant($id: ID!) {
       plant(id: $id) {
         id
+        created_at
+        edited_at
         name
         other_names
         description

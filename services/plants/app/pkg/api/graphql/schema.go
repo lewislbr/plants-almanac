@@ -18,6 +18,12 @@ var plantType = graphql.NewObject(
 			"id": &graphql.Field{
 				Type: graphql.ID,
 			},
+			"created_at": &graphql.Field{
+				Type: graphql.DateTime,
+			},
+			"edited_at": &graphql.Field{
+				Type: graphql.DateTime,
+			},
 			"name": &graphql.Field{
 				Type: graphql.String,
 			},

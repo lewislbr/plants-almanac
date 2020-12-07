@@ -2,6 +2,7 @@ package add
 
 import (
 	p "plants/pkg/plant"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -23,6 +24,7 @@ type service struct {
 // AddPlant adds a plant
 func (s *service) AddPlant(plant p.Plant) interface{} {
 	plant.ID = p.ID(uuid.New().String())
+	plant.CreatedAt = time.Now().UTC()
 
 	return s.r.InsertOne(plant)
 }

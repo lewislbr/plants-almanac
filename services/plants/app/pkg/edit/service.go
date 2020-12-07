@@ -1,6 +1,9 @@
 package edit
 
-import p "plants/pkg/plant"
+import (
+	p "plants/pkg/plant"
+	"time"
+)
 
 // Service provides plant edit operations
 type Service interface {
@@ -9,7 +12,7 @@ type Service interface {
 
 // Repository provides access to the plant storage
 type Repository interface {
-	EditOne(p.ID, p.Plant) int64
+	UpdateOne(p.ID, p.Plant) int64
 }
 
 type service struct {
@@ -18,7 +21,9 @@ type service struct {
 
 // EditPlant edits a plant
 func (s *service) EditPlant(id p.ID, plant p.Plant) int64 {
-	return s.r.EditOne(id, plant)
+	plant.EditedAt = time.Now().UTC()
+
+	return s.r.UpdateOne(id, plant)
 }
 
 // NewService creates an edit service with the necessary dependencies

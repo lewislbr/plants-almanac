@@ -79,6 +79,8 @@ func editPlant(
 		existingPlant := ls.ListPlant(p.ID(id))
 		updated := p.Plant{}
 
+		updated.CreatedAt = existingPlant.CreatedAt
+
 		if result, ok := ps.Args["name"].(string); ok {
 			updated.Name = result
 		} else {
