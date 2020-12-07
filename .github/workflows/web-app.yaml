@@ -38,7 +38,6 @@ jobs:
       - name: Log in and deploy image
         uses: appleboy/ssh-action@master
         env:
-          API_URL: ${{ secrets.API_URL }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           WEB_APP_NAME: ${{ env.WEB_APP_NAME }}
           WEB_APP_PORT: ${{ env.WEB_APP_PORT }}
@@ -46,7 +45,7 @@ jobs:
           host: ${{ secrets.DIGITALOCEAN_PLANTDEX_HOST }}
           username: ${{ secrets.DIGITALOCEAN_USERNAME }}
           key: ${{ secrets.DIGITALOCEAN_KEY }}
-          envs: API_URL, DOCKER_USERNAME, WEB_APP_NAME, WEB_APP_PORT
+          envs: DOCKER_USERNAME, WEB_APP_NAME, WEB_APP_PORT
           script: |
             docker pull "$DOCKER_USERNAME"/plantdex_"$WEB_APP_NAME":prod
             docker rm -f "$WEB_APP_NAME"
