@@ -1,4 +1,5 @@
 export * from "./Add"
 export * from "./Delete"
+export * from "./Edit"
 export * from "./Plant"
 export * from "./Plants"

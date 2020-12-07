@@ -10,29 +10,6 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-func listPlants(ls list.Service) func(_ graphql.ResolveParams) (
-	interface{},
-	error,
-) {
-	return func(_ graphql.ResolveParams) (interface{}, error) {
-		plants := ls.ListPlants()
-
-		return plants, nil
-	}
-}
-
-func listPlant(ls list.Service) func(ps graphql.ResolveParams) (
-	interface{},
-	error,
-) {
-	return func(ps graphql.ResolveParams) (interface{}, error) {
-		id := ps.Args["id"].(string)
-		plant := ls.ListPlant(p.ID(id))
-
-		return plant, nil
-	}
-}
-
 func addPlant(as add.Service) func(ps graphql.ResolveParams) (
 	interface{},
 	error,
@@ -64,6 +41,29 @@ func addPlant(as add.Service) func(ps graphql.ResolveParams) (
 		result := as.AddPlant(plant)
 
 		return result, nil
+	}
+}
+
+func listPlants(ls list.Service) func(_ graphql.ResolveParams) (
+	interface{},
+	error,
+) {
+	return func(_ graphql.ResolveParams) (interface{}, error) {
+		plants := ls.ListPlants()
+
+		return plants, nil
+	}
+}
+
+func listPlant(ls list.Service) func(ps graphql.ResolveParams) (
+	interface{},
+	error,
+) {
+	return func(ps graphql.ResolveParams) (interface{}, error) {
+		id := ps.Args["id"].(string)
+		plant := ls.ListPlant(p.ID(id))
+
+		return plant, nil
 	}
 }
 

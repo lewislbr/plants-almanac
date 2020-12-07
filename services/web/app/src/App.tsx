@@ -13,8 +13,9 @@ export function App(): JSX.Element {
           <main>
             <Switch>
               <Route exact path="/" component={PlantList} />
-              <Route path="/add-plant" component={AddPlant} />
-              <Route path="/:id" component={PlantDetails} />
+              <Route exact path="/add-plant" component={AddPlant} />
+              <Route exact path="/:id" component={PlantDetails} />
+              <Route exact path="/edit/:id" component={AddPlant} />
             </Switch>
           </main>
         </Container>

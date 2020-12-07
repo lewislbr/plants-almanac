@@ -29,6 +29,10 @@ export function PlantDetails(): JSX.Element {
     })()
   }, [id])
 
+  function editPlant(): void {
+    history.push({pathname: "/edit/" + id, state: data.plant})
+  }
+
   function openAlert(): void {
     setAlertOpen(true)
   }
@@ -116,6 +120,15 @@ export function PlantDetails(): JSX.Element {
               </Typography>
             </div>
           </section>
+          <Button
+            color="secondary"
+            fullWidth
+            onClick={editPlant}
+            style={{marginTop: "30px"}}
+            variant="contained"
+          >
+            {"Edit plant"}
+          </Button>
           <Button
             color="secondary"
             fullWidth
