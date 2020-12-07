@@ -1,7 +1,7 @@
 http:
   routers:
     plants-app:
-      rule: "Host(`api.plantdex.ml`) && PathPrefix(`/plants`)"
+      rule: "Host(`api.plantdex.app`) && PathPrefix(`/plants`)"
       service: plants-app
       middlewares:
         - "redirect-https"
@@ -12,7 +12,7 @@ http:
         certResolver: default
         options: default
     users-app:
-      rule: "Host(`api.plantdex.ml`) && PathPrefix(`/users`)"
+      rule: "Host(`api.plantdex.app`) && PathPrefix(`/users`)"
       service: plants-app
       middlewares:
         - "redirect-https"
@@ -23,7 +23,7 @@ http:
         certResolver: default
         options: default
     web-app:
-      rule: "Host(`plantdex.ml`) && PathPrefix(`/`)"
+      rule: "Host(`plantdex.app`) && PathPrefix(`/`)"
       service: web-app
       middlewares:
         - "redirect-https"
@@ -56,13 +56,13 @@ http:
       headers:
         customResponseHeaders:
           Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
-          Via: "traefik"
+          Via: "Traefik"
     plants-app-headers:
       headers:
         customResponseHeaders:
           Access-Control-Allow-Headers: "Content-Type, Origin"
           Access-Control-Allow-Methods: "POST"
-          Access-Control-Allow-Origin: "https://plantdex.ml"
+          Access-Control-Allow-Origin: "https://plantdex.app"
           Access-Control-Max-Age: "86400"
           Content-Security-Policy: "default-src 'self'"
           Server: "Go"
@@ -71,14 +71,14 @@ http:
         customResponseHeaders:
           Access-Control-Allow-Headers: "Content-Type, Origin"
           Access-Control-Allow-Methods: "GET, POST, PATCH, DELETE"
-          Access-Control-Allow-Origin: "https://plantdex.ml"
+          Access-Control-Allow-Origin: "https://plantdex.app"
           Access-Control-Max-Age: "86400"
           Content-Security-Policy: "default-src 'self'"
           Server: "Go"
     web-app-headers:
       headers:
         customResponseHeaders:
-          Content-Security-Policy: "default-src 'self' https://api.plantdex.ml; style-src 'unsafe-inline'"
+          Content-Security-Policy: "default-src 'self' https://api.plantdex.app; style-src 'unsafe-inline'"
           Referrer-Policy: "strict-origin-when-cross-origin"
           Server: "GSS"
           X-Content-Type-Options: "nosniff"
