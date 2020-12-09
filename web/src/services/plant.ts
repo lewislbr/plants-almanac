@@ -1,6 +1,12 @@
 import {ApolloQueryResult, gql} from "@apollo/client"
 import {client} from "../index"
-import {AddVariables, DeleteVariables, EditVariables} from "../graphql"
+import {
+  AddVariables,
+  DeleteVariables,
+  EditVariables,
+  Plant,
+  Plants,
+} from "../graphql"
 
 export async function addOne(plant: Record<string, string>): Promise<void> {
   const ADD = gql`
@@ -59,7 +65,7 @@ export async function addOne(plant: Record<string, string>): Promise<void> {
   })
 }
 
-export async function listAll(): Promise<ApolloQueryResult<unknown>> {
+export async function listAll(): Promise<ApolloQueryResult<Plants>> {
   const PLANTS = gql`
     query Plants {
       plants {
@@ -74,7 +80,7 @@ export async function listAll(): Promise<ApolloQueryResult<unknown>> {
   return client.query({query: PLANTS})
 }
 
-export async function listOne(id: string): Promise<ApolloQueryResult<unknown>> {
+export async function listOne(id: string): Promise<ApolloQueryResult<Plant>> {
   const PLANT = gql`
     query Plant($id: ID!) {
       plant(id: $id) {

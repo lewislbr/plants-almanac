@@ -2,6 +2,17 @@ import {createMuiTheme, responsiveFontSizes} from "@material-ui/core/styles"
 
 export const theme = responsiveFontSizes(
   createMuiTheme({
+    overrides: {
+      MuiSelect: {
+        select: {
+          fontSize: "14px",
+          padding: "8px",
+          "&:focus": {
+            borderRadius: 30,
+          },
+        },
+      },
+    },
     palette: {
       primary: {
         main: "#000000",
@@ -47,4 +58,5 @@ export const theme = responsiveFontSizes(
       },
     },
   }),
+  {factor: 4},
 )
