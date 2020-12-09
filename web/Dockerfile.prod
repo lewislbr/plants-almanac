@@ -1,0 +1,11 @@
+FROM node:14-alpine as build
+RUN apk add --no-cache g++ make python
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm ci -q
+COPY . ./
+ENV NODE_ENV=production
+RUN npm run build
+
+FROM lewislbr/gss:latest
+COPY --from=build /usr/src/app/dist ./dist

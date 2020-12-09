@@ -4,12 +4,12 @@ on:
   push:
     branches: [master]
     paths:
-      - "services/plants/db/**"
+      - "plants/db/**"
   workflow_dispatch:
 
 defaults:
   run:
-    working-directory: services/plants/db
+    working-directory: plants/db
 
 env:
   PLANTS_DB_NAME: plants-db
@@ -22,7 +22,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@master
       - name: Build image
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"$PLANTS_DB_NAME":prod -f ../../../docker/plants/db/Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"$PLANTS_DB_NAME":prod -f Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image

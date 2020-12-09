@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  ingress:
+    build:
+      context: ingress
+      dockerfile: Dockerfile.dev
+    image: lewislbr/plantdex_ingress:dev
+    container_name: ingress
+    ports:
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:8080:8080"
+
+  plants-app:
+    build:
+      context: plants
+      dockerfile: Dockerfile.dev
+    image: lewislbr/plantdex_plants-app:dev
+    container_name: plants-app
+    env_file:
+      - plants/.env
+    ports:
+      - "127.0.0.1:4040:4040"
+
+  plants-db:
+    build:
+      context: plants/db
+      dockerfile: Dockerfile.dev
+    image: lewislbr/plantdex_plants-db:dev
+    container_name: plants-db
+    volumes:
+      - plants-db:/data/db
+
+  users-app:
+    build:
+      context: users
+      dockerfile: Dockerfile.dev
+    image: lewislbr/plantdex_users-app:dev
+    container_name: users-app
+    env_file:
+      - users/.env
+    ports:
+      - "127.0.0.1:4041:4041"
+
+  web-app:
+    build:
+      context: web
+      dockerfile: Dockerfile.dev
+    image: lewislbr/plantdex_web-app:dev
+    container_name: web-app
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./web:/usr/src/app
+
+volumes:
+  plants-db:

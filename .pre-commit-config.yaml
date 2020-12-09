@@ -2,46 +2,39 @@ fail_fast: true
 repos:
   - repo: local
     hooks:
-      - id: go-docker
-        name: go-plants-app
+      - id: docker-go
+        name: plants-app-go
         language: docker_image
-        entry: golang:1-alpine sh -c "cd services/plants/app && gofmt -l -s -w ."
-        files: services/plants/app/
+        entry: golang:1-alpine sh -c "cd plants && gofmt -l -s -w ."
+        files: plants
         verbose: true
 
-      - id: go-docker
-        name: go-users-app
+      - id: docker-go
+        name: users-app-go
         language: docker_image
-        entry: golang:1-alpine sh -c "cd services/users/app && gofmt -l -s -w ."
-        files: services/users/app/
+        entry: golang:1-alpine sh -c "cd users && gofmt -l -s -w ."
+        files: users
         verbose: true
 
-      - id: go-docker
-        name: go-web-server
-        language: docker_image
-        entry: golang:1-alpine sh -c "cd services/web/server && gofmt -l -s -w ."
-        files: services/web/server/
-        verbose: true
-
-      - id: typescript-docker
-        name: typescript-web-app
+      - id: docker-typescript
+        name: web-app-typescript
         language: docker_image
         pass_filenames: false
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd services/web/app && npm run ts"
-        files: services/web/app/
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd web && npm run ts"
+        files: web
         verbose: true
 
-      - id: eslint-docker
-        name: eslint-web-app
+      - id: docker-eslint
+        name: web-app-eslint
         language: docker_image
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd services/web/app && npm run lint"
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd web && npm run lint"
         exclude_types: [css, html, json]
-        files: services/web/app/
+        files: web
         verbose: true
 
-      - id: prettier-docker
-        name: prettier-web-app
+      - id: docker-prettier
+        name: web-app-prettier
         language: docker_image
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd services/web/app && npm run format"
-        files: services/web/app/
+        entry: lewislbr/plantdex_web-app:dev sh -c "cd web && npm run format"
+        files: web
         verbose: true

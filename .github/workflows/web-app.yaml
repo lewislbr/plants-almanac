@@ -4,12 +4,12 @@ on:
   push:
     branches: [master]
     paths:
-      - "services/web/**"
+      - "web/**"
   workflow_dispatch:
 
 defaults:
   run:
-    working-directory: services/web
+    working-directory: web
 
 env:
   WEB_APP_NAME: web-app
@@ -25,7 +25,7 @@ jobs:
       - name: Add environment variables
         run: echo PLANTS_PRODUCTION_URL="${{ secrets.PLANTS_PRODUCTION_URL }}" >> .env
       - name: Build image
-        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"$WEB_APP_NAME":prod -f ../../docker/web/Dockerfile.prod ./
+        run: docker build -t "${{ secrets.DOCKER_USERNAME }}"/plantdex_"$WEB_APP_NAME":prod -f Dockerfile.prod ./
       - name: Log in
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push image
