@@ -24,7 +24,7 @@ resource "digitalocean_droplet" "plantdex" {
   ssh_keys = [
     var.do_ssh_key_fingerprint
   ]
-  user_data = file("${path.module}/cloud-init.yml")
+  user_data = file("${path.module}/cloud-init.yaml")
 }
 
 output "public_ipv4" {
