@@ -4,7 +4,11 @@ import {AppBar, Link, Toolbar} from "@material-ui/core"
 
 export function Header(): JSX.Element {
   return (
-    <AppBar color="secondary" position="fixed">
+    <AppBar
+      color="secondary"
+      position="fixed"
+      style={{boxShadow: "0px 2px 10px 1px #100d0d0d"}}
+    >
       <Toolbar style={{display: "flex", justifyContent: "space-between"}}>
         <Link component={RouterLink} to="/">
           {"🌿"}

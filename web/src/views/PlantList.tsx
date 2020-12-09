@@ -140,11 +140,31 @@ export function PlantList(): JSX.Element {
       <section style={{marginTop: "20px"}}>
         {fetchStatus === FetchStatus.Loading ? (
           <>
-            <Skeleton animation="wave" height={80} />
-            <Skeleton animation="wave" height={80} />
-            <Skeleton animation="wave" height={80} />
-            <Skeleton animation="wave" height={80} />
-            <Skeleton animation="wave" height={80} />
+            <Skeleton
+              animation="wave"
+              height={150}
+              style={{marginTop: "-30px"}}
+            />
+            <Skeleton
+              animation="wave"
+              height={150}
+              style={{marginTop: "-30px"}}
+            />
+            <Skeleton
+              animation="wave"
+              height={150}
+              style={{marginTop: "-30px"}}
+            />
+            <Skeleton
+              animation="wave"
+              height={150}
+              style={{marginTop: "-30px"}}
+            />
+            <Skeleton
+              animation="wave"
+              height={150}
+              style={{marginTop: "-30px"}}
+            />
           </>
         ) : fetchStatus === FetchStatus.Error ? (
           <Typography>{"ERROR"}</Typography>

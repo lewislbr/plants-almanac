@@ -3,12 +3,32 @@ import {createMuiTheme, responsiveFontSizes} from "@material-ui/core/styles"
 export const theme = responsiveFontSizes(
   createMuiTheme({
     overrides: {
+      MuiCssBaseline: {
+        "@global": {
+          body: {
+            backgroundColor: "#f8f7f3",
+          },
+        },
+      },
       MuiSelect: {
         select: {
+          backgroundColor: "#ffffff",
           fontSize: "14px",
           padding: "8px",
           "&:focus": {
             borderRadius: 30,
+            backgroundColor: "#ffffff",
+          },
+        },
+      },
+      MuiOutlinedInput: {
+        root: {
+          "& $notchedOutline": {
+            borderStyle: "none",
+            boxShadow: "0px 2px 10px 1px #100d0d0d",
+          },
+          "&$focused $notchedOutline": {
+            borderStyle: "none",
           },
         },
       },
