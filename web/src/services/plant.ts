@@ -136,12 +136,12 @@ export async function editOne(
   const plantDTO: EditVariables = {
     id: id,
     name: plant.name,
-    other_names: plant.otherNames || null,
-    description: plant.description || null,
-    plant_season: plant.plantSeason || null,
-    harvest_season: plant.harvestSeason || null,
-    prune_season: plant.pruneSeason || null,
-    tips: plant.tips || null,
+    other_names: plant.otherNames ?? null,
+    description: plant.description ?? null,
+    plant_season: plant.plantSeason ?? null,
+    harvest_season: plant.harvestSeason ?? null,
+    prune_season: plant.pruneSeason ?? null,
+    tips: plant.tips ?? null,
   }
 
   await client.mutate({
