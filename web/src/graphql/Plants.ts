@@ -9,15 +9,15 @@
 
 export interface Plants_plants {
   __typename: "Plant"
-  id: string | null
-  created_at: any | null
+  id: string
+  created_at: any
   edited_at: any | null
-  name: string | null
+  name: string
 }
 
 export interface Plants {
   /**
    * Lists all plants, returning an array of objects with the existing plants, or an empty array if there are none.
    */
-  plants: (Plants_plants | null)[] | null
+  plants: (Plants_plants | null)[]
 }

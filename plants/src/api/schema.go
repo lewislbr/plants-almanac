@@ -16,16 +16,16 @@ var plantType = graphql.NewObject(
 		Name: "Plant",
 		Fields: graphql.Fields{
 			"id": &graphql.Field{
-				Type: graphql.ID,
+				Type: graphql.NewNonNull(graphql.ID),
 			},
 			"created_at": &graphql.Field{
-				Type: graphql.DateTime,
+				Type: graphql.NewNonNull(graphql.DateTime),
 			},
 			"edited_at": &graphql.Field{
 				Type: graphql.DateTime,
 			},
 			"name": &graphql.Field{
-				Type: graphql.String,
+				Type: graphql.NewNonNull(graphql.String),
 			},
 			"other_names": &graphql.Field{
 				Type: graphql.String,
@@ -58,7 +58,7 @@ func init() {
 		Name: "Query",
 		Fields: graphql.Fields{
 			"plants": &graphql.Field{
-				Type:        graphql.NewList(plantType),
+				Type:        graphql.NewNonNull(graphql.NewList(plantType)),
 				Description: "Lists all plants, returning an array of objects with the existing plants, or an empty array if there are none.",
 				Resolve:     listPlants(l),
 			},
