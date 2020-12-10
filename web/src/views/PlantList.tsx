@@ -9,20 +9,18 @@ import {
 } from "@material-ui/core"
 import {Skeleton} from "@material-ui/lab"
 import {PlantCard} from "../components"
+import {retrieve, store} from "../services/storage"
 import {listAll} from "../services/plant"
+import {asc, desc} from "../services/sort"
 import {Plants} from "../graphql"
 import {FetchStatus, SORT_METHOD, SortMethods} from "../constants"
-
-function getSortMethod(): string {
-  const storedSortMethod = localStorage.getItem(SORT_METHOD)
-
-  return storedSortMethod || SortMethods.Created
-}
 
 export function PlantList(): JSX.Element {
   const [data, setData] = useState({} as Plants)
   const [fetchStatus, setFetchStatus] = useState(FetchStatus.Idle)
-  const [sortMethod, setSortMethod] = useState(getSortMethod())
+  const [sortMethod, setSortMethod] = useState(
+    retrieve(SORT_METHOD) ?? SortMethods.Created,
+  )
 
   useEffect(() => {
     setFetchStatus(FetchStatus.Loading)
@@ -33,29 +31,19 @@ export function PlantList(): JSX.Element {
         switch (sortMethod) {
           case SortMethods.Created:
             setData({
-              plants: result.data.plants
-                ?.slice()
-                .sort((a, b) => b?.created_at.localeCompare(a?.created_at)),
+              plants: result.data.plants?.slice().sort(desc("created_at")),
             })
 
             break
           case SortMethods.Edited:
             setData({
-              plants: result.data.plants
-                ?.slice()
-                .sort((a, b) => b?.edited_at.localeCompare(a?.edited_at)),
+              plants: result.data.plants?.slice().sort(desc("edited_at")),
             })
 
             break
           case SortMethods.Name:
             setData({
-              plants: result.data.plants?.slice().sort((a, b) => {
-                if (a?.name && b?.name) {
-                  return a?.name.localeCompare(b?.name)
-                }
-
-                return 0
-              }),
+              plants: result.data.plants?.slice().sort(asc("name")),
             })
 
             break
@@ -74,39 +62,26 @@ export function PlantList(): JSX.Element {
     switch (event.target.value) {
       case SortMethods.Created:
         setData({
-          plants: data.plants
-            ?.slice()
-            .sort((a, b) => b?.created_at.localeCompare(a?.created_at)),
+          plants: data.plants?.slice().sort(desc("created_at")),
         })
         setSortMethod(SortMethods.Created)
-
-        localStorage.setItem(SORT_METHOD, SortMethods.Created)
+        store(SORT_METHOD, SortMethods.Created)
 
         break
       case SortMethods.Edited:
         setData({
-          plants: data.plants
-            ?.slice()
-            .sort((a, b) => b?.edited_at.localeCompare(a?.edited_at)),
+          plants: data.plants?.slice().sort(desc("edited_at")),
         })
         setSortMethod(SortMethods.Edited)
-
-        localStorage.setItem(SORT_METHOD, SortMethods.Edited)
+        store(SORT_METHOD, SortMethods.Edited)
 
         break
       case SortMethods.Name:
         setData({
-          plants: data.plants?.slice().sort((a, b) => {
-            if (a?.name && b?.name) {
-              return a?.name.localeCompare(b?.name)
-            }
-
-            return 0
-          }),
+          plants: data.plants?.slice().sort(asc("name")),
         })
         setSortMethod(SortMethods.Name)
-
-        localStorage.setItem(SORT_METHOD, SortMethods.Name)
+        store(SORT_METHOD, SortMethods.Name)
 
         break
     }
