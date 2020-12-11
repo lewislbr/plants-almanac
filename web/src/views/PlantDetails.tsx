@@ -67,10 +67,8 @@ export function PlantDetails(): JSX.Element {
         <Typography>{"ERROR"}</Typography>
       ) : (
         <>
-          <Typography gutterBottom variant="h1">
-            {data.plant?.name}
-          </Typography>
-          <section>
+          <Typography variant="h1">{data.plant?.name}</Typography>
+          <section style={{marginTop: "30px"}}>
             <div style={{marginBottom: "30px"}}>
               <Typography gutterBottom variant="h6">
                 {"Other Names"}

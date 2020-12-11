@@ -60,6 +60,7 @@ export const theme = responsiveFontSizes(
       fontSize: 16,
       h1: {
         fontWeight: 900,
+        lineHeight: 0.9,
       },
       h2: {
         fontWeight: 700,

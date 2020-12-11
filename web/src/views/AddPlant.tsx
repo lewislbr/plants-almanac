@@ -119,70 +119,72 @@ export function AddPlant(): JSX.Element {
         <Typography>{"ERROR"}</Typography>
       ) : (
         <>
-          <Typography gutterBottom variant="h1">
+          <Typography variant="h1">
             {(isEditMode ? "Edit" : "Add") + " Plant"}
           </Typography>
-          <TextField
-            label="Name"
-            fullWidth
-            margin={"dense"}
-            onChange={updateName}
-            required
-            value={name}
-            variant="outlined"
-          />
-          <TextField
-            label="Other names"
-            fullWidth
-            margin={"dense"}
-            onChange={updateOtherNames}
-            value={otherNames}
-            variant="outlined"
-          />
-          <TextField
-            label="Description"
-            fullWidth
-            margin={"dense"}
-            multiline
-            onChange={updateDescription}
-            rows={4}
-            value={description}
-            variant="outlined"
-          />
-          <TextField
-            label="Plant season"
-            fullWidth
-            margin={"dense"}
-            onChange={updatePlantSeason}
-            value={plantSeason}
-            variant="outlined"
-          />
-          <TextField
-            label="Harvest season"
-            fullWidth
-            margin={"dense"}
-            onChange={updateHarvestSeason}
-            value={harvestSeason}
-            variant="outlined"
-          />
-          <TextField
-            label="Prune season"
-            fullWidth
-            margin={"dense"}
-            onChange={updatePruneSeason}
-            value={pruneSeason}
-            variant="outlined"
-          />
-          <TextField
-            label="Tips"
-            fullWidth
-            margin={"dense"}
-            multiline
-            onChange={updateTips}
-            rows={4}
-            value={tips}
-            variant="outlined"
-          />
+          <section style={{marginTop: "30px"}}>
+            <TextField
+              label="Name"
+              fullWidth
+              margin={"dense"}
+              onChange={updateName}
+              required
+              value={name}
+              variant="outlined"
+            />
+            <TextField
+              label="Other names"
+              fullWidth
+              margin={"dense"}
+              onChange={updateOtherNames}
+              value={otherNames}
+              variant="outlined"
+            />
+            <TextField
+              label="Description"
+              fullWidth
+              margin={"dense"}
+              multiline
+              onChange={updateDescription}
+              rows={4}
+              value={description}
+              variant="outlined"
+            />
+            <TextField
+              label="Plant season"
+              fullWidth
+              margin={"dense"}
+              onChange={updatePlantSeason}
+              value={plantSeason}
+              variant="outlined"
+            />
+            <TextField
+              label="Harvest season"
+              fullWidth
+              margin={"dense"}
+              onChange={updateHarvestSeason}
+              value={harvestSeason}
+              variant="outlined"
+            />
+            <TextField
+              label="Prune season"
+              fullWidth
+              margin={"dense"}
+              onChange={updatePruneSeason}
+              value={pruneSeason}
+              variant="outlined"
+            />
+            <TextField
+              label="Tips"
+              fullWidth
+              margin={"dense"}
+              multiline
+              onChange={updateTips}
+              rows={4}
+              value={tips}
+              variant="outlined"
+            />
+          </section>
           {isEditMode ? (
             <Button
               color="primary"

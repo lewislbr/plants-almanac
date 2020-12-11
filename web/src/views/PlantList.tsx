@@ -91,14 +91,12 @@ export function PlantList(): JSX.Element {
     <>
       <div
         style={{
-          alignItems: "baseline",
+          alignItems: "flex-end",
           display: "flex",
           justifyContent: "space-between",
         }}
       >
-        <Typography gutterBottom variant="h1">
-          {"Plants"}
-        </Typography>
+        <Typography variant="h1">{"Plants"}</Typography>
         <FormControl
           style={{fontSize: "15px", padding: "0"}}
           variant="outlined"
@@ -112,7 +110,7 @@ export function PlantList(): JSX.Element {
           </Select>
         </FormControl>
       </div>
-      <section style={{marginTop: "20px"}}>
+      <section style={{marginTop: "30px"}}>
         {fetchStatus === FetchStatus.Loading ? (
           <>
             <Skeleton
