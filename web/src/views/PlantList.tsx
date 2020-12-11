@@ -144,7 +144,12 @@ export function PlantList(): JSX.Element {
         ) : (
           <div>
             {data.plants?.map((plant) => (
-              <Link component={RouterLink} key={plant?.id} to={`/${plant?.id}`}>
+              <Link
+                component={RouterLink}
+                key={plant?.id}
+                to={`/${plant?.id}`}
+                underline="none"
+              >
                 <PlantCard {...{name: plant?.name}} />
               </Link>
             ))}

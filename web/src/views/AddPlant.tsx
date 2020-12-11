@@ -124,63 +124,56 @@ export function AddPlant(): JSX.Element {
           </Typography>
           <section style={{marginTop: "30px"}}>
             <TextField
-              label="Name"
               fullWidth
-              margin={"dense"}
+              label="Name"
               onChange={updateName}
               required
               value={name}
               variant="outlined"
             />
             <TextField
-              label="Other names"
               fullWidth
-              margin={"dense"}
+              label="Other names"
               onChange={updateOtherNames}
               value={otherNames}
               variant="outlined"
             />
             <TextField
-              label="Description"
               fullWidth
-              margin={"dense"}
+              label="Description"
               multiline
               onChange={updateDescription}
-              rows={4}
+              rows={6}
               value={description}
               variant="outlined"
             />
             <TextField
-              label="Plant season"
               fullWidth
-              margin={"dense"}
+              label="Plant season"
               onChange={updatePlantSeason}
               value={plantSeason}
               variant="outlined"
             />
             <TextField
-              label="Harvest season"
               fullWidth
-              margin={"dense"}
+              label="Harvest season"
               onChange={updateHarvestSeason}
               value={harvestSeason}
               variant="outlined"
             />
             <TextField
-              label="Prune season"
               fullWidth
-              margin={"dense"}
+              label="Prune season"
               onChange={updatePruneSeason}
               value={pruneSeason}
               variant="outlined"
             />
             <TextField
-              label="Tips"
               fullWidth
-              margin={"dense"}
+              label="Tips"
               multiline
               onChange={updateTips}
-              rows={4}
+              rows={6}
               value={tips}
               variant="outlined"
             />
