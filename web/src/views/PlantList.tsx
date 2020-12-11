@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@material-ui/core"
 import {Skeleton} from "@material-ui/lab"
-import {PlantCard} from "../components"
+import {NavBar, PlantCard} from "../components"
 import {retrieve, store} from "../services/storage"
 import {listAll} from "../services/plant"
 import {asc, desc} from "../services/sort"
@@ -151,6 +151,7 @@ export function PlantList(): JSX.Element {
           </div>
         )}
       </section>
+      <NavBar />
     </>
   )
 }

@@ -1,3 +1,3 @@
 export {Alert} from "./Alert"
-export {Header} from "./Header"
+export {NavBar} from "./NavBar"
 export {PlantCard} from "./PlantCard"

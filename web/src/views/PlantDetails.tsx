@@ -1,6 +1,12 @@
 import React, {useEffect, useState} from "react"
 import {useHistory, useParams} from "react-router-dom"
-import {Button, CircularProgress, Typography} from "@material-ui/core"
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@material-ui/core"
+import CancelIcon from "@material-ui/icons/Cancel"
 import {Alert} from "../components"
 import {deleteOne, listOne} from "../services/plant"
 import {Plant} from "../graphql"
@@ -28,6 +34,10 @@ export function PlantDetails(): JSX.Element {
       }
     })()
   }, [id])
+
+  function close(): void {
+    history.push("/")
+  }
 
   function editPlant(): void {
     history.push({pathname: "/edit/" + id, state: data.plant})
@@ -67,7 +77,18 @@ export function PlantDetails(): JSX.Element {
         <Typography>{"ERROR"}</Typography>
       ) : (
         <>
-          <Typography variant="h1">{data.plant?.name}</Typography>
+          <div
+            style={{
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="h1">{data.plant?.name}</Typography>
+            <IconButton onClick={close}>
+              <CancelIcon />
+            </IconButton>
+          </div>
           <section style={{marginTop: "30px"}}>
             <div style={{marginBottom: "30px"}}>
               <Typography gutterBottom variant="h6">
