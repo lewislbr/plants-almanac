@@ -1,4 +1,4 @@
-FROM node:14-alpine as build
+FROM node:14-alpine AS build
 RUN apk add --no-cache g++ make python
 WORKDIR /usr/src/app
 COPY package*.json ./
