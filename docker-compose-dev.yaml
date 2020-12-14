@@ -22,15 +22,6 @@ services:
     ports:
       - "127.0.0.1:4040:4040"
 
-  plants-db:
-    build:
-      context: plants/db
-      dockerfile: Dockerfile.dev
-    image: lewislbr/plantdex_plants-db:dev
-    container_name: plants-db
-    volumes:
-      - plants-db:/data/db
-
   users-app:
     build:
       context: users

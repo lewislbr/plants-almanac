@@ -20,9 +20,9 @@ func connectDatabase() *mongo.Collection {
 	var isDevelopment = os.Getenv("MODE") == "development"
 	var mongodbURI string
 	if isDevelopment {
-		mongodbURI = os.Getenv("PLANTS_MONGODB_DEVELOPMENT_URI")
+		mongodbURI = os.Getenv("PLANTS_DEVELOPMENT_MONGODB_URI")
 	} else {
-		mongodbURI = os.Getenv("PLANTS_MONGODB_PRODUCTION_URI")
+		mongodbURI = os.Getenv("PLANTS_PRODUCTION_MONGODB_URI")
 	}
 
 	client, err := mongo.Connect(
@@ -40,7 +40,13 @@ func connectDatabase() *mongo.Collection {
 
 	fmt.Println("Plants database ready ✅")
 
-	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
+	var databaseName string
+	if isDevelopment {
+		databaseName = os.Getenv("PLANTS_DEVELOPMENT_DATABASE_NAME")
+	} else {
+		databaseName = os.Getenv("PLANTS_PRODUCTION_DATABASE_NAME")
+	}
+
 	collectionName := os.Getenv("PLANTS_COLLECTION_NAME")
 
 	return client.Database(databaseName).Collection(collectionName)
