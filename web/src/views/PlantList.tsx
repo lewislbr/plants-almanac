@@ -8,54 +8,57 @@ import {
   Typography,
 } from "@material-ui/core"
 import {Error, Loading, NavBar, PlantCard} from "../components"
-import {retrieve, store} from "../services/storage"
-import {listAll} from "../services/plant"
-import {asc, desc} from "../services/sort"
-import {Plants} from "../graphql"
-import {
-  FetchStatus,
-  GENERIC_ERROR_MESSAGE,
-  SORT_METHOD,
-  SortMethods,
-} from "../constants"
+import * as plantService from "../services/plant"
+import * as sortService from "../services/sort"
+import * as storageService from "../services/storage"
+import * as copyConstant from "../constants/copy"
+import * as errorConstant from "../constants/error"
+import * as fetchConstant from "../constants/fetch"
+import * as sortConstant from "../constants/sort"
+import {Plants} from "../graphql/Plants"
 
 export function PlantList(): JSX.Element {
   const [data, setData] = useState({} as Plants)
-  const [fetchStatus, setFetchStatus] = useState(FetchStatus.Idle)
+  const [fetchStatus, setFetchStatus] = useState(fetchConstant.Status.IDLE)
   const [sortMethod, setSortMethod] = useState(
-    retrieve(SORT_METHOD) ?? SortMethods.Created,
+    storageService.retrieve(sortConstant.SORT_METHOD) ??
+      sortConstant.Options.Created.KEY,
   )
 
   useEffect(() => {
-    setFetchStatus(FetchStatus.Loading)
+    setFetchStatus(fetchConstant.Status.LOADING)
     ;(async (): Promise<void> => {
       try {
-        const result = await listAll()
+        const result = await plantService.listAll()
 
         switch (sortMethod) {
-          case SortMethods.Created:
+          case sortConstant.Options.Created.KEY:
             setData({
-              plants: result.data.plants?.slice().sort(desc("created_at")),
+              plants: result.data.plants
+                ?.slice()
+                .sort(sortService.desc("created_at")),
             })
 
             break
-          case SortMethods.Edited:
+          case sortConstant.Options.Edited.KEY:
             setData({
-              plants: result.data.plants?.slice().sort(desc("edited_at")),
+              plants: result.data.plants
+                ?.slice()
+                .sort(sortService.desc("edited_at")),
             })
 
             break
-          case SortMethods.Name:
+          case sortConstant.Options.Name.KEY:
             setData({
-              plants: result.data.plants?.slice().sort(asc("name")),
+              plants: result.data.plants?.slice().sort(sortService.asc("name")),
             })
 
             break
         }
 
-        setFetchStatus(FetchStatus.Success)
+        setFetchStatus(fetchConstant.Status.SUCCESS)
       } catch (error) {
-        setFetchStatus(FetchStatus.Error)
+        setFetchStatus(fetchConstant.Status.ERROR)
 
         console.error(error)
       }
@@ -64,28 +67,37 @@ export function PlantList(): JSX.Element {
 
   function sortBy(event: ChangeEvent<{name?: string; value: unknown}>): void {
     switch (event.target.value) {
-      case SortMethods.Created:
+      case sortConstant.Options.Created.KEY:
         setData({
-          plants: data.plants?.slice().sort(desc("created_at")),
+          plants: data.plants?.slice().sort(sortService.desc("created_at")),
         })
-        setSortMethod(SortMethods.Created)
-        store(SORT_METHOD, SortMethods.Created)
+        setSortMethod(sortConstant.Options.Created.KEY)
+        storageService.store(
+          sortConstant.SORT_METHOD,
+          sortConstant.Options.Created.KEY,
+        )
 
         break
-      case SortMethods.Edited:
+      case sortConstant.Options.Edited.KEY:
         setData({
-          plants: data.plants?.slice().sort(desc("edited_at")),
+          plants: data.plants?.slice().sort(sortService.desc("edited_at")),
         })
-        setSortMethod(SortMethods.Edited)
-        store(SORT_METHOD, SortMethods.Edited)
+        setSortMethod(sortConstant.Options.Edited.KEY)
+        storageService.store(
+          sortConstant.SORT_METHOD,
+          sortConstant.Options.Edited.KEY,
+        )
 
         break
-      case SortMethods.Name:
+      case sortConstant.Options.Name.KEY:
         setData({
-          plants: data.plants?.slice().sort(asc("name")),
+          plants: data.plants?.slice().sort(sortService.asc("name")),
         })
-        setSortMethod(SortMethods.Name)
-        store(SORT_METHOD, SortMethods.Name)
+        setSortMethod(sortConstant.Options.Name.KEY)
+        storageService.store(
+          sortConstant.SORT_METHOD,
+          sortConstant.Options.Name.KEY,
+        )
 
         break
     }
@@ -100,25 +112,29 @@ export function PlantList(): JSX.Element {
           justifyContent: "space-between",
         }}
       >
-        <Typography variant="h1">{"Plants"}</Typography>
+        <Typography variant="h1">{copyConstant.PLANTS}</Typography>
         <FormControl
           style={{fontSize: "15px", padding: "0"}}
           variant="outlined"
         >
           <Select onChange={(event): void => sortBy(event)} value={sortMethod}>
-            <MenuItem value={SortMethods.Created}>
-              {"Sort by: Created"}
+            <MenuItem value={sortConstant.Options.Created.KEY}>
+              {sortConstant.Options.Created.TEXT}
             </MenuItem>
-            <MenuItem value={SortMethods.Edited}>{"Sort by: Edited"}</MenuItem>
-            <MenuItem value={SortMethods.Name}>{"Sort by: Name"}</MenuItem>
+            <MenuItem value={sortConstant.Options.Edited.KEY}>
+              {sortConstant.Options.Edited.TEXT}
+            </MenuItem>
+            <MenuItem value={sortConstant.Options.Name.KEY}>
+              {sortConstant.Options.Name.TEXT}
+            </MenuItem>
           </Select>
         </FormControl>
       </div>
       <section style={{marginTop: "30px"}}>
-        {fetchStatus === FetchStatus.Loading ? (
+        {fetchStatus === fetchConstant.Status.LOADING ? (
           <Loading />
-        ) : fetchStatus === FetchStatus.Error ? (
-          <Error message={GENERIC_ERROR_MESSAGE} />
+        ) : fetchStatus === fetchConstant.Status.ERROR ? (
+          <Error message={errorConstant.GENERIC_MESSAGE} />
         ) : (
           <div>
             {data.plants?.map((plant) => (

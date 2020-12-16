@@ -3,27 +3,29 @@ import {useHistory, useParams} from "react-router-dom"
 import {Button, IconButton, Typography} from "@material-ui/core"
 import CancelIcon from "@material-ui/icons/Cancel"
 import {Alert, Error, Loading} from "../components"
-import {deleteOne, listOne} from "../services/plant"
-import {Plant} from "../graphql"
-import {FetchStatus, GENERIC_ERROR_MESSAGE} from "../constants"
+import * as plantService from "../services/plant"
+import * as copyConstant from "../constants/copy"
+import * as errorConstant from "../constants/error"
+import * as fetchConstant from "../constants/fetch"
+import {Plant} from "../graphql/Plant"
 
 export function PlantDetails(): JSX.Element {
   const [data, setData] = useState({} as Plant)
-  const [fetchStatus, setFetchStatus] = useState(FetchStatus.Idle)
+  const [fetchStatus, setFetchStatus] = useState(fetchConstant.Status.IDLE)
   const [alertOpen, setAlertOpen] = useState(false)
   const {id} = useParams<{id: string}>()
   const history = useHistory()
 
   useEffect(() => {
-    setFetchStatus(FetchStatus.Loading)
+    setFetchStatus(fetchConstant.Status.LOADING)
     ;(async (): Promise<void> => {
       try {
-        const result = await listOne(id)
+        const result = await plantService.listOne(id)
 
         setData(result.data as Plant)
-        setFetchStatus(FetchStatus.Success)
+        setFetchStatus(fetchConstant.Status.SUCCESS)
       } catch (error) {
-        setFetchStatus(FetchStatus.Error)
+        setFetchStatus(fetchConstant.Status.ERROR)
 
         console.error(error)
       }
@@ -47,16 +49,16 @@ export function PlantDetails(): JSX.Element {
   }
 
   async function deletePlant(): Promise<void> {
-    setFetchStatus(FetchStatus.Loading)
+    setFetchStatus(fetchConstant.Status.LOADING)
 
     try {
-      await deleteOne(id)
+      await plantService.deleteOne(id)
 
-      setFetchStatus(FetchStatus.Success)
+      setFetchStatus(fetchConstant.Status.SUCCESS)
 
       history.push("/")
     } catch (error) {
-      setFetchStatus(FetchStatus.Error)
+      setFetchStatus(fetchConstant.Status.ERROR)
 
       console.error(error)
     }
@@ -64,10 +66,10 @@ export function PlantDetails(): JSX.Element {
 
   return (
     <>
-      {fetchStatus === FetchStatus.Loading ? (
+      {fetchStatus === fetchConstant.Status.LOADING ? (
         <Loading />
-      ) : fetchStatus === FetchStatus.Error ? (
-        <Error message={GENERIC_ERROR_MESSAGE} />
+      ) : fetchStatus === fetchConstant.Status.ERROR ? (
+        <Error message={errorConstant.GENERIC_MESSAGE} />
       ) : (
         <>
           <div
@@ -88,7 +90,7 @@ export function PlantDetails(): JSX.Element {
                 {"Other Names"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.other_names || "No data yet"}
+                {data.plant?.other_names || copyConstant.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -96,7 +98,7 @@ export function PlantDetails(): JSX.Element {
                 {"Description"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.description || "No data yet"}
+                {data.plant?.description || copyConstant.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -104,7 +106,7 @@ export function PlantDetails(): JSX.Element {
                 {"Plant Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.plant_season || "No data yet"}
+                {data.plant?.plant_season || copyConstant.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -112,7 +114,7 @@ export function PlantDetails(): JSX.Element {
                 {"Harvest Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.harvest_season || "No data yet"}
+                {data.plant?.harvest_season || copyConstant.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -120,7 +122,7 @@ export function PlantDetails(): JSX.Element {
                 {"Prune Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.prune_season || "No data yet"}
+                {data.plant?.prune_season || copyConstant.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -128,7 +130,7 @@ export function PlantDetails(): JSX.Element {
                 {"Tips"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.tips || "No data yet"}
+                {data.plant?.tips || copyConstant.NO_DATA}
               </Typography>
             </div>
           </section>
@@ -139,7 +141,7 @@ export function PlantDetails(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {"Edit plant"}
+            {copyConstant.EDIT_PLANT}
           </Button>
           <Button
             color="secondary"
@@ -148,14 +150,16 @@ export function PlantDetails(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {"Delete plant"}
+            {copyConstant.DELETE_PLANT}
           </Button>
           <Alert
             action={deletePlant}
+            actionText={copyConstant.DELETE_PLANT}
             cancel={closeAlert}
+            cancelText={copyConstant.CANCEL}
             message={data.plant?.name + " will be deleted."}
             open={alertOpen}
-            title={"Delete plant"}
+            title={copyConstant.DELETE_PLANT}
           />
         </>
       )}

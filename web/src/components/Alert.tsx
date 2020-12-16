@@ -10,13 +10,17 @@ import {
 
 export function Alert({
   action,
+  actionText,
   cancel,
+  cancelText,
   message,
   open,
   title,
 }: {
   action: () => void
+  actionText: string
   cancel: () => void
+  cancelText: string
   message: string
   open: boolean
   title: string
@@ -29,10 +33,10 @@ export function Alert({
       </DialogContent>
       <DialogActions>
         <Button color="primary" onClick={cancel}>
-          {"Cancel"}
+          {cancelText}
         </Button>
         <Button autoFocus color="primary" onClick={action} variant="contained">
-          {"Delete"}
+          {actionText}
         </Button>
       </DialogActions>
     </Dialog>

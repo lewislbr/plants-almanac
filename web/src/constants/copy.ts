@@ -1,0 +1,7 @@
+export const ADD_PLANT = "Add plant"
+export const CANCEL = "Cancel"
+export const DELETE_PLANT = "Delete plant"
+export const EDIT_PLANT = "Edit plant"
+export const NO_DATA = "No data yet."
+export const PLANTS = "Plants"
+export const SAVE_CHANGES = "Save changes"

@@ -1,6 +1,6 @@
-export enum FetchStatus {
-  Idle,
-  Loading,
-  Success,
-  Error,
+export enum Status {
+  ERROR,
+  IDLE,
+  LOADING,
+  SUCCESS,
 }

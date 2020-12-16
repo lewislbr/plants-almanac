@@ -1,12 +1,10 @@
 import {ApolloQueryResult, gql} from "@apollo/client"
 import {client} from "../index"
-import {
-  AddVariables,
-  DeleteVariables,
-  EditVariables,
-  Plant,
-  Plants,
-} from "../graphql"
+import {AddVariables} from "../graphql/Add"
+import {DeleteVariables} from "../graphql/Delete"
+import {EditVariables} from "../graphql/Edit"
+import {Plant} from "../graphql/Plant"
+import {Plants} from "../graphql/Plants"
 
 export async function addOne(plant: Record<string, string>): Promise<void> {
   const ADD = gql`
