@@ -1,14 +1,10 @@
 import React, {ChangeEvent, useEffect, useLayoutEffect, useState} from "react"
 import {useHistory, useLocation} from "react-router-dom"
-import {
-  Button,
-  CircularProgress,
-  TextField,
-  Typography,
-} from "@material-ui/core"
+import {Button, TextField, Typography} from "@material-ui/core"
+import {Error, Loading} from "../components"
 import {addOne, editOne} from "../services/plant"
 import {EditVariables} from "../graphql"
-import {FetchStatus} from "../constants"
+import {FetchStatus, GENERIC_ERROR_MESSAGE} from "../constants"
 
 export function AddPlant(): JSX.Element {
   const location = useLocation()
@@ -80,21 +76,33 @@ export function AddPlant(): JSX.Element {
   }
 
   async function addPlant(): Promise<void> {
+    setFetchStatus(FetchStatus.Loading)
+
     try {
       await addOne(plantState)
 
+      setFetchStatus(FetchStatus.Success)
+
       history.push("/")
     } catch (error) {
+      setFetchStatus(FetchStatus.Error)
+
       console.error(error)
     }
   }
 
   async function editPlant(): Promise<void> {
+    setFetchStatus(FetchStatus.Loading)
+
     try {
       await editOne(prevState.id, plantState)
 
+      setFetchStatus(FetchStatus.Success)
+
       history.push("/" + prevState.id)
     } catch (error) {
+      setFetchStatus(FetchStatus.Error)
+
       console.error(error)
     }
   }
@@ -106,17 +114,9 @@ export function AddPlant(): JSX.Element {
   return (
     <>
       {fetchStatus === FetchStatus.Loading ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "100px",
-          }}
-        >
-          <CircularProgress />
-        </div>
+        <Loading />
       ) : fetchStatus === FetchStatus.Error ? (
-        <Typography>{"ERROR"}</Typography>
+        <Error message={GENERIC_ERROR_MESSAGE} />
       ) : (
         <>
           <Typography variant="h1">

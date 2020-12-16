@@ -1,16 +1,11 @@
 import React, {useEffect, useState} from "react"
 import {useHistory, useParams} from "react-router-dom"
-import {
-  Button,
-  CircularProgress,
-  IconButton,
-  Typography,
-} from "@material-ui/core"
+import {Button, IconButton, Typography} from "@material-ui/core"
 import CancelIcon from "@material-ui/icons/Cancel"
-import {Alert} from "../components"
+import {Alert, Error, Loading} from "../components"
 import {deleteOne, listOne} from "../services/plant"
 import {Plant} from "../graphql"
-import {FetchStatus} from "../constants"
+import {FetchStatus, GENERIC_ERROR_MESSAGE} from "../constants"
 
 export function PlantDetails(): JSX.Element {
   const [data, setData] = useState({} as Plant)
@@ -52,11 +47,17 @@ export function PlantDetails(): JSX.Element {
   }
 
   async function deletePlant(): Promise<void> {
+    setFetchStatus(FetchStatus.Loading)
+
     try {
       await deleteOne(id)
 
+      setFetchStatus(FetchStatus.Success)
+
       history.push("/")
     } catch (error) {
+      setFetchStatus(FetchStatus.Error)
+
       console.error(error)
     }
   }
@@ -64,17 +65,9 @@ export function PlantDetails(): JSX.Element {
   return (
     <>
       {fetchStatus === FetchStatus.Loading ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "100px",
-          }}
-        >
-          <CircularProgress />
-        </div>
+        <Loading />
       ) : fetchStatus === FetchStatus.Error ? (
-        <Typography>{"ERROR"}</Typography>
+        <Error message={GENERIC_ERROR_MESSAGE} />
       ) : (
         <>
           <div

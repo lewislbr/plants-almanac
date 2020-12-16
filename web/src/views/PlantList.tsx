@@ -7,13 +7,17 @@ import {
   Select,
   Typography,
 } from "@material-ui/core"
-import {Skeleton} from "@material-ui/lab"
-import {NavBar, PlantCard} from "../components"
+import {Error, Loading, NavBar, PlantCard} from "../components"
 import {retrieve, store} from "../services/storage"
 import {listAll} from "../services/plant"
 import {asc, desc} from "../services/sort"
 import {Plants} from "../graphql"
-import {FetchStatus, SORT_METHOD, SortMethods} from "../constants"
+import {
+  FetchStatus,
+  GENERIC_ERROR_MESSAGE,
+  SORT_METHOD,
+  SortMethods,
+} from "../constants"
 
 export function PlantList(): JSX.Element {
   const [data, setData] = useState({} as Plants)
@@ -112,35 +116,9 @@ export function PlantList(): JSX.Element {
       </div>
       <section style={{marginTop: "30px"}}>
         {fetchStatus === FetchStatus.Loading ? (
-          <>
-            <Skeleton
-              animation="wave"
-              height={150}
-              style={{marginTop: "-30px"}}
-            />
-            <Skeleton
-              animation="wave"
-              height={150}
-              style={{marginTop: "-30px"}}
-            />
-            <Skeleton
-              animation="wave"
-              height={150}
-              style={{marginTop: "-30px"}}
-            />
-            <Skeleton
-              animation="wave"
-              height={150}
-              style={{marginTop: "-30px"}}
-            />
-            <Skeleton
-              animation="wave"
-              height={150}
-              style={{marginTop: "-30px"}}
-            />
-          </>
+          <Loading />
         ) : fetchStatus === FetchStatus.Error ? (
-          <Typography>{"ERROR"}</Typography>
+          <Error message={GENERIC_ERROR_MESSAGE} />
         ) : (
           <div>
             {data.plants?.map((plant) => (
