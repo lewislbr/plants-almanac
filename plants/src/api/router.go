@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/graphql-go/handler"
-	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -14,8 +13,6 @@ var isDevelopment = os.Getenv("MODE") == "development"
 
 // Start initalizes the GraphQL API
 func Start() error {
-	godotenv.Load(".plants-env")
-
 	graphqlHandler := handler.New(&handler.Config{
 		Schema:     &schema,
 		Pretty:     false,

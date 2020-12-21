@@ -8,15 +8,12 @@ import (
 
 	p "plants/src/plant"
 
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func connectDatabase() *mongo.Collection {
-	godotenv.Load(".plants-env")
-
 	var isDevelopment = os.Getenv("MODE") == "development"
 	var mongodbURI string
 	if isDevelopment {

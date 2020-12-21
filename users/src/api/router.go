@@ -11,7 +11,6 @@ import (
 	"users/src/list"
 	"users/src/storage"
 
-	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -22,8 +21,6 @@ var deleteService = delete.NewService(&storage.Inmem{})
 
 // Start initializes the REST API
 func Start() error {
-	godotenv.Load(".users-env")
-
 	router := httprouter.New()
 	port := os.Getenv("USERS_PORT")
 
