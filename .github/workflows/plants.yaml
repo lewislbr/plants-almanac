@@ -1,0 +1,55 @@
+name: Deploy plants app
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "plants/**"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: plants
+
+env:
+  PLANTS_NAME: plants
+  PLANTS_PORT: 4040
+  REGISTRY: eu.gcr.io
+
+jobs:
+  deploy:
+    name: Deploy container to Google Cloud Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get git sha
+        run: echo "GIT_SHA=`echo $(git rev-parse --short HEAD)`" >> $GITHUB_ENV
+
+      - name: Set up Google Cloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          export_default_credentials: true
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker
+
+      - name: Build image
+        run: docker build -t "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA" -f Dockerfile.prod ./
+
+      - name: Push image
+        run: docker push "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA"
+
+      - name: Deploy container
+        run: |
+          gcloud run deploy "$PLANTS_NAME" \
+          --allow-unauthenticated \
+          --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA" \
+          --platform=managed \
+          --port="$PLANTS_PORT" \
+          --quiet \
+          --region=europe-west1 \
+          --set-env-vars=PLANTS_PORT="$PLANTS_PORT",PLANTS_COLLECTION_NAME="${{ secrets.PLANTS_COLLECTION_NAME }}",PLANTS_PRODUCTION_DATABASE_NAME="${{ secrets.PLANTS_PRODUCTION_DATABASE_NAME }}",PLANTS_PRODUCTION_MONGODB_URI="${{ secrets.PLANTS_PRODUCTION_MONGODB_URI }}",WEB_PRODUCTION_URL="${{ secrets.WEB_PRODUCTION_URL }}"

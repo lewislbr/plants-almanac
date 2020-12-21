@@ -1,0 +1,62 @@
+name: Deploy web app
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "web/**"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: web
+
+env:
+  REGISTRY: eu.gcr.io
+  WEB_NAME: web
+  WEB_PORT: 3000
+
+jobs:
+  deploy:
+    name: Deploy container to Google Cloud Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get git sha
+        run: echo "GIT_SHA=`echo $(git rev-parse --short HEAD)`" >> $GITHUB_ENV
+
+      - name: Set up Google Cloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          export_default_credentials: true
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker
+
+      - name: Add environment variables
+        run: echo "PLANTS_PRODUCTION_URL=${{ secrets.PLANTS_PRODUCTION_URL }}" >> .env
+
+      - name: Build image
+        run: |
+          docker build \
+          -t "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$WEB_NAME":"$GIT_SHA" \
+          -f Dockerfile.prod \
+          ./
+
+      - name: Push image
+        run: docker push "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$WEB_NAME":"$GIT_SHA"
+
+      - name: Deploy container
+        run: |
+          gcloud run deploy "$WEB_NAME" \
+          --allow-unauthenticated \
+          --args="-p=3000" \
+          --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$WEB_NAME":"$GIT_SHA" \
+          --platform=managed \
+          --port="$WEB_PORT" \
+          --quiet \
+          --region=europe-west1
