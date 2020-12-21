@@ -5,34 +5,33 @@ services:
     build:
       context: plants
       dockerfile: Dockerfile.dev
-    image: lewislbr/plantdex_plants-app:dev
-    container_name: plants-app
+    image: plantdex-dev/plants
+    container_name: plants
     env_file:
       - plants/.env
     ports:
       - "127.0.0.1:4040:4040"
 
-  users-app:
+  users:
     build:
       context: users
       dockerfile: Dockerfile.dev
-    image: lewislbr/plantdex_users-app:dev
-    container_name: users-app
+    image: plantdex-dev/users
+    container_name: users
     env_file:
       - users/.env
     ports:
       - "127.0.0.1:4041:4041"
 
-  web-app:
+  web:
     build:
       context: web
       dockerfile: Dockerfile.dev
-    image: lewislbr/plantdex_web-app:dev
-    container_name: web-app
+    image: plantdex-dev/web
+    container_name: web
+    env_file:
+      - web/.env
     ports:
       - "127.0.0.1:3000:3000"
     volumes:
       - ./web:/usr/src/app
-
-volumes:
-  plants-db:

@@ -3,38 +3,38 @@ repos:
   - repo: local
     hooks:
       - id: docker-go
-        name: plants-app-go
+        name: plants-go
         language: docker_image
         entry: golang:1-alpine sh -c "cd plants && gofmt -l -s -w ."
         files: plants
         verbose: true
 
       - id: docker-go
-        name: users-app-go
+        name: users-go
         language: docker_image
         entry: golang:1-alpine sh -c "cd users && gofmt -l -s -w ."
         files: users
         verbose: true
 
       - id: docker-typescript
-        name: web-app-typescript
+        name: web-typescript
         language: docker_image
         pass_filenames: false
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd web && npm run ts"
+        entry: plantdex-dev/web sh -c "cd web && npm run ts"
         files: web
         verbose: true
 
       - id: docker-eslint
-        name: web-app-eslint
+        name: web-eslint
         language: docker_image
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd web && npm run lint"
+        entry: plantdex-dev/web sh -c "cd web && npm run lint"
         exclude_types: [css, html, json]
         files: web
         verbose: true
 
       - id: docker-prettier
-        name: web-app-prettier
+        name: web-prettier
         language: docker_image
-        entry: lewislbr/plantdex_web-app:dev sh -c "cd web && npm run format"
+        entry: plantdex-dev/web sh -c "cd web && npm run format"
         files: web
         verbose: true

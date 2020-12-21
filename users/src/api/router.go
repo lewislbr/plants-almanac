@@ -15,23 +15,22 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-var a = add.NewService(&storage.Inmem{})
-var l = list.NewService(&storage.Inmem{})
-var e = edit.NewService(&storage.Inmem{})
-var d = delete.NewService(&storage.Inmem{})
+var addService = add.NewService(&storage.Inmem{})
+var listService = list.NewService(&storage.Inmem{})
+var editService = edit.NewService(&storage.Inmem{})
+var deleteService = delete.NewService(&storage.Inmem{})
 
 // Start initializes the REST API
 func Start() error {
 	godotenv.Load(".users-env")
 
 	router := httprouter.New()
-	port := os.Getenv("USERS_APP_PORT")
-	endpointRoot := "/users"
+	port := os.Getenv("USERS_PORT")
 
-	router.HandlerFunc("POST", endpointRoot, addUser(a))
-	router.HandlerFunc("GET", endpointRoot+"/{id}", listUser(l))
-	router.HandlerFunc("PATCH", endpointRoot+"/{id}", editUser(e))
-	router.HandlerFunc("DELETE", endpointRoot+"/{id}", deleteUser(d))
+	router.HandlerFunc("POST", "/", addUser(addService))
+	router.HandlerFunc("GET", "/:id", listUser(listService))
+	router.HandlerFunc("PATCH", "/:id", editUser(editService))
+	router.HandlerFunc("DELETE", "/:id", deleteUser(deleteService))
 
 	fmt.Println("Users API ready ✅")
 

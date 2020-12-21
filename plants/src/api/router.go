@@ -29,7 +29,7 @@ func Start() error {
 
 	router := httprouter.New()
 
-	router.Handler("POST", "/plants", graphqlHandler)
+	router.Handler("POST", "/", graphqlHandler)
 
 	if isDevelopment {
 		router.Handler("GET", "/playground", playgroundHandler)
@@ -37,7 +37,7 @@ func Start() error {
 
 	fmt.Println("Plants API ready ✅")
 
-	port := os.Getenv("PLANTS_APP_PORT")
+	port := os.Getenv("PLANTS_PORT")
 	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		return err

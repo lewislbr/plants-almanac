@@ -48,10 +48,10 @@ var plantType = graphql.NewObject(
 		},
 	},
 )
-var a = add.NewService(&storage.MongoDB{})
-var l = list.NewService(&storage.MongoDB{})
-var e = edit.NewService(&storage.MongoDB{})
-var d = delete.NewService(&storage.MongoDB{})
+var addService = add.NewService(&storage.MongoDB{})
+var listService = list.NewService(&storage.MongoDB{})
+var editService = edit.NewService(&storage.MongoDB{})
+var deleteService = delete.NewService(&storage.MongoDB{})
 
 func init() {
 	queries := graphql.NewObject(graphql.ObjectConfig{
@@ -60,7 +60,7 @@ func init() {
 			"plants": &graphql.Field{
 				Type:        graphql.NewNonNull(graphql.NewList(plantType)),
 				Description: "Lists all plants, returning an array of objects with the existing plants, or an empty array if there are none.",
-				Resolve:     listPlants(l),
+				Resolve:     listPlants(listService),
 			},
 			"plant": &graphql.Field{
 				Type:        plantType,
@@ -70,7 +70,7 @@ func init() {
 						Type: graphql.NewNonNull(graphql.ID),
 					},
 				},
-				Resolve: listPlant(l),
+				Resolve: listPlant(listService),
 			},
 		},
 	})
@@ -104,7 +104,7 @@ func init() {
 						Type: graphql.String,
 					},
 				},
-				Resolve: addPlant(a),
+				Resolve: addPlant(addService),
 			},
 			"edit": &graphql.Field{
 				Type:        graphql.Int,
@@ -135,7 +135,7 @@ func init() {
 						Type: graphql.String,
 					},
 				},
-				Resolve: editPlant(e, l),
+				Resolve: editPlant(editService, listService),
 			},
 			"delete": &graphql.Field{
 				Type:        graphql.Int,
@@ -145,7 +145,7 @@ func init() {
 						Type: graphql.NewNonNull(graphql.ID),
 					},
 				},
-				Resolve: deletePlant(d),
+				Resolve: deletePlant(deleteService),
 			},
 		},
 	})
