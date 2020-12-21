@@ -1,17 +1,7 @@
 version: "3.8"
 
 services:
-  ingress:
-    build:
-      context: ingress
-      dockerfile: Dockerfile.dev
-    image: lewislbr/plantdex_ingress:dev
-    container_name: ingress
-    ports:
-      - "127.0.0.1:80:80"
-      - "127.0.0.1:8080:8080"
-
-  plants-app:
+  plants:
     build:
       context: plants
       dockerfile: Dockerfile.dev
