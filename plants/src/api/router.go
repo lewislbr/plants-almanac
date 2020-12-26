@@ -56,10 +56,7 @@ func corsMiddleware(h http.Handler) http.HandlerFunc {
 		w.Header().Add("Access-Control-Allow-Methods", "POST")
 		w.Header().Add("Access-Control-Allow-Origin", origin)
 		w.Header().Add("Access-Control-Max-Age", "86400")
-		w.Header().Add(
-			"Strict-Transport-Security",
-			"max-age=63072000; includeSubDomains; preload",
-		)
+		w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
 
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusNoContent)

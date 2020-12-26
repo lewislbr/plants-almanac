@@ -28,10 +28,7 @@ func connectDatabase() *mongo.Database {
 		databaseName = os.Getenv("PLANTS_PRODUCTION_DATABASE_NAME")
 	}
 
-	client, err := mongo.Connect(
-		context.Background(),
-		options.Client().ApplyURI(mongodbURI),
-	)
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongodbURI))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,15 +60,16 @@ func (s *MongoDB) InsertOne(plant p.Plant) interface{} {
 
 // FindAll returns all the plants
 func (s *MongoDB) FindAll() []*p.Plant {
-	cursor, err := db.Collection(collectionName).Find(context.Background(), bson.M{})
-	if err != nil {
-		log.Fatal(err)
+	cursor, err1 := db.Collection(collectionName).Find(context.Background(), bson.M{})
+	if err1 != nil {
+		log.Fatal(err1)
 	}
 
 	var results []*p.Plant
 
-	if err := cursor.All(context.Background(), &results); err != nil {
-		log.Fatal(err)
+	err2 := cursor.All(context.Background(), &results)
+	if err2 != nil {
+		log.Fatal(err2)
 	}
 
 	return results
@@ -83,7 +81,8 @@ func (s *MongoDB) FindOne(id p.ID) *p.Plant {
 
 	var result *p.Plant
 
-	if err := db.Collection(collectionName).FindOne(context.Background(), filter).Decode(&result); err != nil {
+	err := db.Collection(collectionName).FindOne(context.Background(), filter).Decode(&result)
+	if err != nil {
 		log.Fatal(err)
 	}
 
