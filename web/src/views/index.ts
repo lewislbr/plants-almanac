@@ -1,3 +1,6 @@
 export {AddPlant} from "./AddPlant"
+export {CreateAccount} from "./CreateAccount"
+export {LogIn} from "./LogIn"
 export {PlantDetails} from "./PlantDetails"
 export {PlantList} from "./PlantList"
+export {Welcome} from "./Welcome"

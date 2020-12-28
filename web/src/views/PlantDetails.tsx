@@ -33,7 +33,7 @@ export function PlantDetails(): JSX.Element {
   }, [id])
 
   function close(): void {
-    history.push("/")
+    history.push("/plants")
   }
 
   function editPlant(): void {
@@ -56,7 +56,7 @@ export function PlantDetails(): JSX.Element {
 
       setFetchStatus(fetchConstant.Status.SUCCESS)
 
-      history.push("/")
+      history.push("/plants")
     } catch (error) {
       setFetchStatus(fetchConstant.Status.ERROR)
 

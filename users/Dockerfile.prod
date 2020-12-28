@@ -10,6 +10,10 @@ COPY . ./
 ENV MODE=production
 RUN go build -ldflags="-s -w" src/main.go
 
-FROM scratch as app
+FROM alpine:latest AS certs
+RUN apk --no-cache add ca-certificates
+
+FROM scratch AS app
 COPY --from=builder /build/main ./
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 ENTRYPOINT ["/main"]

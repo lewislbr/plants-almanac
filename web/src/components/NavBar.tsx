@@ -20,17 +20,13 @@ export function NavBar(): JSX.Element {
         icon={"🌱"}
         label="Plants"
         to="/"
-      >
-        {"Plants"}
-      </BottomNavigationAction>
+      />
       <BottomNavigationAction
         component={Link}
         icon={"➕"}
         label="Add plant"
         to="/add-plant"
-      >
-        {"Add Plant"}
-      </BottomNavigationAction>
+      />
     </BottomNavigation>
   )
 }

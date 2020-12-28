@@ -4,75 +4,94 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
 
-	"users/src/add"
-	"users/src/delete"
-	"users/src/edit"
-	"users/src/list"
+	"users/src/authenticate"
+	"users/src/authorize"
+	"users/src/create"
+	"users/src/storage"
 	u "users/src/user"
-
-	"github.com/julienschmidt/httprouter"
 )
 
-func addUser(as add.Service) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var user u.User
+var createService = create.NewService(&storage.MongoDB{})
+var authenticateService = authenticate.NewService(&storage.MongoDB{})
+var authorizeService = authorize.NewService()
 
-		json.NewDecoder(r.Body).Decode(&user)
+func createUser(w http.ResponseWriter, r *http.Request) {
+	var newUser u.User
 
-		as.AddUser(user)
+	json.NewDecoder(r.Body).Decode(&newUser)
 
-		io.WriteString(w, user.Name+" added")
+	if newUser.Name == "" || newUser.Email == "" || newUser.Password == "" {
+		http.Error(w, "Error: "+u.ErrMissingData.Error(), http.StatusBadRequest)
+
+		return
 	}
-}
 
-func listUser(ls list.Service) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		params := httprouter.ParamsFromContext(r.Context())
-		id := params.ByName("id")
-		user, err := ls.ListUser(u.ID(id))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
+	err := createService.Create(newUser)
+	if err != nil {
+		if strings.Contains(err.Error(), u.ErrUserExists.Error()) {
+			http.Error(w, "Error: "+u.ErrUserExists.Error(), http.StatusConflict)
+
 			return
 		}
 
-		w.Header().Set("content-type", "application/json")
+		http.Error(w, "Error: something went wrong", http.StatusInternalServerError)
 
-		json.NewEncoder(w).Encode(user)
+		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
 }
 
-func editUser(es edit.Service) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var user u.User
+func logInUser(w http.ResponseWriter, r *http.Request) {
+	var credentials u.Credentials
 
-		json.NewDecoder(r.Body).Decode(&user)
+	json.NewDecoder(r.Body).Decode(&credentials)
 
-		params := httprouter.ParamsFromContext(r.Context())
-		id := params.ByName("id")
-		err := es.EditUser(u.ID(id), user)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
+	if credentials.Email == "" || credentials.Password == "" {
+		http.Error(w, "Error: "+u.ErrMissingData.Error(), http.StatusBadRequest)
+
+		return
+	}
+
+	jwt, err := authenticateService.Authenticate(credentials)
+	if err != nil {
+		if strings.Contains(err.Error(), u.ErrNotFound.Error()) {
+			http.Error(w, "Error: "+u.ErrNotFound.Error(), http.StatusNotFound)
+
+			return
+		}
+		if strings.Contains(err.Error(), u.ErrInvalidPassword.Error()) {
+			http.Error(w, "Error: "+u.ErrInvalidPassword.Error(), http.StatusBadRequest)
+
 			return
 		}
 
-		io.WriteString(w, user.Name+" updated")
+		w.WriteHeader(http.StatusInternalServerError)
+
+		return
 	}
+
+	io.WriteString(w, jwt)
 }
 
-func deleteUser(ds delete.Service) func(
-	w http.ResponseWriter,
-	r *http.Request,
-) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		params := httprouter.ParamsFromContext(r.Context())
-		id := params.ByName("id")
-		err := ds.DeleteUser(u.ID(id))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		}
+func authorizeUser(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+	if authHeader == "" {
+		w.WriteHeader(http.StatusBadRequest)
 
-		io.WriteString(w, id+" deleted")
+		return
+
 	}
+
+	jwt := strings.Split(authHeader, " ")[1]
+	userID := authorizeService.Authorize(jwt)
+	if userID == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+
+		return
+	}
+
+	io.WriteString(w, userID)
 }

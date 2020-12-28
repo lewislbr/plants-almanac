@@ -8,12 +8,12 @@ import (
 
 // Service provides plant edit operations
 type Service interface {
-	EditPlant(p.ID, p.Plant) int64
+	EditPlant(string, p.ID, p.Plant) int64
 }
 
 // Repository provides access to the plant storage
 type Repository interface {
-	UpdateOne(p.ID, p.Plant) int64
+	UpdateOne(string, p.ID, p.Plant) int64
 }
 
 type service struct {
@@ -21,10 +21,10 @@ type service struct {
 }
 
 // EditPlant edits a plant
-func (s *service) EditPlant(id p.ID, plant p.Plant) int64 {
+func (s *service) EditPlant(uid string, id p.ID, plant p.Plant) int64 {
 	plant.EditedAt = time.Now().UTC()
 
-	return s.r.UpdateOne(id, plant)
+	return s.r.UpdateOne(uid, id, plant)
 }
 
 // NewService creates an edit service with the necessary dependencies

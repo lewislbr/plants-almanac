@@ -1,38 +1,74 @@
 package storage
 
 import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+
 	u "users/src/user"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func makeFakeDatabase() map[string]u.User {
-	database := make(map[string]u.User)
+func connectDatabase() *mongo.Collection {
+	isDevelopment := os.Getenv("MODE") == "development"
 
-	return database
+	var mongodbURI string
+	var databaseName string
+	if isDevelopment {
+		mongodbURI = os.Getenv("USERS_DEVELOPMENT_MONGODB_URI")
+		databaseName = os.Getenv("USERS_DEVELOPMENT_DATABASE_NAME")
+	} else {
+		mongodbURI = os.Getenv("USERS_PRODUCTION_MONGODB_URI")
+		databaseName = os.Getenv("USERS_PRODUCTION_DATABASE_NAME")
+	}
+
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongodbURI))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = client.Ping(context.Background(), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Users database ready ✅")
+
+	collectionName := os.Getenv("USERS_COLLECTION_NAME")
+
+	return client.Database(databaseName).Collection(collectionName)
 }
 
-var fakeDatabase = makeFakeDatabase()
+var collection = connectDatabase()
 
-// Inmem provides methods to store data in memory
-type Inmem struct{}
+// MongoDB provides methods to store data in MongoDB
+type MongoDB struct{}
 
-// FindOne returns the queried user
-func (s *Inmem) FindOne(id u.ID) (*u.User, bool) {
-	result, ok := fakeDatabase[string(id)]
+// InsertOne adds a new user
+func (s *MongoDB) InsertOne(newUser u.User) (interface{}, error) {
+	result, err := collection.InsertOne(context.Background(), newUser)
+	if err != nil {
+		log.Println(err)
 
-	return &result, ok
+		return nil, err
+	}
+
+	return result.InsertedID, nil
 }
 
-// InsertOne adds a user
-func (s *Inmem) InsertOne(user u.User) {
-	fakeDatabase[string(user.ID)] = user
-}
+// FindOne retuns the queried user
+func (s *MongoDB) FindOne(email string) *u.User {
+	var result *u.User
 
-// EditOne modifies the queried user
-func (s *Inmem) EditOne(id u.ID, user u.User) {
-	fakeDatabase[string(id)] = user
-}
+	filter := bson.M{"email": email}
+	err := collection.FindOne(context.Background(), filter).Decode(&result)
+	if err != nil {
+		log.Println(err)
+	}
 
-// DeleteOne deletes a user
-func (s *Inmem) DeleteOne(id u.ID) {
-	delete(fakeDatabase, string(id))
+	return result
 }

@@ -4,14 +4,14 @@ import p "plants/src/plant"
 
 // Service provides plant list operations
 type Service interface {
-	ListPlants() []*p.Plant
-	ListPlant(p.ID) *p.Plant
+	ListPlants(string) []*p.Plant
+	ListPlant(string, p.ID) *p.Plant
 }
 
 // Repository provides access to the plant storage
 type Repository interface {
-	FindAll() []*p.Plant
-	FindOne(p.ID) *p.Plant
+	FindAll(string) []*p.Plant
+	FindOne(string, p.ID) *p.Plant
 }
 
 type service struct {
@@ -19,13 +19,13 @@ type service struct {
 }
 
 // ListPlants lists all plants
-func (s *service) ListPlants() []*p.Plant {
-	return s.r.FindAll()
+func (s *service) ListPlants(uid string) []*p.Plant {
+	return s.r.FindAll(uid)
 }
 
 // ListPlant lists a plant
-func (s *service) ListPlant(id p.ID) *p.Plant {
-	return s.r.FindOne(id)
+func (s *service) ListPlant(uid string, id p.ID) *p.Plant {
+	return s.r.FindOne(uid, id)
 }
 
 // NewService creates a list service with the necessary dependencies

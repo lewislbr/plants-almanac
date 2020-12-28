@@ -38,7 +38,10 @@ jobs:
         run: gcloud auth configure-docker
 
       - name: Add environment variables
-        run: echo "PLANTS_PRODUCTION_URL=${{ secrets.PLANTS_PRODUCTION_URL }}" >> .env
+        run: |
+          echo "PLANTS_PRODUCTION_URL=${{ secrets.PLANTS_PRODUCTION_URL }}" >> .env
+          echo "USERS_LOGIN_PRODUCTION_URL=${{ secrets.USERS_LOGIN_PRODUCTION_URL }}" >> .env
+          echo "USERS_SIGNUP_PRODUCTION_URL=${{ secrets.USERS_SIGNUP_PRODUCTION_URL }}" >> .env
 
       - name: Build image
         run: |

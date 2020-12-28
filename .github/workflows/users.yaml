@@ -1,19 +1,19 @@
-name: Deploy plants app
+name: Deploy users app
 
 on:
   push:
     branches: [master]
     paths:
-      - "plants/**"
+      - "users/**"
   workflow_dispatch:
 
 defaults:
   run:
-    working-directory: plants
+    working-directory: users
 
 env:
-  PLANTS_NAME: plants
-  PLANTS_PORT: 4040
+  USERS_NAME: users
+  USERS_PORT: 4041
   REGISTRY: eu.gcr.io
 
 jobs:
@@ -38,18 +38,18 @@ jobs:
         run: gcloud auth configure-docker
 
       - name: Build image
-        run: docker build -t "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA" -f Dockerfile.prod ./
+        run: docker build -t "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$USERS_NAME":"$GIT_SHA" -f Dockerfile.prod ./
 
       - name: Push image
-        run: docker push "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA"
+        run: docker push "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$USERS_NAME":"$GIT_SHA"
 
       - name: Deploy container
         run: |
-          gcloud run deploy "$PLANTS_NAME" \
+          gcloud run deploy "$USERS_NAME" \
           --allow-unauthenticated \
-          --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA" \
+          --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$USERS_NAME":"$GIT_SHA" \
           --platform=managed \
-          --port="$PLANTS_PORT" \
+          --port="$USERS_PORT" \
           --quiet \
           --region=europe-west1 \
-          --set-env-vars=PLANTS_PORT="$PLANTS_PORT",PLANTS_PRODUCTION_DATABASE_NAME="${{ secrets.PLANTS_PRODUCTION_DATABASE_NAME }}",PLANTS_PRODUCTION_MONGODB_URI="${{ secrets.PLANTS_PRODUCTION_MONGODB_URI }}",USERS_AUTHORIZATION_PRODUCTION_URL="${{ secrets.USERS_AUTHORIZATION_PRODUCTION_URL }}",WEB_PRODUCTION_URL="${{ secrets.WEB_PRODUCTION_URL }}"
+          --set-env-vars=USERS_COLLECTION_NAME="${{ secrets.USERS_COLLECTION_NAME }}",USERS_JWT_SECRET="${{ secrets.USERS_JWT_SECRET }}",USERS_PORT="$USERS_PORT",USERS_PRODUCTION_DATABASE_NAME="${{ secrets.USERS_PRODUCTION_DATABASE_NAME }}",USERS_PRODUCTION_MONGODB_URI="${{ secrets.USERS_PRODUCTION_MONGODB_URI }}",WEB_PRODUCTION_URL="${{ secrets.WEB_PRODUCTION_URL }}"

@@ -141,7 +141,7 @@ export function PlantList(): JSX.Element {
               <Link
                 component={RouterLink}
                 key={plant?.id}
-                to={`/${plant?.id}`}
+                to={`/plants/${plant?.id}`}
                 underline="none"
               >
                 <PlantCard {...{name: plant?.name}} />

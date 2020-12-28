@@ -85,7 +85,7 @@ export function AddPlant(): JSX.Element {
 
       setFetchStatus(fetchConstant.Status.SUCCESS)
 
-      history.push("/")
+      history.push("/plants")
     } catch (error) {
       setFetchStatus(fetchConstant.Status.ERROR)
 
@@ -101,7 +101,7 @@ export function AddPlant(): JSX.Element {
 
       setFetchStatus(fetchConstant.Status.SUCCESS)
 
-      history.push("/" + prevState.id)
+      history.push("/plants/" + prevState.id)
     } catch (error) {
       setFetchStatus(fetchConstant.Status.ERROR)
 
@@ -110,7 +110,7 @@ export function AddPlant(): JSX.Element {
   }
 
   function cancel(): void {
-    history.push("/")
+    history.push("/plants")
   }
 
   return (

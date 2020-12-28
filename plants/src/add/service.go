@@ -10,12 +10,12 @@ import (
 
 // Service provides plant add operations
 type Service interface {
-	AddPlant(p.Plant) interface{}
+	AddPlant(string, p.Plant) interface{}
 }
 
 // Repository provides access to the plant storage
 type Repository interface {
-	InsertOne(p.Plant) interface{}
+	InsertOne(string, p.Plant) interface{}
 }
 
 type service struct {
@@ -23,11 +23,11 @@ type service struct {
 }
 
 // AddPlant adds a plant
-func (s *service) AddPlant(plant p.Plant) interface{} {
+func (s *service) AddPlant(uid string, plant p.Plant) interface{} {
 	plant.ID = p.ID(uuid.New().String())
 	plant.CreatedAt = time.Now().UTC()
 
-	return s.r.InsertOne(plant)
+	return s.r.InsertOne(uid, plant)
 }
 
 // NewService creates an add service with the necessary dependencies

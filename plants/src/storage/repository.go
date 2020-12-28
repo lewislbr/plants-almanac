@@ -13,8 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var collectionName = "default"
-
 func connectDatabase() *mongo.Database {
 	isDevelopment := os.Getenv("MODE") == "development"
 
@@ -49,48 +47,48 @@ var db = connectDatabase()
 type MongoDB struct{}
 
 // InsertOne adds a plant
-func (s *MongoDB) InsertOne(plant p.Plant) interface{} {
-	result, err := db.Collection(collectionName).InsertOne(context.Background(), plant)
+func (s *MongoDB) InsertOne(uid string, plant p.Plant) interface{} {
+	result, err := db.Collection(uid).InsertOne(context.Background(), plant)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return result.InsertedID
 }
 
 // FindAll returns all the plants
-func (s *MongoDB) FindAll() []*p.Plant {
-	cursor, err1 := db.Collection(collectionName).Find(context.Background(), bson.M{})
+func (s *MongoDB) FindAll(uid string) []*p.Plant {
+	cursor, err1 := db.Collection(uid).Find(context.Background(), bson.M{})
 	if err1 != nil {
-		log.Fatal(err1)
+		log.Println(err1)
 	}
 
 	var results []*p.Plant
 
 	err2 := cursor.All(context.Background(), &results)
 	if err2 != nil {
-		log.Fatal(err2)
+		log.Println(err2)
 	}
 
 	return results
 }
 
 // FindOne retuns the queried plant
-func (s *MongoDB) FindOne(id p.ID) *p.Plant {
+func (s *MongoDB) FindOne(uid string, id p.ID) *p.Plant {
 	filter := bson.M{"_id": id}
 
 	var result *p.Plant
 
-	err := db.Collection(collectionName).FindOne(context.Background(), filter).Decode(&result)
+	err := db.Collection(uid).FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return result
 }
 
 // UpdateOne modifies the queried plant
-func (s *MongoDB) UpdateOne(id p.ID, plant p.Plant) int64 {
+func (s *MongoDB) UpdateOne(uid string, id p.ID, plant p.Plant) int64 {
 	filter := bson.M{"_id": id}
 	update := bson.M{
 		"$set": bson.M{
@@ -105,20 +103,20 @@ func (s *MongoDB) UpdateOne(id p.ID, plant p.Plant) int64 {
 			"tips":           plant.Tips,
 		},
 	}
-	result, err := db.Collection(collectionName).UpdateOne(context.Background(), filter, update)
+	result, err := db.Collection(uid).UpdateOne(context.Background(), filter, update)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return result.ModifiedCount
 }
 
 // DeleteOne deletes a plant
-func (s *MongoDB) DeleteOne(id p.ID) int64 {
+func (s *MongoDB) DeleteOne(uid string, id p.ID) int64 {
 	filter := bson.M{"_id": id}
-	result, err := db.Collection(collectionName).DeleteOne(context.Background(), filter)
+	result, err := db.Collection(uid).DeleteOne(context.Background(), filter)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return result.DeletedCount
