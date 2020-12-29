@@ -7,15 +7,15 @@ import {
   Select,
   Typography,
 } from "@material-ui/core"
-import {Error, Loading, NavBar, PlantCard} from "../components"
+import {Error, Loading, NavBar, PlantCard} from "../../shared/components"
 import * as plantService from "../services/plant"
 import * as sortService from "../services/sort"
-import * as storageService from "../services/storage"
-import * as copyConstant from "../constants/copy"
-import * as errorConstant from "../constants/error"
-import * as fetchConstant from "../constants/fetch"
+import * as storageService from "../../shared/services/storage"
+import * as plantCopy from "../constants/copy"
+import * as errorConstant from "../../shared/constants/error"
+import * as fetchConstant from "../../shared/constants/fetch"
 import * as sortConstant from "../constants/sort"
-import {Plants} from "../graphql/Plants"
+import {Plants} from "../interfaces/Plants"
 
 export function PlantList(): JSX.Element {
   const [data, setData] = useState({} as Plants)
@@ -112,7 +112,7 @@ export function PlantList(): JSX.Element {
           justifyContent: "space-between",
         }}
       >
-        <Typography variant="h1">{copyConstant.PLANTS}</Typography>
+        <Typography variant="h1">{plantCopy.PLANTS}</Typography>
         <FormControl
           style={{fontSize: "15px", padding: "0"}}
           variant="outlined"

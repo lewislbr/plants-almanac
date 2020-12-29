@@ -2,12 +2,13 @@ import React, {useEffect, useState} from "react"
 import {useHistory, useParams} from "react-router-dom"
 import {Button, IconButton, Typography} from "@material-ui/core"
 import CancelIcon from "@material-ui/icons/Cancel"
-import {Alert, Error, Loading} from "../components"
+import {Alert, Error, Loading} from "../../shared/components"
 import * as plantService from "../services/plant"
-import * as copyConstant from "../constants/copy"
-import * as errorConstant from "../constants/error"
-import * as fetchConstant from "../constants/fetch"
-import {Plant} from "../graphql/Plant"
+import * as plantCopy from "../constants/copy"
+import * as sharedCopy from "../../shared/constants/copy"
+import * as errorConstant from "../../shared/constants/error"
+import * as fetchConstant from "../../shared/constants/fetch"
+import {Plant} from "../interfaces/Plant"
 
 export function PlantDetails(): JSX.Element {
   const [data, setData] = useState({} as Plant)
@@ -90,7 +91,7 @@ export function PlantDetails(): JSX.Element {
                 {"Other Names"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.other_names || copyConstant.NO_DATA}
+                {data.plant?.other_names || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -98,7 +99,7 @@ export function PlantDetails(): JSX.Element {
                 {"Description"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.description || copyConstant.NO_DATA}
+                {data.plant?.description || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -106,7 +107,7 @@ export function PlantDetails(): JSX.Element {
                 {"Plant Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.plant_season || copyConstant.NO_DATA}
+                {data.plant?.plant_season || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -114,7 +115,7 @@ export function PlantDetails(): JSX.Element {
                 {"Harvest Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.harvest_season || copyConstant.NO_DATA}
+                {data.plant?.harvest_season || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -122,7 +123,7 @@ export function PlantDetails(): JSX.Element {
                 {"Prune Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.prune_season || copyConstant.NO_DATA}
+                {data.plant?.prune_season || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -130,7 +131,7 @@ export function PlantDetails(): JSX.Element {
                 {"Tips"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.tips || copyConstant.NO_DATA}
+                {data.plant?.tips || plantCopy.NO_DATA}
               </Typography>
             </div>
           </section>
@@ -141,7 +142,7 @@ export function PlantDetails(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {copyConstant.EDIT_PLANT}
+            {plantCopy.EDIT_PLANT}
           </Button>
           <Button
             color="secondary"
@@ -150,16 +151,16 @@ export function PlantDetails(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {copyConstant.DELETE_PLANT}
+            {plantCopy.DELETE_PLANT}
           </Button>
           <Alert
             action={deletePlant}
-            actionText={copyConstant.DELETE_PLANT}
+            actionText={plantCopy.DELETE_PLANT}
             cancel={closeAlert}
-            cancelText={copyConstant.CANCEL}
+            cancelText={sharedCopy.CANCEL}
             message={data.plant?.name + " will be deleted."}
             open={alertOpen}
-            title={copyConstant.DELETE_PLANT}
+            title={plantCopy.DELETE_PLANT}
           />
         </>
       )}

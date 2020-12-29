@@ -1,10 +1,41 @@
-import {ApolloQueryResult, gql} from "@apollo/client"
-import {client} from "../index"
-import {AddVariables} from "../graphql/Add"
-import {DeleteVariables} from "../graphql/Delete"
-import {EditVariables} from "../graphql/Edit"
-import {Plant} from "../graphql/Plant"
-import {Plants} from "../graphql/Plants"
+import {
+  ApolloClient,
+  ApolloQueryResult,
+  createHttpLink,
+  gql,
+  InMemoryCache,
+} from "@apollo/client"
+import {setContext} from "@apollo/client/link/context"
+import * as storageService from "../../shared/services/storage"
+import {JWT} from "../../user/constants/user"
+import {AddVariables} from "../interfaces/Add"
+import {DeleteVariables} from "../interfaces/Delete"
+import {EditVariables} from "../interfaces/Edit"
+import {Plant} from "../interfaces/Plant"
+import {Plants} from "../interfaces/Plants"
+
+const httpLink = createHttpLink({
+  uri:
+    process.env.NODE_ENV === "production"
+      ? process.env.PLANTS_PRODUCTION_URL
+      : process.env.PLANTS_DEVELOPMENT_URL,
+})
+
+const auth = setContext((_, {headers}) => {
+  const jwt = storageService.retrieve(JWT)
+
+  return {
+    headers: {
+      ...headers,
+      ...(jwt && {authorization: `Bearer ${jwt}`}),
+    },
+  }
+})
+
+const plantsClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: auth.concat(httpLink),
+})
 
 export async function addOne(plant: Record<string, string>): Promise<void> {
   const ADD = gql`
@@ -43,7 +74,7 @@ export async function addOne(plant: Record<string, string>): Promise<void> {
     tips: plant.tips || null,
   }
 
-  await client.mutate({
+  await plantsClient.mutate({
     mutation: ADD,
     update(cache, {data: {add}}) {
       cache.modify({
@@ -75,7 +106,7 @@ export async function listAll(): Promise<ApolloQueryResult<Plants>> {
     }
   `
 
-  return client.query({query: PLANTS})
+  return plantsClient.query({query: PLANTS})
 }
 
 export async function listOne(id: string): Promise<ApolloQueryResult<Plant>> {
@@ -96,7 +127,7 @@ export async function listOne(id: string): Promise<ApolloQueryResult<Plant>> {
     }
   `
 
-  return client.query({query: PLANT, variables: {id: id}})
+  return plantsClient.query({query: PLANT, variables: {id: id}})
 }
 
 export async function editOne(
@@ -142,7 +173,7 @@ export async function editOne(
     tips: plant.tips ?? null,
   }
 
-  await client.mutate({
+  await plantsClient.mutate({
     mutation: EDIT,
     update(cache, {data: {edit}}) {
       cache.modify({
@@ -177,7 +208,7 @@ export async function deleteOne(id: DeleteVariables["id"]): Promise<void> {
     }
   `
 
-  await client.mutate({
+  await plantsClient.mutate({
     mutation: DELETE,
     update(cache) {
       cache.modify({

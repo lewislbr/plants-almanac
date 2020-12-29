@@ -1,6 +1,6 @@
 import {Credentials, NewUser} from "../interfaces/user"
 import {JWT} from "../constants/user"
-import * as storageService from "./storage"
+import * as storageService from "../../shared/services/storage"
 
 export async function signUp(user: Record<string, unknown>): Promise<void> {
   const dto: NewUser = {
@@ -8,8 +8,7 @@ export async function signUp(user: Record<string, unknown>): Promise<void> {
     email: user.email as string,
     password: user.password as string,
   }
-
-  await fetch(
+  const response = await fetch(
     process.env.NODE_ENV === "production"
       ? (process.env.USERS_SIGNUP_PRODUCTION_URL as string)
       : (process.env.USERS_SIGNUP_DEVELOPMENT_URL as string),
@@ -19,6 +18,10 @@ export async function signUp(user: Record<string, unknown>): Promise<void> {
       method: "POST",
     },
   )
+
+  if (!response.ok) {
+    throw new Error(String(response.status))
+  }
 }
 
 export async function logIn(user: Record<string, unknown>): Promise<void> {

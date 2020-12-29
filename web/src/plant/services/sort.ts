@@ -1,4 +1,4 @@
-import {Plants_plants} from "../graphql/Plants"
+import {Plants_plants} from "../interfaces/Plants"
 
 export function asc(
   key: keyof Plants_plants,

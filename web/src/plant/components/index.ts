@@ -1,0 +1,1 @@
+export {PlantCard} from "./PlantCard"

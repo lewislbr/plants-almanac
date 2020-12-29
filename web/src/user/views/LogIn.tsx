@@ -8,31 +8,26 @@ import {
   Typography,
 } from "@material-ui/core"
 import {Visibility, VisibilityOff} from "@material-ui/icons"
-import {Error, Loading} from "../components"
+import {Error, Loading} from "../../shared/components"
 import * as userService from "../services/user"
-import * as copyConstant from "../constants/copy"
-import * as errorConstant from "../constants/error"
-import * as fetchConstant from "../constants/fetch"
+import * as userCopy from "../constants/copy"
+import * as userConstant from "../constants/user"
+import * as sharedCopy from "../../shared/constants/copy"
+import * as errorConstant from "../../shared/constants/error"
+import * as fetchConstant from "../../shared/constants/fetch"
 import {AuthContext} from "../contexts/auth"
 
-const namePattern = /^[a-zA-Z0-9_\s]{1,100}$/
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{1,100}$/
-const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,100}$/
-
-export function CreateAccount(): JSX.Element {
+export function LogIn(): JSX.Element {
   const [errors, setErrors] = useState({
-    name: false,
     email: false,
     password: false,
   })
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const [fetchStatus, setFetchStatus] = useState(fetchConstant.Status.IDLE)
-  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const userState = {
-    name,
     email,
     password,
   }
@@ -40,25 +35,15 @@ export function CreateAccount(): JSX.Element {
   const history = useHistory()
 
   useEffect(() => {
-    if (!name || !email || !password || Object.values(errors).includes(true)) {
+    if (!email || !password || Object.values(errors).includes(true)) {
       setButtonDisabled(true)
     } else {
       setButtonDisabled(false)
     }
-  }, [name, email, password, errors])
-
-  function updateName(event: ChangeEvent<HTMLInputElement>): void {
-    if (!namePattern.test(event.target.value)) {
-      setErrors((errors) => ({...errors, name: true}))
-    } else {
-      setErrors((errors) => ({...errors, name: false}))
-    }
-
-    setName(event.target.value)
-  }
+  }, [email, password, errors])
 
   function updateEmail(event: ChangeEvent<HTMLInputElement>): void {
-    if (!emailPattern.test(event.target.value)) {
+    if (!userConstant.EMAIL_PATTERN.test(event.target.value)) {
       setErrors((errors) => ({...errors, email: true}))
     } else {
       setErrors((errors) => ({...errors, email: false}))
@@ -68,7 +53,7 @@ export function CreateAccount(): JSX.Element {
   }
 
   function updatePassword(event: ChangeEvent<HTMLTextAreaElement>): void {
-    if (!passwordPattern.test(event.target.value)) {
+    if (!userConstant.PASSWORD_PATTERN.test(event.target.value)) {
       setErrors((errors) => ({...errors, password: true}))
     } else {
       setErrors((errors) => ({...errors, password: false}))
@@ -81,11 +66,10 @@ export function CreateAccount(): JSX.Element {
     setShowPassword(!showPassword)
   }
 
-  async function signUp(): Promise<void> {
+  async function logIn(): Promise<void> {
     setFetchStatus(fetchConstant.Status.LOADING)
 
     try {
-      await userService.signUp(userState)
       await userService.logIn(userState)
 
       setAuthenticatedUser(true)
@@ -111,17 +95,8 @@ export function CreateAccount(): JSX.Element {
         <Error message={errorConstant.GENERIC_MESSAGE} />
       ) : (
         <>
-          <Typography variant="h1">{copyConstant.CREATE_ACCOUNT}</Typography>
+          <Typography variant="h1">{userCopy.LOG_IN}</Typography>
           <section style={{marginTop: "30px"}}>
-            <TextField
-              error={errors.name}
-              fullWidth
-              label="Name"
-              onChange={updateName}
-              required
-              value={name}
-              variant="outlined"
-            />
             <TextField
               error={errors.email}
               fullWidth
@@ -155,11 +130,11 @@ export function CreateAccount(): JSX.Element {
               color="primary"
               disabled={buttonDisabled}
               fullWidth
-              onClick={signUp}
+              onClick={logIn}
               style={{marginTop: "30px"}}
               variant="contained"
             >
-              {copyConstant.CREATE_ACCOUNT}
+              {userCopy.LOG_IN}
             </Button>
             <Button
               color="secondary"
@@ -168,7 +143,7 @@ export function CreateAccount(): JSX.Element {
               style={{marginTop: "30px"}}
               variant="contained"
             >
-              {copyConstant.CANCEL}
+              {sharedCopy.CANCEL}
             </Button>
           </section>
         </>

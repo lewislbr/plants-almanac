@@ -1,12 +1,13 @@
 import React, {ChangeEvent, useEffect, useLayoutEffect, useState} from "react"
 import {useHistory, useLocation} from "react-router-dom"
 import {Button, TextField, Typography} from "@material-ui/core"
-import {Error, Loading} from "../components"
+import {Error, Loading} from "../../shared/components"
 import * as plantService from "../services/plant"
-import * as copyConstant from "../constants/copy"
-import * as errorConstant from "../constants/error"
-import * as fetchConstant from "../constants/fetch"
-import {EditVariables} from "../graphql/Edit"
+import * as plantCopy from "../constants/copy"
+import * as sharedCopy from "../../shared/constants/copy"
+import * as errorConstant from "../../shared/constants/error"
+import * as fetchConstant from "../../shared/constants/fetch"
+import {EditVariables} from "../interfaces/Edit"
 
 export function AddPlant(): JSX.Element {
   const location = useLocation()
@@ -122,7 +123,7 @@ export function AddPlant(): JSX.Element {
       ) : (
         <>
           <Typography variant="h1">
-            {isEditMode ? copyConstant.EDIT_PLANT : copyConstant.ADD_PLANT}
+            {isEditMode ? plantCopy.EDIT_PLANT : plantCopy.ADD_PLANT}
           </Typography>
           <section style={{marginTop: "30px"}}>
             <TextField
@@ -188,7 +189,7 @@ export function AddPlant(): JSX.Element {
               style={{marginTop: "30px"}}
               variant="contained"
             >
-              {copyConstant.SAVE_CHANGES}
+              {plantCopy.SAVE_CHANGES}
             </Button>
           ) : (
             <Button
@@ -198,7 +199,7 @@ export function AddPlant(): JSX.Element {
               style={{marginTop: "30px"}}
               variant="contained"
             >
-              {copyConstant.ADD_PLANT}
+              {plantCopy.ADD_PLANT}
             </Button>
           )}
           <Button
@@ -208,7 +209,7 @@ export function AddPlant(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {copyConstant.CANCEL}
+            {sharedCopy.CANCEL}
           </Button>
         </>
       )}
