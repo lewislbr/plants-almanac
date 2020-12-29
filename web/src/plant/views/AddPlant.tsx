@@ -5,15 +5,19 @@ import {Error, Loading} from "../../shared/components"
 import * as plantService from "../services/plant"
 import * as plantCopy from "../constants/copy"
 import * as sharedCopy from "../../shared/constants/copy"
-import * as errorConstant from "../../shared/constants/error"
-import * as fetchConstant from "../../shared/constants/fetch"
+import {HTTPStatus} from "../../shared/constants/http"
 import {EditVariables} from "../interfaces/Edit"
 
 export function AddPlant(): JSX.Element {
+  const [errors, setErrors] = useState({
+    name: false,
+    http: "",
+  })
+  const [buttonDisabled, setButtonDisabled] = useState(true)
   const location = useLocation()
   const prevState = location.state as EditVariables
   const [isEditMode] = useState(prevState)
-  const [fetchStatus, setFetchStatus] = useState(fetchConstant.Status.IDLE)
+  const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [name, setName] = useState("")
   const [otherNames, setOtherNames] = useState("")
   const [description, setDescription] = useState("")
@@ -31,14 +35,26 @@ export function AddPlant(): JSX.Element {
     tips,
   }
   const history = useHistory()
+  const missingFields = !name
+  const activeErrors = Object.values(errors).includes(true)
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0)
   }, [location])
 
   useEffect(() => {
+    if (!isEditMode) {
+      if (missingFields || activeErrors) {
+        setButtonDisabled(true)
+      } else {
+        setButtonDisabled(false)
+      }
+    }
+  }, [isEditMode, missingFields, activeErrors])
+
+  useEffect(() => {
     if (isEditMode) {
-      setFetchStatus(fetchConstant.Status.LOADING)
+      setStatus(HTTPStatus.LOADING)
       setName(prevState.name)
       setOtherNames(prevState.other_names || "")
       setDescription(prevState.description || "")
@@ -46,11 +62,17 @@ export function AddPlant(): JSX.Element {
       setHarvestSeason(prevState.harvest_season || "")
       setPruneSeason(prevState.prune_season || "")
       setTips(prevState.tips || "")
-      setFetchStatus(fetchConstant.Status.SUCCESS)
+      setStatus(HTTPStatus.SUCCESS)
     }
   }, [isEditMode, prevState])
 
   function updateName(event: ChangeEvent<HTMLInputElement>): void {
+    if (!event.target.value) {
+      setErrors((errors) => ({...errors, name: true}))
+    } else {
+      setErrors((errors) => ({...errors, name: false}))
+    }
+
     setName(event.target.value)
   }
 
@@ -79,32 +101,34 @@ export function AddPlant(): JSX.Element {
   }
 
   async function addPlant(): Promise<void> {
-    setFetchStatus(fetchConstant.Status.LOADING)
+    setStatus(HTTPStatus.LOADING)
 
     try {
       await plantService.addOne(plantState)
 
-      setFetchStatus(fetchConstant.Status.SUCCESS)
+      setStatus(HTTPStatus.SUCCESS)
 
       history.push("/plants")
     } catch (error) {
-      setFetchStatus(fetchConstant.Status.ERROR)
+      setErrors((errors) => ({...errors, http: String(error)}))
+      setStatus(HTTPStatus.ERROR)
 
       console.error(error)
     }
   }
 
   async function editPlant(): Promise<void> {
-    setFetchStatus(fetchConstant.Status.LOADING)
+    setStatus(HTTPStatus.LOADING)
 
     try {
       await plantService.editOne(prevState.id, plantState)
 
-      setFetchStatus(fetchConstant.Status.SUCCESS)
+      setStatus(HTTPStatus.SUCCESS)
 
       history.push("/plants/" + prevState.id)
     } catch (error) {
-      setFetchStatus(fetchConstant.Status.ERROR)
+      setErrors((errors) => ({...errors, http: String(error)}))
+      setStatus(HTTPStatus.ERROR)
 
       console.error(error)
     }
@@ -116,17 +140,16 @@ export function AddPlant(): JSX.Element {
 
   return (
     <>
-      {fetchStatus === fetchConstant.Status.LOADING ? (
+      <Typography variant="h1">
+        {isEditMode ? plantCopy.EDIT_PLANT : plantCopy.ADD_PLANT}
+      </Typography>
+      {status === HTTPStatus.LOADING ? (
         <Loading />
-      ) : fetchStatus === fetchConstant.Status.ERROR ? (
-        <Error message={errorConstant.GENERIC_MESSAGE} />
       ) : (
         <>
-          <Typography variant="h1">
-            {isEditMode ? plantCopy.EDIT_PLANT : plantCopy.ADD_PLANT}
-          </Typography>
           <section style={{marginTop: "30px"}}>
             <TextField
+              error={errors.name}
               fullWidth
               label="Name"
               onChange={updateName}
@@ -194,6 +217,7 @@ export function AddPlant(): JSX.Element {
           ) : (
             <Button
               color="primary"
+              disabled={buttonDisabled}
               fullWidth
               onClick={addPlant}
               style={{marginTop: "30px"}}
@@ -212,6 +236,9 @@ export function AddPlant(): JSX.Element {
             {sharedCopy.CANCEL}
           </Button>
         </>
+      )}
+      {status === HTTPStatus.ERROR && (
+        <Error message={errors.http} title={"Error"} />
       )}
     </>
   )

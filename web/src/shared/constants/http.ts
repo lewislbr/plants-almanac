@@ -1,4 +1,4 @@
-export enum Status {
+export enum HTTPStatus {
   ERROR,
   IDLE,
   LOADING,

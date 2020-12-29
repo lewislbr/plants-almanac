@@ -59,11 +59,6 @@ export async function addOne(plant: Record<string, string>): Promise<void> {
       )
     }
   `
-
-  if (!plant.name) {
-    throw new Error("Name is required.")
-  }
-
   const plantDTO: AddVariables = {
     name: plant.name,
     other_names: plant.otherNames || null,
@@ -157,11 +152,6 @@ export async function editOne(
       )
     }
   `
-
-  if (!plant.name) {
-    throw new Error("Name is required.")
-  }
-
   const plantDTO: EditVariables = {
     id: id,
     name: plant.name,

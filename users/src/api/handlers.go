@@ -23,7 +23,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&newUser)
 
 	if newUser.Name == "" || newUser.Email == "" || newUser.Password == "" {
-		http.Error(w, "Error: "+u.ErrMissingData.Error(), http.StatusBadRequest)
+		http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
 
 		return
 	}
@@ -31,12 +31,12 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	err := createService.Create(newUser)
 	if err != nil {
 		if strings.Contains(err.Error(), u.ErrUserExists.Error()) {
-			http.Error(w, "Error: "+u.ErrUserExists.Error(), http.StatusConflict)
+			http.Error(w, u.ErrUserExists.Error(), http.StatusConflict)
 
 			return
 		}
 
-		http.Error(w, "Error: something went wrong", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusInternalServerError)
 
 		return
 	}
@@ -50,7 +50,7 @@ func logInUser(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&credentials)
 
 	if credentials.Email == "" || credentials.Password == "" {
-		http.Error(w, "Error: "+u.ErrMissingData.Error(), http.StatusBadRequest)
+		http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
 
 		return
 	}
@@ -58,12 +58,12 @@ func logInUser(w http.ResponseWriter, r *http.Request) {
 	jwt, err := authenticateService.Authenticate(credentials)
 	if err != nil {
 		if strings.Contains(err.Error(), u.ErrNotFound.Error()) {
-			http.Error(w, "Error: "+u.ErrNotFound.Error(), http.StatusNotFound)
+			http.Error(w, u.ErrNotFound.Error(), http.StatusNotFound)
 
 			return
 		}
 		if strings.Contains(err.Error(), u.ErrInvalidPassword.Error()) {
-			http.Error(w, "Error: "+u.ErrInvalidPassword.Error(), http.StatusBadRequest)
+			http.Error(w, u.ErrInvalidPassword.Error(), http.StatusBadRequest)
 
 			return
 		}

@@ -2,31 +2,34 @@ import React, {useEffect, useState} from "react"
 import {useHistory, useParams} from "react-router-dom"
 import {Button, IconButton, Typography} from "@material-ui/core"
 import CancelIcon from "@material-ui/icons/Cancel"
-import {Alert, Error, Loading} from "../../shared/components"
+import {Dialog, Error, Loading} from "../../shared/components"
 import * as plantService from "../services/plant"
 import * as plantCopy from "../constants/copy"
 import * as sharedCopy from "../../shared/constants/copy"
-import * as errorConstant from "../../shared/constants/error"
-import * as fetchConstant from "../../shared/constants/fetch"
+import {HTTPStatus} from "../../shared/constants/http"
 import {Plant} from "../interfaces/Plant"
 
 export function PlantDetails(): JSX.Element {
+  const [errors, setErrors] = useState({
+    http: "",
+  })
   const [data, setData] = useState({} as Plant)
-  const [fetchStatus, setFetchStatus] = useState(fetchConstant.Status.IDLE)
-  const [alertOpen, setAlertOpen] = useState(false)
+  const [status, setStatus] = useState(HTTPStatus.IDLE)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const {id} = useParams<{id: string}>()
   const history = useHistory()
 
   useEffect(() => {
-    setFetchStatus(fetchConstant.Status.LOADING)
+    setStatus(HTTPStatus.LOADING)
     ;(async (): Promise<void> => {
       try {
         const result = await plantService.listOne(id)
 
         setData(result.data as Plant)
-        setFetchStatus(fetchConstant.Status.SUCCESS)
+        setStatus(HTTPStatus.SUCCESS)
       } catch (error) {
-        setFetchStatus(fetchConstant.Status.ERROR)
+        setErrors((errors) => ({...errors, http: String(error)}))
+        setStatus(HTTPStatus.ERROR)
 
         console.error(error)
       }
@@ -41,25 +44,26 @@ export function PlantDetails(): JSX.Element {
     history.push({pathname: "/edit/" + id, state: data.plant})
   }
 
-  function openAlert(): void {
-    setAlertOpen(true)
+  function openDialog(): void {
+    setDialogOpen(true)
   }
 
-  function closeAlert(): void {
-    setAlertOpen(false)
+  function closeDialog(): void {
+    setDialogOpen(false)
   }
 
   async function deletePlant(): Promise<void> {
-    setFetchStatus(fetchConstant.Status.LOADING)
+    setStatus(HTTPStatus.LOADING)
 
     try {
       await plantService.deleteOne(id)
 
-      setFetchStatus(fetchConstant.Status.SUCCESS)
+      setStatus(HTTPStatus.SUCCESS)
 
       history.push("/plants")
     } catch (error) {
-      setFetchStatus(fetchConstant.Status.ERROR)
+      setErrors((errors) => ({...errors, http: String(error)}))
+      setStatus(HTTPStatus.ERROR)
 
       console.error(error)
     }
@@ -67,10 +71,8 @@ export function PlantDetails(): JSX.Element {
 
   return (
     <>
-      {fetchStatus === fetchConstant.Status.LOADING ? (
+      {status === HTTPStatus.LOADING ? (
         <Loading />
-      ) : fetchStatus === fetchConstant.Status.ERROR ? (
-        <Error message={errorConstant.GENERIC_MESSAGE} />
       ) : (
         <>
           <div
@@ -147,21 +149,26 @@ export function PlantDetails(): JSX.Element {
           <Button
             color="secondary"
             fullWidth
-            onClick={openAlert}
+            onClick={openDialog}
             style={{marginTop: "30px"}}
             variant="contained"
           >
             {plantCopy.DELETE_PLANT}
           </Button>
-          <Alert
-            action={deletePlant}
-            actionText={plantCopy.DELETE_PLANT}
-            cancel={closeAlert}
-            cancelText={sharedCopy.CANCEL}
-            message={data.plant?.name + " will be deleted."}
-            open={alertOpen}
-            title={plantCopy.DELETE_PLANT}
-          />
+          {dialogOpen && (
+            <Dialog
+              action={deletePlant}
+              actionText={plantCopy.DELETE_PLANT}
+              cancel={closeDialog}
+              cancelText={sharedCopy.CANCEL}
+              message={data.plant?.name + " will be deleted."}
+              open={dialogOpen}
+              title={plantCopy.DELETE_PLANT}
+            />
+          )}
+          {status === HTTPStatus.ERROR && (
+            <Error message={errors.http} title={"Error"} />
+          )}
         </>
       )}
     </>

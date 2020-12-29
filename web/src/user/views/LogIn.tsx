@@ -13,17 +13,17 @@ import * as userService from "../services/user"
 import * as userCopy from "../constants/copy"
 import * as userConstant from "../constants/user"
 import * as sharedCopy from "../../shared/constants/copy"
-import * as errorConstant from "../../shared/constants/error"
-import * as fetchConstant from "../../shared/constants/fetch"
+import {HTTPStatus} from "../../shared/constants/http"
 import {AuthContext} from "../contexts/auth"
 
 export function LogIn(): JSX.Element {
   const [errors, setErrors] = useState({
     email: false,
     password: false,
+    http: "",
   })
   const [buttonDisabled, setButtonDisabled] = useState(true)
-  const [fetchStatus, setFetchStatus] = useState(fetchConstant.Status.IDLE)
+  const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -33,14 +33,16 @@ export function LogIn(): JSX.Element {
   }
   const {setAuthenticatedUser} = useContext(AuthContext)
   const history = useHistory()
+  const missingFields = !email || !password
+  const activeErrors = Object.values(errors).includes(true)
 
   useEffect(() => {
-    if (!email || !password || Object.values(errors).includes(true)) {
+    if (missingFields || activeErrors) {
       setButtonDisabled(true)
     } else {
       setButtonDisabled(false)
     }
-  }, [email, password, errors])
+  }, [missingFields, activeErrors])
 
   function updateEmail(event: ChangeEvent<HTMLInputElement>): void {
     if (!userConstant.EMAIL_PATTERN.test(event.target.value)) {
@@ -67,17 +69,18 @@ export function LogIn(): JSX.Element {
   }
 
   async function logIn(): Promise<void> {
-    setFetchStatus(fetchConstant.Status.LOADING)
+    setStatus(HTTPStatus.LOADING)
 
     try {
       await userService.logIn(userState)
 
       setAuthenticatedUser(true)
-      setFetchStatus(fetchConstant.Status.SUCCESS)
+      setStatus(HTTPStatus.SUCCESS)
 
       history.push("/plants")
     } catch (error) {
-      setFetchStatus(fetchConstant.Status.ERROR)
+      setErrors((errors) => ({...errors, http: String(error)}))
+      setStatus(HTTPStatus.ERROR)
 
       console.error(error)
     }
@@ -89,64 +92,63 @@ export function LogIn(): JSX.Element {
 
   return (
     <>
-      {fetchStatus === fetchConstant.Status.LOADING ? (
+      <Typography variant="h1">{userCopy.LOG_IN}</Typography>
+      {status === HTTPStatus.LOADING ? (
         <Loading />
-      ) : fetchStatus === fetchConstant.Status.ERROR ? (
-        <Error message={errorConstant.GENERIC_MESSAGE} />
       ) : (
-        <>
-          <Typography variant="h1">{userCopy.LOG_IN}</Typography>
-          <section style={{marginTop: "30px"}}>
-            <TextField
-              error={errors.email}
-              fullWidth
-              label="Email"
-              onChange={updateEmail}
-              required
-              type="email"
-              value={email}
-              variant="outlined"
-            />
-            <TextField
-              error={errors.password}
-              fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton edge="end" onClick={toggleShowPassword}>
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              label="Password"
-              onChange={updatePassword}
-              required
-              type={showPassword ? "text" : "password"}
-              value={password}
-              variant="outlined"
-            />
-            <Button
-              color="primary"
-              disabled={buttonDisabled}
-              fullWidth
-              onClick={logIn}
-              style={{marginTop: "30px"}}
-              variant="contained"
-            >
-              {userCopy.LOG_IN}
-            </Button>
-            <Button
-              color="secondary"
-              fullWidth
-              onClick={cancel}
-              style={{marginTop: "30px"}}
-              variant="contained"
-            >
-              {sharedCopy.CANCEL}
-            </Button>
-          </section>
-        </>
+        <section style={{marginTop: "30px"}}>
+          <TextField
+            error={errors.email}
+            fullWidth
+            label="Email"
+            onChange={updateEmail}
+            required
+            type="email"
+            value={email}
+            variant="outlined"
+          />
+          <TextField
+            error={errors.password}
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton edge="end" onClick={toggleShowPassword}>
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            label="Password"
+            onChange={updatePassword}
+            required
+            type={showPassword ? "text" : "password"}
+            value={password}
+            variant="outlined"
+          />
+          <Button
+            color="primary"
+            disabled={buttonDisabled}
+            fullWidth
+            onClick={logIn}
+            style={{marginTop: "30px"}}
+            variant="contained"
+          >
+            {userCopy.LOG_IN}
+          </Button>
+          <Button
+            color="secondary"
+            fullWidth
+            onClick={cancel}
+            style={{marginTop: "30px"}}
+            variant="contained"
+          >
+            {sharedCopy.CANCEL}
+          </Button>
+        </section>
+      )}
+      {status === HTTPStatus.ERROR && (
+        <Error message={errors.http} title={"Error"} />
       )}
     </>
   )

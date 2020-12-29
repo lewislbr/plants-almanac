@@ -1,14 +1,14 @@
 import React from "react"
 import {
   Button,
-  Dialog,
+  Dialog as MUIDialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
 } from "@material-ui/core"
 
-export function Alert({
+export function Dialog({
   action,
   actionText,
   cancel,
@@ -26,7 +26,7 @@ export function Alert({
   title: string
 }): JSX.Element {
   return (
-    <Dialog fullWidth maxWidth="xl" onClose={cancel} open={open}>
+    <MUIDialog fullWidth maxWidth="xl" onClose={cancel} open={open}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
@@ -39,6 +39,6 @@ export function Alert({
           {actionText}
         </Button>
       </DialogActions>
-    </Dialog>
+    </MUIDialog>
   )
 }

@@ -27,7 +27,7 @@ type Credentials struct {
 
 // ErrUserExists creates an error to use when a user already exists when
 // creating a user
-var ErrUserExists = errors.New("user already exists")
+var ErrUserExists = errors.New("email already registered")
 
 // ErrInvalidPassword creates an error to use when the user password does
 // not match

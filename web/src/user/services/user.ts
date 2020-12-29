@@ -20,7 +20,7 @@ export async function signUp(user: Record<string, unknown>): Promise<void> {
   )
 
   if (!response.ok) {
-    throw new Error(String(response.status))
+    throw new Error(await response.text())
   }
 }
 
@@ -41,7 +41,7 @@ export async function logIn(user: Record<string, unknown>): Promise<void> {
   )
 
   if (!response.ok) {
-    throw new Error(String(response.status))
+    throw new Error(await response.text())
   }
 
   const data = await response.text()

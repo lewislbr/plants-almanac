@@ -13,8 +13,7 @@ import * as userService from "../services/user"
 import * as userCopy from "../constants/copy"
 import * as userConstant from "../constants/user"
 import * as sharedCopy from "../../shared/constants/copy"
-import * as errorConstant from "../../shared/constants/error"
-import * as fetchConstant from "../../shared/constants/fetch"
+import {HTTPStatus} from "../../shared/constants/http"
 import {AuthContext} from "../contexts/auth"
 
 export function CreateAccount(): JSX.Element {
@@ -22,9 +21,10 @@ export function CreateAccount(): JSX.Element {
     name: false,
     email: false,
     password: false,
+    http: "",
   })
   const [buttonDisabled, setButtonDisabled] = useState(true)
-  const [fetchStatus, setFetchStatus] = useState(fetchConstant.Status.IDLE)
+  const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -36,14 +36,16 @@ export function CreateAccount(): JSX.Element {
   }
   const {setAuthenticatedUser} = useContext(AuthContext)
   const history = useHistory()
+  const missingFields = !name || !email || !password
+  const activeErrors = Object.values(errors).includes(true)
 
   useEffect(() => {
-    if (!name || !email || !password || Object.values(errors).includes(true)) {
+    if (missingFields || activeErrors) {
       setButtonDisabled(true)
     } else {
       setButtonDisabled(false)
     }
-  }, [name, email, password, errors])
+  }, [missingFields, activeErrors])
 
   function updateName(event: ChangeEvent<HTMLInputElement>): void {
     if (!userConstant.NAME_PATTERN.test(event.target.value)) {
@@ -80,18 +82,19 @@ export function CreateAccount(): JSX.Element {
   }
 
   async function signUp(): Promise<void> {
-    setFetchStatus(fetchConstant.Status.LOADING)
+    setStatus(HTTPStatus.LOADING)
 
     try {
       await userService.signUp(userState)
       await userService.logIn(userState)
 
       setAuthenticatedUser(true)
-      setFetchStatus(fetchConstant.Status.SUCCESS)
+      setStatus(HTTPStatus.SUCCESS)
 
       history.push("/plants")
     } catch (error) {
-      setFetchStatus(fetchConstant.Status.ERROR)
+      setErrors((errors) => ({...errors, http: String(error)}))
+      setStatus(HTTPStatus.ERROR)
 
       console.error(error)
     }
@@ -103,73 +106,72 @@ export function CreateAccount(): JSX.Element {
 
   return (
     <>
-      {fetchStatus === fetchConstant.Status.LOADING ? (
+      <Typography variant="h1">{userCopy.CREATE_ACCOUNT}</Typography>
+      {status === HTTPStatus.LOADING ? (
         <Loading />
-      ) : fetchStatus === fetchConstant.Status.ERROR ? (
-        <Error message={errorConstant.GENERIC_MESSAGE} />
       ) : (
-        <>
-          <Typography variant="h1">{userCopy.CREATE_ACCOUNT}</Typography>
-          <section style={{marginTop: "30px"}}>
-            <TextField
-              error={errors.name}
-              fullWidth
-              label="Name"
-              onChange={updateName}
-              required
-              value={name}
-              variant="outlined"
-            />
-            <TextField
-              error={errors.email}
-              fullWidth
-              label="Email"
-              onChange={updateEmail}
-              required
-              type="email"
-              value={email}
-              variant="outlined"
-            />
-            <TextField
-              error={errors.password}
-              fullWidth
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton edge="end" onClick={toggleShowPassword}>
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              label="Password"
-              onChange={updatePassword}
-              required
-              type={showPassword ? "text" : "password"}
-              value={password}
-              variant="outlined"
-            />
-            <Button
-              color="primary"
-              disabled={buttonDisabled}
-              fullWidth
-              onClick={signUp}
-              style={{marginTop: "30px"}}
-              variant="contained"
-            >
-              {userCopy.CREATE_ACCOUNT}
-            </Button>
-            <Button
-              color="secondary"
-              fullWidth
-              onClick={cancel}
-              style={{marginTop: "30px"}}
-              variant="contained"
-            >
-              {sharedCopy.CANCEL}
-            </Button>
-          </section>
-        </>
+        <section style={{marginTop: "30px"}}>
+          <TextField
+            error={errors.name}
+            fullWidth
+            label="Name"
+            onChange={updateName}
+            required
+            value={name}
+            variant="outlined"
+          />
+          <TextField
+            error={errors.email}
+            fullWidth
+            label="Email"
+            onChange={updateEmail}
+            required
+            type="email"
+            value={email}
+            variant="outlined"
+          />
+          <TextField
+            error={errors.password}
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton edge="end" onClick={toggleShowPassword}>
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            label="Password"
+            onChange={updatePassword}
+            required
+            type={showPassword ? "text" : "password"}
+            value={password}
+            variant="outlined"
+          />
+          <Button
+            color="primary"
+            disabled={buttonDisabled}
+            fullWidth
+            onClick={signUp}
+            style={{marginTop: "30px"}}
+            variant="contained"
+          >
+            {userCopy.CREATE_ACCOUNT}
+          </Button>
+          <Button
+            color="secondary"
+            fullWidth
+            onClick={cancel}
+            style={{marginTop: "30px"}}
+            variant="contained"
+          >
+            {sharedCopy.CANCEL}
+          </Button>
+        </section>
+      )}
+      {status === HTTPStatus.ERROR && (
+        <Error message={errors.http} title={"Error"} />
       )}
     </>
   )

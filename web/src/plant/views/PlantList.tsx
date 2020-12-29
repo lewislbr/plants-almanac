@@ -7,26 +7,29 @@ import {
   Select,
   Typography,
 } from "@material-ui/core"
-import {Error, Loading, NavBar, PlantCard} from "../../shared/components"
+import {PlantCard} from "../components"
+import {Error, Loading, NavBar} from "../../shared/components"
 import * as plantService from "../services/plant"
 import * as sortService from "../services/sort"
 import * as storageService from "../../shared/services/storage"
 import * as plantCopy from "../constants/copy"
-import * as errorConstant from "../../shared/constants/error"
-import * as fetchConstant from "../../shared/constants/fetch"
+import {HTTPStatus} from "../../shared/constants/http"
 import * as sortConstant from "../constants/sort"
 import {Plants} from "../interfaces/Plants"
 
 export function PlantList(): JSX.Element {
+  const [errors, setErrors] = useState({
+    http: "",
+  })
   const [data, setData] = useState({} as Plants)
-  const [fetchStatus, setFetchStatus] = useState(fetchConstant.Status.IDLE)
+  const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [sortMethod, setSortMethod] = useState(
     storageService.retrieve(sortConstant.SORT_METHOD) ??
       sortConstant.Options.Created.KEY,
   )
 
   useEffect(() => {
-    setFetchStatus(fetchConstant.Status.LOADING)
+    setStatus(HTTPStatus.LOADING)
     ;(async (): Promise<void> => {
       try {
         const result = await plantService.listAll()
@@ -56,9 +59,10 @@ export function PlantList(): JSX.Element {
             break
         }
 
-        setFetchStatus(fetchConstant.Status.SUCCESS)
+        setStatus(HTTPStatus.SUCCESS)
       } catch (error) {
-        setFetchStatus(fetchConstant.Status.ERROR)
+        setErrors((errors) => ({...errors, http: String(error)}))
+        setStatus(HTTPStatus.ERROR)
 
         console.error(error)
       }
@@ -131,10 +135,8 @@ export function PlantList(): JSX.Element {
         </FormControl>
       </div>
       <section style={{marginTop: "30px"}}>
-        {fetchStatus === fetchConstant.Status.LOADING ? (
+        {status === HTTPStatus.LOADING ? (
           <Loading />
-        ) : fetchStatus === fetchConstant.Status.ERROR ? (
-          <Error message={errorConstant.GENERIC_MESSAGE} />
         ) : (
           <div>
             {data.plants?.map((plant) => (
@@ -150,6 +152,9 @@ export function PlantList(): JSX.Element {
           </div>
         )}
       </section>
+      {status === HTTPStatus.ERROR && (
+        <Error message={errors.http} title={"Error"} />
+      )}
       <NavBar />
     </>
   )
