@@ -66,7 +66,8 @@ export function PlantList(): JSX.Element {
         console.error(error)
       }
     })()
-  }, [sortMethod])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function sortBy(event: ChangeEvent<{name?: string; value: unknown}>): void {
     switch (event.target.value) {
