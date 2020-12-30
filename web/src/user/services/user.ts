@@ -1,6 +1,5 @@
 import {Credentials, NewUser} from "../interfaces/user"
 import {JWT} from "../constants/user"
-import * as storageService from "../../shared/services/storage"
 
 export async function signUp(user: Record<string, unknown>): Promise<void> {
   const dto: NewUser = {
@@ -46,11 +45,11 @@ export async function logIn(user: Record<string, unknown>): Promise<void> {
 
   const data = await response.text()
 
-  storageService.store(JWT, data)
+  localStorage.setItem(JWT, data)
 }
 
 export function isAuthenticated(): boolean {
-  const jwt = storageService.retrieve(JWT)
+  const jwt = localStorage.getItem(JWT)
 
   if (!jwt) {
     return false

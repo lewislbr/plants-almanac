@@ -6,7 +6,6 @@ import {
   InMemoryCache,
 } from "@apollo/client"
 import {setContext} from "@apollo/client/link/context"
-import * as storageService from "../../shared/services/storage"
 import {JWT} from "../../user/constants/user"
 import {AddVariables} from "../interfaces/Add"
 import {DeleteVariables} from "../interfaces/Delete"
@@ -22,7 +21,7 @@ const httpLink = createHttpLink({
 })
 
 const auth = setContext((_, {headers}) => {
-  const jwt = storageService.retrieve(JWT)
+  const jwt = localStorage.getItem(JWT)
 
   return {
     headers: {

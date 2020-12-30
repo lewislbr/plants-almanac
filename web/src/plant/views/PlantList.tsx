@@ -11,7 +11,6 @@ import {PlantCard} from "../components"
 import {Error, Loading, NavBar} from "../../shared/components"
 import * as plantService from "../services/plant"
 import * as sortService from "../services/sort"
-import * as storageService from "../../shared/services/storage"
 import * as plantCopy from "../constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
 import * as sortConstant from "../constants/sort"
@@ -24,7 +23,7 @@ export function PlantList(): JSX.Element {
   const [data, setData] = useState({} as Plants)
   const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [sortMethod, setSortMethod] = useState(
-    storageService.retrieve(sortConstant.SORT_METHOD) ??
+    localStorage.getItem(sortConstant.SORT_METHOD) ??
       sortConstant.Options.Created.KEY,
   )
 
@@ -76,7 +75,8 @@ export function PlantList(): JSX.Element {
           plants: data.plants?.slice().sort(sortService.desc("created_at")),
         })
         setSortMethod(sortConstant.Options.Created.KEY)
-        storageService.store(
+
+        localStorage.setItem(
           sortConstant.SORT_METHOD,
           sortConstant.Options.Created.KEY,
         )
@@ -87,7 +87,8 @@ export function PlantList(): JSX.Element {
           plants: data.plants?.slice().sort(sortService.desc("edited_at")),
         })
         setSortMethod(sortConstant.Options.Edited.KEY)
-        storageService.store(
+
+        localStorage.setItem(
           sortConstant.SORT_METHOD,
           sortConstant.Options.Edited.KEY,
         )
@@ -98,7 +99,8 @@ export function PlantList(): JSX.Element {
           plants: data.plants?.slice().sort(sortService.asc("name")),
         })
         setSortMethod(sortConstant.Options.Name.KEY)
-        storageService.store(
+
+        localStorage.setItem(
           sortConstant.SORT_METHOD,
           sortConstant.Options.Name.KEY,
         )
