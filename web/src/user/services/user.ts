@@ -1,5 +1,4 @@
 import {Credentials, NewUser} from "../interfaces/user"
-import {JWT} from "../constants/user"
 
 export async function signUp(user: Record<string, unknown>): Promise<void> {
   const newUserDTO: NewUser = {
@@ -34,6 +33,7 @@ export async function logIn(user: Record<string, unknown>): Promise<void> {
       : (process.env.USERS_LOGIN_DEVELOPMENT_URL as string),
     {
       body: JSON.stringify(credentialsDTO),
+      credentials: "include",
       headers: {"Content-Type": "application/json"},
       method: "POST",
     },
@@ -42,18 +42,8 @@ export async function logIn(user: Record<string, unknown>): Promise<void> {
   if (!response.ok) {
     throw new Error(await response.text())
   }
-
-  const data = await response.text()
-
-  localStorage.setItem(JWT, data)
 }
 
 export function isAuthenticated(): boolean {
-  const jwt = localStorage.getItem(JWT)
-
-  if (!jwt) {
-    return false
-  }
-
-  return true
+  return document.cookie.split("; ").includes("te=true")
 }

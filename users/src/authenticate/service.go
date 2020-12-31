@@ -3,7 +3,6 @@ package authenticate
 import (
 	"log"
 	"os"
-	"time"
 	u "users/src/user"
 
 	jwtgo "github.com/dgrijalva/jwt-go"
@@ -48,11 +47,10 @@ func (s *service) Authenticate(cred u.Credentials) (string, error) {
 	return jwt, nil
 }
 
-func generateJWT(id u.ID) (string, error) {
+func generateJWT(uid u.ID) (string, error) {
 	jwt := jwtgo.NewWithClaims(jwtgo.SigningMethodHS256, jwtgo.MapClaims{
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
-		"uid": id,
 		"iss": "users",
+		"uid": uid,
 	})
 	secret := os.Getenv("USERS_JWT_SECRET")
 	jwtString, err := jwt.SignedString([]byte(secret))

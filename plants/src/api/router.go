@@ -56,12 +56,13 @@ func corsMiddleware(h http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var origin string
 		if isDevelopment {
-			origin = "*"
+			origin = os.Getenv("WEB_DEVELOPMENT_URL")
 		} else {
 			origin = os.Getenv("WEB_PRODUCTION_URL")
 		}
 
-		w.Header().Add("Access-Control-Allow-Headers", "Authorization, Content-Type, Origin")
+		w.Header().Add("Access-Control-Allow-Credentials", "true")
+		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Origin")
 		w.Header().Add("Access-Control-Allow-Methods", "POST")
 		w.Header().Add("Access-Control-Allow-Origin", origin)
 		w.Header().Add("Access-Control-Max-Age", "86400")
@@ -91,7 +92,11 @@ func authorizationMiddleware(h http.Handler) http.HandlerFunc {
 			fmt.Println(err)
 		}
 
-		req.Header["Authorization"] = r.Header["Authorization"]
+		for _, cookie := range r.Cookies() {
+			if cookie.Name == "st" {
+				req.Header.Add("Authorization", "Bearer "+cookie.Value)
+			}
+		}
 
 		client := &http.Client{}
 		res, err := client.Do(req)

@@ -73,7 +73,13 @@ func logInUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	io.WriteString(w, jwt)
+	if isDevelopment {
+		w.Header().Add("Set-Cookie", "st="+jwt+"; HttpOnly; Max-Age=63072000")
+		w.Header().Add("Set-Cookie", "te=true; Max-Age=63072000")
+	} else {
+		w.Header().Add("Set-Cookie", "st="+jwt+"; Domain=plantdex.app; HttpOnly; Max-Age=63072000; SameSite=Strict; Secure")
+		w.Header().Add("Set-Cookie", "te=true; Domain=plantdex.app; Max-Age=63072000; SameSite=Strict; Secure")
+	}
 }
 
 func authorizeUser(w http.ResponseWriter, r *http.Request) {

@@ -5,35 +5,21 @@ import {
   gql,
   InMemoryCache,
 } from "@apollo/client"
-import {setContext} from "@apollo/client/link/context"
-import {JWT} from "../../user/constants/user"
 import {AddVariables} from "../interfaces/Add"
 import {DeleteVariables} from "../interfaces/Delete"
 import {EditVariables} from "../interfaces/Edit"
 import {Plant} from "../interfaces/Plant"
 import {Plants} from "../interfaces/Plants"
 
-const httpLink = createHttpLink({
-  uri:
-    process.env.NODE_ENV === "production"
-      ? process.env.PLANTS_PRODUCTION_URL
-      : process.env.PLANTS_DEVELOPMENT_URL,
-})
-
-const auth = setContext((_, {headers}) => {
-  const jwt = localStorage.getItem(JWT)
-
-  return {
-    headers: {
-      ...headers,
-      ...(jwt && {authorization: `Bearer ${jwt}`}),
-    },
-  }
-})
-
 const plantsClient = new ApolloClient({
   cache: new InMemoryCache(),
-  link: auth.concat(httpLink),
+  link: createHttpLink({
+    credentials: "include",
+    uri:
+      process.env.NODE_ENV === "production"
+        ? process.env.PLANTS_PRODUCTION_URL
+        : process.env.PLANTS_DEVELOPMENT_URL,
+  }),
 })
 
 export async function addOne(plant: Record<string, string>): Promise<void> {
