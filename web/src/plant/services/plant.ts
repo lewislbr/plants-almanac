@@ -58,7 +58,7 @@ export async function addOne(plant: Record<string, string>): Promise<void> {
       )
     }
   `
-  const plantDTO: AddVariables = {
+  const newPlantDTO: AddVariables = {
     name: plant.name,
     other_names: plant.otherNames || null,
     description: plant.description || null,
@@ -84,7 +84,7 @@ export async function addOne(plant: Record<string, string>): Promise<void> {
         },
       })
     },
-    variables: plantDTO,
+    variables: newPlantDTO,
   })
 }
 
@@ -151,7 +151,7 @@ export async function editOne(
       )
     }
   `
-  const plantDTO: EditVariables = {
+  const editedPlantDTO: EditVariables = {
     id: id,
     name: plant.name,
     other_names: plant.otherNames ?? null,
@@ -186,7 +186,7 @@ export async function editOne(
         },
       })
     },
-    variables: plantDTO,
+    variables: editedPlantDTO,
   })
 }
 

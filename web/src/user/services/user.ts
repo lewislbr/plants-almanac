@@ -2,7 +2,7 @@ import {Credentials, NewUser} from "../interfaces/user"
 import {JWT} from "../constants/user"
 
 export async function signUp(user: Record<string, unknown>): Promise<void> {
-  const dto: NewUser = {
+  const newUserDTO: NewUser = {
     name: user.name as string,
     email: user.email as string,
     password: user.password as string,
@@ -12,7 +12,7 @@ export async function signUp(user: Record<string, unknown>): Promise<void> {
       ? (process.env.USERS_SIGNUP_PRODUCTION_URL as string)
       : (process.env.USERS_SIGNUP_DEVELOPMENT_URL as string),
     {
-      body: JSON.stringify(dto),
+      body: JSON.stringify(newUserDTO),
       headers: {"Content-Type": "application/json"},
       method: "POST",
     },
@@ -24,7 +24,7 @@ export async function signUp(user: Record<string, unknown>): Promise<void> {
 }
 
 export async function logIn(user: Record<string, unknown>): Promise<void> {
-  const dto: Credentials = {
+  const credentialsDTO: Credentials = {
     email: user.email as string,
     password: user.password as string,
   }
@@ -33,7 +33,7 @@ export async function logIn(user: Record<string, unknown>): Promise<void> {
       ? (process.env.USERS_LOGIN_PRODUCTION_URL as string)
       : (process.env.USERS_LOGIN_DEVELOPMENT_URL as string),
     {
-      body: JSON.stringify(dto),
+      body: JSON.stringify(credentialsDTO),
       headers: {"Content-Type": "application/json"},
       method: "POST",
     },
