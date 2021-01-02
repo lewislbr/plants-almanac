@@ -1,3 +1,3 @@
-export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{1,100}$/
-export const NAME_PATTERN = /^[a-zA-Z0-9_\s]{1,100}$/
-export const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,100}$/
+export const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[^\s@]{1,254}/
+export const NAME_PATTERN = /.{1,64}/
+export const PASSWORD_PATTERN = /.{8,64}/

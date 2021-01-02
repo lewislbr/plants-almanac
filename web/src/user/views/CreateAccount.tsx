@@ -142,7 +142,7 @@ export function CreateAccount(): JSX.Element {
                 </InputAdornment>
               ),
             }}
-            label="Password"
+            label="Password (min. 8 characters)"
             onChange={updatePassword}
             required
             type={showPassword ? "text" : "password"}
