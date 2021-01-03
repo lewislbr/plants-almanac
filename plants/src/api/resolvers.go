@@ -11,10 +11,12 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-var addService = add.NewService(&storage.MongoDB{})
-var listService = list.NewService(&storage.MongoDB{})
-var editService = edit.NewService(&storage.MongoDB{})
-var deleteService = delete.NewService(&storage.MongoDB{})
+var (
+	addService    = add.NewService(&storage.MongoDB{})
+	listService   = list.NewService(&storage.MongoDB{})
+	editService   = edit.NewService(&storage.MongoDB{})
+	deleteService = delete.NewService(&storage.MongoDB{})
+)
 
 func addPlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)

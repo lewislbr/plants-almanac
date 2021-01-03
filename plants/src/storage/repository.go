@@ -58,16 +58,16 @@ func (s *MongoDB) InsertOne(uid string, plant p.Plant) interface{} {
 
 // FindAll returns all the plants
 func (s *MongoDB) FindAll(uid string) []*p.Plant {
-	cursor, err1 := db.Collection(uid).Find(context.Background(), bson.M{})
-	if err1 != nil {
-		log.Println(err1)
+	cursor, err := db.Collection(uid).Find(context.Background(), bson.M{})
+	if err != nil {
+		log.Println(err)
 	}
 
 	var results []*p.Plant
 
-	err2 := cursor.All(context.Background(), &results)
-	if err2 != nil {
-		log.Println(err2)
+	err = cursor.All(context.Background(), &results)
+	if err != nil {
+		log.Println(err)
 	}
 
 	return results

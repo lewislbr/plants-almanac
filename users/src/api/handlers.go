@@ -13,9 +13,11 @@ import (
 	u "users/src/user"
 )
 
-var createService = create.NewService(&storage.MongoDB{})
-var authenticateService = authenticate.NewService(&storage.MongoDB{})
-var authorizeService = authorize.NewService()
+var (
+	createService       = create.NewService(&storage.MongoDB{})
+	authenticateService = authenticate.NewService(&storage.MongoDB{})
+	authorizeService    = authorize.NewService()
+)
 
 func createUser(w http.ResponseWriter, r *http.Request) {
 	var newUser u.User

@@ -32,7 +32,6 @@ func Start() error {
 		Pretty:     true,
 		Playground: true,
 	})
-
 	router := httprouter.New()
 
 	router.Handler("POST", "/", graphqlHandler)

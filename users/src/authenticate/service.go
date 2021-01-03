@@ -30,18 +30,18 @@ func (s *service) Authenticate(cred u.Credentials) (string, error) {
 		return "", u.ErrNotFound
 	}
 
-	err2 := bcrypt.CompareHashAndPassword([]byte(existUser.Hash), []byte(cred.Password))
-	if err2 != nil {
-		log.Println(err2)
+	err := bcrypt.CompareHashAndPassword([]byte(existUser.Hash), []byte(cred.Password))
+	if err != nil {
+		log.Println(err)
 
 		return "", u.ErrInvalidPassword
 	}
 
-	jwt, err3 := generateJWT(existUser.ID)
-	if err3 != nil {
-		log.Println(err3)
+	jwt, err := generateJWT(existUser.ID)
+	if err != nil {
+		log.Println(err)
 
-		return "", err3
+		return "", err
 	}
 
 	return jwt, nil

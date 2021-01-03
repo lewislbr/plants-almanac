@@ -64,7 +64,6 @@ func init() {
 			},
 		},
 	})
-
 	mutations := graphql.NewObject(graphql.ObjectConfig{
 		Name: "Mutation",
 		Fields: graphql.Fields{

@@ -35,20 +35,20 @@ func (s *service) Create(newUser u.User) error {
 	newUser.ID = u.ID(uuid.New().String())
 	newUser.CreatedAt = time.Now().UTC()
 
-	hash, err2 := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
-	if err2 != nil {
-		log.Println(err2)
+	hash, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
+	if err != nil {
+		log.Println(err)
 
-		return err2
+		return err
 	}
 
 	newUser.Hash = string(hash)
 
-	_, err3 := s.r.InsertOne(newUser)
-	if err3 != nil {
-		log.Println(err3)
+	_, err = s.r.InsertOne(newUser)
+	if err != nil {
+		log.Println(err)
 
-		return err3
+		return err
 	}
 
 	return nil
