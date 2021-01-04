@@ -8,6 +8,7 @@ import (
 
 	u "users/src/user"
 
+	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -52,23 +53,22 @@ type MongoDB struct{}
 func (s *MongoDB) InsertOne(newUser u.User) (interface{}, error) {
 	result, err := collection.InsertOne(context.Background(), newUser)
 	if err != nil {
-		log.Println(err)
-
-		return nil, err
+		return nil, errors.Wrap(err, "")
 	}
 
 	return result.InsertedID, nil
 }
 
 // FindOne retuns the queried user
-func (s *MongoDB) FindOne(email string) *u.User {
-	var result *u.User
-
+func (s *MongoDB) FindOne(email string) (u.User, error) {
 	filter := bson.M{"email": email}
+
+	var result u.User
+
 	err := collection.FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
-		log.Println(err)
+		return u.User{}, errors.Wrap(err, "")
 	}
 
-	return result
+	return result, nil
 }

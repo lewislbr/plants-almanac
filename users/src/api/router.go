@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/pkg/errors"
 )
 
 var isDevelopment = os.Getenv("MODE") == "development"
@@ -23,7 +24,7 @@ func Start() error {
 	port := os.Getenv("USERS_PORT")
 	err := http.ListenAndServe(":"+port, corsMiddleware(router))
 	if err != nil {
-		return err
+		return errors.Wrap(err, "")
 	}
 
 	return nil

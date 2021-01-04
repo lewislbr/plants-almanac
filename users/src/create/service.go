@@ -1,12 +1,12 @@
 package create
 
 import (
-	"log"
 	"time"
 
 	u "users/src/user"
 
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -17,7 +17,7 @@ type Service interface {
 
 // Repository provides access to the user storage
 type Repository interface {
-	FindOne(string) *u.User
+	FindOne(string) (u.User, error)
 	InsertOne(u.User) (interface{}, error)
 }
 
@@ -27,8 +27,8 @@ type service struct {
 
 // Create creates a new user
 func (s *service) Create(newUser u.User) error {
-	existUser := s.r.FindOne(newUser.Email)
-	if existUser != nil {
+	_, err := s.r.FindOne(newUser.Email)
+	if err == nil {
 		return u.ErrUserExists
 	}
 
@@ -37,18 +37,14 @@ func (s *service) Create(newUser u.User) error {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
 	if err != nil {
-		log.Println(err)
-
-		return err
+		return errors.Wrap(err, "")
 	}
 
 	newUser.Hash = string(hash)
 
 	_, err = s.r.InsertOne(newUser)
 	if err != nil {
-		log.Println(err)
-
-		return err
+		return errors.Wrap(err, "")
 	}
 
 	return nil

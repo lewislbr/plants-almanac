@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 
@@ -32,13 +33,15 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 	err := createService.Create(newUser)
 	if err != nil {
-		if strings.Contains(err.Error(), u.ErrUserExists.Error()) {
+		if err == u.ErrUserExists {
 			http.Error(w, u.ErrUserExists.Error(), http.StatusConflict)
 
 			return
 		}
 
 		w.WriteHeader(http.StatusInternalServerError)
+
+		log.Printf("%+v\n", err)
 
 		return
 	}
@@ -59,18 +62,20 @@ func logInUser(w http.ResponseWriter, r *http.Request) {
 
 	jwt, err := authenticateService.Authenticate(credentials)
 	if err != nil {
-		if strings.Contains(err.Error(), u.ErrNotFound.Error()) {
+		if err == u.ErrNotFound {
 			http.Error(w, u.ErrNotFound.Error(), http.StatusNotFound)
 
 			return
 		}
-		if strings.Contains(err.Error(), u.ErrInvalidPassword.Error()) {
+		if err == u.ErrInvalidPassword {
 			http.Error(w, u.ErrInvalidPassword.Error(), http.StatusBadRequest)
 
 			return
 		}
 
 		w.WriteHeader(http.StatusInternalServerError)
+
+		log.Printf("%+v\n", err)
 
 		return
 	}
@@ -94,11 +99,17 @@ func authorizeUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jwt := strings.Split(authHeader, " ")[1]
-	userID := authorizeService.Authorize(jwt)
-	if userID == "" {
-		w.WriteHeader(http.StatusUnauthorized)
+	userID, err := authorizeService.Authorize(jwt)
+	if err != nil {
+		if err == u.ErrInvalidToken {
+			w.WriteHeader(http.StatusUnauthorized)
 
-		return
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+
+		log.Printf("%+v\n", err)
 	}
 
 	io.WriteString(w, userID)

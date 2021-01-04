@@ -10,6 +10,7 @@ import (
 
 	"github.com/graphql-go/handler"
 	"github.com/julienschmidt/httprouter"
+	"github.com/pkg/errors"
 )
 
 var isDevelopment = os.Getenv("MODE") == "development"
@@ -45,7 +46,7 @@ func Start() error {
 	port := os.Getenv("PLANTS_PORT")
 	err := http.ListenAndServe(":"+port, corsMiddleware(authorizationMiddleware(router)))
 	if err != nil {
-		return err
+		return errors.Wrap(err, "")
 	}
 
 	return nil
@@ -88,7 +89,11 @@ func authorizationMiddleware(h http.Handler) http.HandlerFunc {
 
 		req, err := http.NewRequest("GET", authURL, nil)
 		if err != nil {
-			fmt.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
 		}
 
 		for _, cookie := range r.Cookies() {
@@ -100,7 +105,11 @@ func authorizationMiddleware(h http.Handler) http.HandlerFunc {
 		client := &http.Client{}
 		res, err := client.Do(req)
 		if err != nil {
-			fmt.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
 		}
 		if res.StatusCode != http.StatusOK {
 			w.WriteHeader(res.StatusCode)
@@ -112,7 +121,11 @@ func authorizationMiddleware(h http.Handler) http.HandlerFunc {
 
 		body, err := ioutil.ReadAll(res.Body)
 		if err != nil {
-			log.Fatal(err)
+			w.WriteHeader(http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
 		}
 
 		uid = string(body)

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"plants/src/add"
 	"plants/src/delete"
 	"plants/src/edit"
@@ -43,71 +44,87 @@ func addPlant(ps graphql.ResolveParams) (interface{}, error) {
 		plant.Tips = &result
 	}
 
-	result := addService.AddPlant(uid, plant)
+	result, err := addService.AddPlant(uid, plant)
+	if err != nil {
+		log.Printf("%+v\n", err)
+	}
 
 	return result, nil
 }
 
 func listPlants(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
-	plants := listService.ListPlants(uid)
+	result, err := listService.ListPlants(uid)
+	if err != nil {
+		log.Printf("%+v\n", err)
+	}
 
-	return plants, nil
+	return result, nil
 }
 
 func listPlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
 	id := ps.Args["id"].(string)
-	plant := listService.ListPlant(uid, p.ID(id))
+	result, err := listService.ListPlant(uid, p.ID(id))
+	if err != nil {
+		log.Printf("%+v\n", err)
+	}
 
-	return plant, nil
+	return result, nil
 }
 
 func editPlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
 	id := ps.Args["id"].(string)
-	existingPlant := listService.ListPlant(uid, p.ID(id))
+	existing, err := listService.ListPlant(uid, p.ID(id))
+	if err != nil {
+		log.Printf("%+v\n", err)
+	}
+
 	updated := p.Plant{}
 
-	updated.CreatedAt = existingPlant.CreatedAt
+	updated.CreatedAt = existing.CreatedAt
 
 	if result, ok := ps.Args["name"].(string); ok {
 		updated.Name = result
 	} else {
-		updated.Name = existingPlant.Name
+		updated.Name = existing.Name
 	}
 	if result, ok := ps.Args["other_names"].(string); ok {
 		updated.OtherNames = &result
 	} else {
-		updated.OtherNames = existingPlant.OtherNames
+		updated.OtherNames = existing.OtherNames
 	}
 	if result, ok := ps.Args["description"].(string); ok {
 		updated.Description = &result
 	} else {
-		updated.Description = existingPlant.Description
+		updated.Description = existing.Description
 	}
 	if result, ok := ps.Args["plant_season"].(string); ok {
 		updated.PlantSeason = &result
 	} else {
-		updated.PlantSeason = existingPlant.PlantSeason
+		updated.PlantSeason = existing.PlantSeason
 	}
 	if result, ok := ps.Args["harvest_season"].(string); ok {
 		updated.HarvestSeason = &result
 	} else {
-		updated.HarvestSeason = existingPlant.HarvestSeason
+		updated.HarvestSeason = existing.HarvestSeason
 	}
 	if result, ok := ps.Args["prune_season"].(string); ok {
 		updated.PruneSeason = &result
 	} else {
-		updated.PruneSeason = existingPlant.PruneSeason
+		updated.PruneSeason = existing.PruneSeason
 	}
 	if result, ok := ps.Args["tips"].(string); ok {
 		updated.Tips = &result
 	} else {
-		updated.Tips = existingPlant.Tips
+		updated.Tips = existing.Tips
 	}
 
-	result := editService.EditPlant(uid, p.ID(id), updated)
+	result, err := editService.EditPlant(uid, p.ID(id), updated)
+	if err != nil {
+		log.Printf("%+v\n", err)
+	}
 
 	return result, nil
 }
@@ -115,7 +132,10 @@ func editPlant(ps graphql.ResolveParams) (interface{}, error) {
 func deletePlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
 	id := ps.Args["id"].(string)
-	result := deleteService.DeletePlant(uid, p.ID(id))
+	result, err := deleteService.DeletePlant(uid, p.ID(id))
+	if err != nil {
+		log.Printf("%+v\n", err)
+	}
 
 	return result, nil
 }

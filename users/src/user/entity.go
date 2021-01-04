@@ -25,6 +25,13 @@ type Credentials struct {
 	Password string
 }
 
+// ErrMissingData creates an error to use when fields required to create a
+// new user are missing
+var ErrMissingData = errors.New("missing data")
+
+// ErrNotFound creates an error to use when a user is not found
+var ErrNotFound = errors.New("user not found")
+
 // ErrUserExists creates an error to use when a user already exists when
 // creating a user
 var ErrUserExists = errors.New("email already registered")
@@ -33,9 +40,6 @@ var ErrUserExists = errors.New("email already registered")
 // not match
 var ErrInvalidPassword = errors.New("invalid password")
 
-// ErrMissingData creates an error to use when fields required to create a
-// new user are missing
-var ErrMissingData = errors.New("missing data")
-
-// ErrNotFound creates an error to use when a user is not found
-var ErrNotFound = errors.New("user not found")
+// ErrInvalidToken creates an error to use when the user token is not
+// valid
+var ErrInvalidToken = errors.New("invalid token")
