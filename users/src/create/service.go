@@ -10,47 +10,46 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Service provides user creation operations
+// Service defines a service to create a user.
 type Service interface {
 	Create(u.User) error
 }
 
-// Repository provides access to the user storage
-type Repository interface {
+type repository interface {
 	FindOne(string) (u.User, error)
 	InsertOne(u.User) (interface{}, error)
 }
 
 type service struct {
-	r Repository
+	r repository
 }
 
-// Create creates a new user
-func (s *service) Create(newUser u.User) error {
-	_, err := s.r.FindOne(newUser.Email)
+// NewService creates a create service with the necessary dependencies.
+func NewService(r repository) Service {
+	return &service{r}
+}
+
+// Create creates a new user.
+func (s *service) Create(new u.User) error {
+	_, err := s.r.FindOne(new.Email)
 	if err == nil {
 		return u.ErrUserExists
 	}
 
-	newUser.ID = u.ID(uuid.New().String())
-	newUser.CreatedAt = time.Now().UTC()
+	new.ID = u.ID(uuid.New().String())
+	new.CreatedAt = time.Now().UTC()
 
-	hash, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
+	hash, err := bcrypt.GenerateFromPassword([]byte(new.Password), 10)
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
 
-	newUser.Hash = string(hash)
+	new.Hash = string(hash)
 
-	_, err = s.r.InsertOne(newUser)
+	_, err = s.r.InsertOne(new)
 	if err != nil {
 		return errors.Wrap(err, "")
 	}
 
 	return nil
-}
-
-// NewService creates a create service with the necessary dependencies
-func NewService(r Repository) Service {
-	return &service{r}
 }

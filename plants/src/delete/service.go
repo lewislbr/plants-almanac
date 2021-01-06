@@ -6,31 +6,30 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Service provides plant delete operations
+// Service defines a service to delete a plant.
 type Service interface {
-	DeletePlant(string, p.ID) (int64, error)
+	Delete(string, p.ID) (int64, error)
 }
 
-// Repository provides access to the plant storage
-type Repository interface {
+type repository interface {
 	DeleteOne(string, p.ID) (int64, error)
 }
 
 type service struct {
-	r Repository
+	r repository
 }
 
-// DeletePlant deletes a plant
-func (s *service) DeletePlant(uid string, id p.ID) (int64, error) {
+// NewService creates a delete service with the necessary dependencies.
+func NewService(r repository) Service {
+	return &service{r}
+}
+
+// Delete deletes a plant.
+func (s *service) Delete(uid string, id p.ID) (int64, error) {
 	result, err := s.r.DeleteOne(uid, id)
 	if err != nil {
 		return 0, errors.Wrap(err, "")
 	}
 
 	return result, nil
-}
-
-// NewService creates a delete service with the necessary dependencies
-func NewService(r Repository) Service {
-	return &service{r}
 }

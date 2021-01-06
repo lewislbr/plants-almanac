@@ -9,34 +9,33 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Service provides plant add operations
+// Service defines a service to add a plant.
 type Service interface {
-	AddPlant(string, p.Plant) (interface{}, error)
+	Add(string, p.Plant) (interface{}, error)
 }
 
-// Repository provides access to the plant storage
-type Repository interface {
+type repository interface {
 	InsertOne(string, p.Plant) (interface{}, error)
 }
 
 type service struct {
-	r Repository
+	r repository
 }
 
-// AddPlant adds a plant
-func (s *service) AddPlant(uid string, plant p.Plant) (interface{}, error) {
-	plant.ID = p.ID(uuid.New().String())
-	plant.CreatedAt = time.Now().UTC()
+// NewService creates an add service with the necessary dependencies.
+func NewService(r repository) Service {
+	return &service{r}
+}
 
-	result, err := s.r.InsertOne(uid, plant)
+// Add adds a plant.
+func (s *service) Add(uid string, new p.Plant) (interface{}, error) {
+	new.ID = p.ID(uuid.New().String())
+	new.CreatedAt = time.Now().UTC()
+
+	result, err := s.r.InsertOne(uid, new)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
 
 	return result, nil
-}
-
-// NewService creates an add service with the necessary dependencies
-func NewService(r Repository) Service {
-	return &service{r}
 }

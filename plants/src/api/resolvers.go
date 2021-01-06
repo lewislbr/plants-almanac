@@ -21,30 +21,30 @@ var (
 
 func addPlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
-	plant := p.Plant{}
+	new := p.Plant{}
 
-	plant.Name = ps.Args["name"].(string)
+	new.Name = ps.Args["name"].(string)
 
 	if result, ok := ps.Args["other_names"].(string); ok {
-		plant.OtherNames = &result
+		new.OtherNames = &result
 	}
 	if result, ok := ps.Args["description"].(string); ok {
-		plant.Description = &result
+		new.Description = &result
 	}
 	if result, ok := ps.Args["plant_season"].(string); ok {
-		plant.PlantSeason = &result
+		new.PlantSeason = &result
 	}
 	if result, ok := ps.Args["harvest_season"].(string); ok {
-		plant.HarvestSeason = &result
+		new.HarvestSeason = &result
 	}
 	if result, ok := ps.Args["prune_season"].(string); ok {
-		plant.PruneSeason = &result
+		new.PruneSeason = &result
 	}
 	if result, ok := ps.Args["tips"].(string); ok {
-		plant.Tips = &result
+		new.Tips = &result
 	}
 
-	result, err := addService.AddPlant(uid, plant)
+	result, err := addService.Add(uid, new)
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
@@ -54,7 +54,7 @@ func addPlant(ps graphql.ResolveParams) (interface{}, error) {
 
 func listPlants(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
-	result, err := listService.ListPlants(uid)
+	result, err := listService.ListAll(uid)
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
@@ -65,7 +65,7 @@ func listPlants(ps graphql.ResolveParams) (interface{}, error) {
 func listPlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
 	id := ps.Args["id"].(string)
-	result, err := listService.ListPlant(uid, p.ID(id))
+	result, err := listService.ListOne(uid, p.ID(id))
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
@@ -76,52 +76,52 @@ func listPlant(ps graphql.ResolveParams) (interface{}, error) {
 func editPlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
 	id := ps.Args["id"].(string)
-	existing, err := listService.ListPlant(uid, p.ID(id))
+	exist, err := listService.ListOne(uid, p.ID(id))
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
 
-	updated := p.Plant{}
+	update := p.Plant{}
 
-	updated.CreatedAt = existing.CreatedAt
+	update.CreatedAt = exist.CreatedAt
 
 	if result, ok := ps.Args["name"].(string); ok {
-		updated.Name = result
+		update.Name = result
 	} else {
-		updated.Name = existing.Name
+		update.Name = exist.Name
 	}
 	if result, ok := ps.Args["other_names"].(string); ok {
-		updated.OtherNames = &result
+		update.OtherNames = &result
 	} else {
-		updated.OtherNames = existing.OtherNames
+		update.OtherNames = exist.OtherNames
 	}
 	if result, ok := ps.Args["description"].(string); ok {
-		updated.Description = &result
+		update.Description = &result
 	} else {
-		updated.Description = existing.Description
+		update.Description = exist.Description
 	}
 	if result, ok := ps.Args["plant_season"].(string); ok {
-		updated.PlantSeason = &result
+		update.PlantSeason = &result
 	} else {
-		updated.PlantSeason = existing.PlantSeason
+		update.PlantSeason = exist.PlantSeason
 	}
 	if result, ok := ps.Args["harvest_season"].(string); ok {
-		updated.HarvestSeason = &result
+		update.HarvestSeason = &result
 	} else {
-		updated.HarvestSeason = existing.HarvestSeason
+		update.HarvestSeason = exist.HarvestSeason
 	}
 	if result, ok := ps.Args["prune_season"].(string); ok {
-		updated.PruneSeason = &result
+		update.PruneSeason = &result
 	} else {
-		updated.PruneSeason = existing.PruneSeason
+		update.PruneSeason = exist.PruneSeason
 	}
 	if result, ok := ps.Args["tips"].(string); ok {
-		updated.Tips = &result
+		update.Tips = &result
 	} else {
-		updated.Tips = existing.Tips
+		update.Tips = exist.Tips
 	}
 
-	result, err := editService.EditPlant(uid, p.ID(id), updated)
+	result, err := editService.Edit(uid, p.ID(id), update)
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
@@ -132,7 +132,7 @@ func editPlant(ps graphql.ResolveParams) (interface{}, error) {
 func deletePlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
 	id := ps.Args["id"].(string)
-	result, err := deleteService.DeletePlant(uid, p.ID(id))
+	result, err := deleteService.Delete(uid, p.ID(id))
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}

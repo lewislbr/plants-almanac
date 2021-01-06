@@ -4,7 +4,10 @@ import (
 	"time"
 )
 
-// Plant defines the properties of a plant
+// Plant defines the properties of a plant.
+// Ideally the JSON and BSON tags should be defined in an specific entity
+// for the API and storage components, respectively, but this being a small
+// service they are defined here for simplicity.
 type Plant struct {
 	ID            ID        `json:"id" bson:"_id"`
 	CreatedAt     time.Time `json:"created_at" bson:"created_at"`
@@ -18,5 +21,5 @@ type Plant struct {
 	Tips          *string   `json:"tips" bson:"tips"`
 }
 
-// ID defines the id of a plant
+// ID defines the ID of a plant.
 type ID string

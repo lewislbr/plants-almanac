@@ -2,54 +2,19 @@ package storage
 
 import (
 	"context"
-	"fmt"
-	"log"
-	"os"
 
 	p "plants/src/plant"
 
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func connectDatabase() *mongo.Database {
-	isDevelopment := os.Getenv("MODE") == "development"
-
-	var mongodbURI string
-	var databaseName string
-	if isDevelopment {
-		mongodbURI = os.Getenv("PLANTS_DEVELOPMENT_MONGODB_URI")
-		databaseName = os.Getenv("PLANTS_DEVELOPMENT_DATABASE_NAME")
-	} else {
-		mongodbURI = os.Getenv("PLANTS_PRODUCTION_MONGODB_URI")
-		databaseName = os.Getenv("PLANTS_PRODUCTION_DATABASE_NAME")
-	}
-
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongodbURI))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = client.Ping(context.Background(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Plants database ready ✅")
-
-	return client.Database(databaseName)
-}
-
-var db = connectDatabase()
-
-// MongoDB provides methods to store data in MongoDB
+// MongoDB provides methods to store data in MongoDB.
 type MongoDB struct{}
 
-// InsertOne adds a plant
-func (s *MongoDB) InsertOne(uid string, plant p.Plant) (interface{}, error) {
-	result, err := db.Collection(uid).InsertOne(context.Background(), plant)
+// InsertOne adds a plant.
+func (m *MongoDB) InsertOne(uid string, new p.Plant) (interface{}, error) {
+	result, err := db.Collection(uid).InsertOne(context.Background(), new)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
@@ -57,8 +22,8 @@ func (s *MongoDB) InsertOne(uid string, plant p.Plant) (interface{}, error) {
 	return result.InsertedID, nil
 }
 
-// FindAll returns all the plants
-func (s *MongoDB) FindAll(uid string) ([]p.Plant, error) {
+// FindAll returns all the plants.
+func (m *MongoDB) FindAll(uid string) ([]p.Plant, error) {
 	cursor, err := db.Collection(uid).Find(context.Background(), bson.M{})
 	if err != nil {
 		return nil, errors.Wrap(err, "")
@@ -74,8 +39,8 @@ func (s *MongoDB) FindAll(uid string) ([]p.Plant, error) {
 	return results, nil
 }
 
-// FindOne retuns the queried plant
-func (s *MongoDB) FindOne(uid string, id p.ID) (p.Plant, error) {
+// FindOne retuns the queried plant.
+func (m *MongoDB) FindOne(uid string, id p.ID) (p.Plant, error) {
 	filter := bson.M{"_id": id}
 
 	var result p.Plant
@@ -88,23 +53,23 @@ func (s *MongoDB) FindOne(uid string, id p.ID) (p.Plant, error) {
 	return result, nil
 }
 
-// UpdateOne modifies the queried plant
-func (s *MongoDB) UpdateOne(uid string, id p.ID, plant p.Plant) (int64, error) {
+// UpdateOne modifies the queried plant.
+func (m *MongoDB) UpdateOne(uid string, id p.ID, update p.Plant) (int64, error) {
 	filter := bson.M{"_id": id}
-	update := bson.M{
+	updated := bson.M{
 		"$set": bson.M{
-			"created_at":     plant.CreatedAt,
-			"edited_at":      plant.EditedAt,
-			"name":           plant.Name,
-			"other_names":    plant.OtherNames,
-			"description":    plant.Description,
-			"plant_season":   plant.PlantSeason,
-			"harvest_season": plant.HarvestSeason,
-			"prune_season":   plant.PruneSeason,
-			"tips":           plant.Tips,
+			"created_at":     update.CreatedAt,
+			"edited_at":      update.EditedAt,
+			"name":           update.Name,
+			"other_names":    update.OtherNames,
+			"description":    update.Description,
+			"plant_season":   update.PlantSeason,
+			"harvest_season": update.HarvestSeason,
+			"prune_season":   update.PruneSeason,
+			"tips":           update.Tips,
 		},
 	}
-	result, err := db.Collection(uid).UpdateOne(context.Background(), filter, update)
+	result, err := db.Collection(uid).UpdateOne(context.Background(), filter, updated)
 	if err != nil {
 		return 0, errors.Wrap(err, "")
 	}
@@ -112,8 +77,8 @@ func (s *MongoDB) UpdateOne(uid string, id p.ID, plant p.Plant) (int64, error) {
 	return result.ModifiedCount, nil
 }
 
-// DeleteOne deletes a plant
-func (s *MongoDB) DeleteOne(uid string, id p.ID) (int64, error) {
+// DeleteOne deletes a plant.
+func (m *MongoDB) DeleteOne(uid string, id p.ID) (int64, error) {
 	filter := bson.M{"_id": id}
 	result, err := db.Collection(uid).DeleteOne(context.Background(), filter)
 	if err != nil {

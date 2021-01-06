@@ -16,9 +16,9 @@ import (
 var isDevelopment = os.Getenv("MODE") == "development"
 var uid string
 
-// Start initalizes the GraphQL API
+// Start initalizes the GraphQL API.
 func Start() error {
-	graphqlHandler := handler.New(&handler.Config{
+	graphQLHandler := handler.New(&handler.Config{
 		Schema:     &schema,
 		Pretty:     false,
 		Playground: false,
@@ -28,18 +28,9 @@ func Start() error {
 			}
 		},
 	})
-	playgroundHandler := handler.New(&handler.Config{
-		Schema:     &schema,
-		Pretty:     true,
-		Playground: true,
-	})
 	router := httprouter.New()
 
-	router.Handler("POST", "/", graphqlHandler)
-
-	if isDevelopment {
-		router.Handler("GET", "/playground", playgroundHandler)
-	}
+	router.Handler("POST", "/", graphQLHandler)
 
 	fmt.Println("Plants API ready ✅")
 

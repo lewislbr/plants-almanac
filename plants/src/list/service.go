@@ -6,24 +6,28 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Service provides plant list operations
+// Service defines a service to list plants.
 type Service interface {
-	ListPlants(string) ([]p.Plant, error)
-	ListPlant(string, p.ID) (p.Plant, error)
+	ListAll(string) ([]p.Plant, error)
+	ListOne(string, p.ID) (p.Plant, error)
 }
 
-// Repository provides access to the plant storage
-type Repository interface {
+type repository interface {
 	FindAll(string) ([]p.Plant, error)
 	FindOne(string, p.ID) (p.Plant, error)
 }
 
 type service struct {
-	r Repository
+	r repository
 }
 
-// ListPlants lists all plants
-func (s *service) ListPlants(uid string) ([]p.Plant, error) {
+// NewService creates a list service with the necessary dependencies.
+func NewService(r repository) Service {
+	return &service{r}
+}
+
+// ListAll lists all plants.
+func (s *service) ListAll(uid string) ([]p.Plant, error) {
 	result, err := s.r.FindAll(uid)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
@@ -32,17 +36,12 @@ func (s *service) ListPlants(uid string) ([]p.Plant, error) {
 	return result, nil
 }
 
-// ListPlant lists a plant
-func (s *service) ListPlant(uid string, id p.ID) (p.Plant, error) {
+// ListOne lists a plant.
+func (s *service) ListOne(uid string, id p.ID) (p.Plant, error) {
 	result, err := s.r.FindOne(uid, id)
 	if err != nil {
 		return p.Plant{}, errors.Wrap(err, "")
 	}
 
 	return result, nil
-}
-
-// NewService creates a list service with the necessary dependencies
-func NewService(r Repository) Service {
-	return &service{r}
 }

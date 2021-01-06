@@ -21,17 +21,17 @@ var (
 )
 
 func createUser(w http.ResponseWriter, r *http.Request) {
-	var newUser u.User
+	var new u.User
 
-	json.NewDecoder(r.Body).Decode(&newUser)
+	json.NewDecoder(r.Body).Decode(&new)
 
-	if newUser.Name == "" || newUser.Email == "" || newUser.Password == "" {
+	if new.Name == "" || new.Email == "" || new.Password == "" {
 		http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	err := createService.Create(newUser)
+	err := createService.Create(new)
 	if err != nil {
 		if err == u.ErrUserExists {
 			http.Error(w, u.ErrUserExists.Error(), http.StatusConflict)
@@ -50,17 +50,17 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func logInUser(w http.ResponseWriter, r *http.Request) {
-	var credentials u.Credentials
+	var cred u.Credentials
 
-	json.NewDecoder(r.Body).Decode(&credentials)
+	json.NewDecoder(r.Body).Decode(&cred)
 
-	if credentials.Email == "" || credentials.Password == "" {
+	if cred.Email == "" || cred.Password == "" {
 		http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
 
 		return
 	}
 
-	jwt, err := authenticateService.Authenticate(credentials)
+	jwt, err := authenticateService.Authenticate(cred)
 	if err != nil {
 		if err == u.ErrNotFound {
 			http.Error(w, u.ErrNotFound.Error(), http.StatusNotFound)
@@ -95,7 +95,6 @@ func authorizeUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 
 		return
-
 	}
 
 	jwt := strings.Split(authHeader, " ")[1]

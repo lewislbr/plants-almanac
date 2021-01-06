@@ -5,7 +5,10 @@ import (
 	"time"
 )
 
-// User defines the properties of a user
+// User defines the properties of a user.
+// Ideally the JSON and BSON tags should be defined in an specific entity
+// for the API and storage components, respectively, but this being a small
+// service they are defined here for simplicity.
 type User struct {
 	ID        ID        `json:"id" bson:"_id"`
 	Name      string    `json:"name" bson:"name"`
@@ -16,30 +19,28 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at" bson:"updated_at"`
 }
 
-// ID defines the id of a user
+// ID defines the id of a user.
 type ID string
 
-// Credentials defines the data needed to authenticate
+// Credentials defines the data needed to authenticate.
 type Credentials struct {
 	Email    string
 	Password string
 }
 
-// ErrMissingData creates an error to use when fields required to create a
-// new user are missing
+// ErrMissingData defines an error to use when there are missing required fields.
 var ErrMissingData = errors.New("missing data")
 
-// ErrNotFound creates an error to use when a user is not found
+// ErrNotFound defines an error to use when a user is not found.
 var ErrNotFound = errors.New("user not found")
 
-// ErrUserExists creates an error to use when a user already exists when
-// creating a user
+// ErrUserExists defines an error to use when a user already exists.
 var ErrUserExists = errors.New("email already registered")
 
-// ErrInvalidPassword creates an error to use when the user password does
-// not match
+// ErrInvalidPassword defines an error to use when the user password does
+// not match.
 var ErrInvalidPassword = errors.New("invalid password")
 
-// ErrInvalidToken creates an error to use when the user token is not
-// valid
+// ErrInvalidToken defines an error to use when the user token is not
+// valid.
 var ErrInvalidToken = errors.New("invalid token")

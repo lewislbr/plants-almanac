@@ -11,7 +11,7 @@ import (
 
 var isDevelopment = os.Getenv("MODE") == "development"
 
-// Start initializes the REST API
+// Start initializes the REST API.
 func Start() error {
 	router := httprouter.New()
 

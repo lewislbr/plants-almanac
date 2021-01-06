@@ -8,33 +8,32 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Service provides plant edit operations
+// Service defines a service to edit a plant.
 type Service interface {
-	EditPlant(string, p.ID, p.Plant) (int64, error)
+	Edit(string, p.ID, p.Plant) (int64, error)
 }
 
-// Repository provides access to the plant storage
-type Repository interface {
+type repository interface {
 	UpdateOne(string, p.ID, p.Plant) (int64, error)
 }
 
 type service struct {
-	r Repository
+	r repository
 }
 
-// EditPlant edits a plant
-func (s *service) EditPlant(uid string, id p.ID, plant p.Plant) (int64, error) {
-	plant.EditedAt = time.Now().UTC()
+// NewService creates an edit service with the necessary dependencies.
+func NewService(r repository) Service {
+	return &service{r}
+}
 
-	result, err := s.r.UpdateOne(uid, id, plant)
+// Edit edits a plant.
+func (s *service) Edit(uid string, id p.ID, update p.Plant) (int64, error) {
+	update.EditedAt = time.Now().UTC()
+
+	result, err := s.r.UpdateOne(uid, id, update)
 	if err != nil {
 		return 0, errors.Wrap(err, "")
 	}
 
 	return result, nil
-}
-
-// NewService creates an edit service with the necessary dependencies
-func NewService(r Repository) Service {
-	return &service{r}
 }
