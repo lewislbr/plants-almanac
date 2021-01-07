@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
-    "lib": ["DOM", "ESNext"],
+    "lib": ["DOM", "ESNext", "webworker"],
     "noEmit": true,
     "skipLibCheck": true,
     "strict": true

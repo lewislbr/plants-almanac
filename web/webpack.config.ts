@@ -4,6 +4,8 @@ const webpack = require("webpack")
 const path = require("path")
 const Dotenv = require("dotenv-webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const CopyPlugin = require("copy-webpack-plugin")
+const WorkboxPlugin = require("workbox-webpack-plugin")
 const CompressionPlugin = require("compression-webpack-plugin")
 
 module.exports = (env: unknown, options: {mode: string | undefined}) => {
@@ -76,6 +78,23 @@ module.exports = (env: unknown, options: {mode: string | undefined}) => {
               useShortDoctype: true,
             },
         template: "./src/index.html",
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: "src/assets",
+            to: "assets",
+            globOptions: {
+              ignore: ["**/original/**"],
+            },
+          },
+          {from: "src/manifest.json", to: "."},
+        ],
+      }),
+      new WorkboxPlugin.InjectManifest({
+        swSrc: "./src/service-worker.ts",
+        swDest: "sw.js",
+        exclude: [/\.map$/, /manifest.json$/, /sw\.$/],
       }),
       ...(isDevelopment
         ? []
