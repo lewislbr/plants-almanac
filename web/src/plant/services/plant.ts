@@ -5,14 +5,22 @@ import {
   gql,
   InMemoryCache,
 } from "@apollo/client"
+import {persistCache, LocalStorageWrapper} from "apollo3-cache-persist"
 import {AddVariables} from "../interfaces/Add"
 import {DeleteVariables} from "../interfaces/Delete"
 import {EditVariables} from "../interfaces/Edit"
 import {Plant} from "../interfaces/Plant"
 import {Plants} from "../interfaces/Plants"
 
+const cache = new InMemoryCache()
+
+await persistCache({
+  cache,
+  storage: new LocalStorageWrapper(window.localStorage),
+})
+
 const plantsClient = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache,
   link: createHttpLink({
     credentials: "include",
     uri:

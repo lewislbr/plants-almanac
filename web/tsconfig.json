@@ -3,8 +3,11 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "lib": ["DOM", "ESNext", "webworker"],
+    "module": "ESnext",
+    "moduleResolution": "node",
     "noEmit": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "target": "ESNext"
   }
 }

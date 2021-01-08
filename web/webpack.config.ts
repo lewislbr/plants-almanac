@@ -110,6 +110,9 @@ module.exports = (env: unknown, options: {mode: string | undefined}) => {
           ]),
       ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin()] : []),
     ],
+    experiments: {
+      topLevelAwait: true,
+    },
     stats: {
       assetsSort: "!size",
       colors: true,
