@@ -37,6 +37,15 @@ export function AddPlant(): JSX.Element {
   const history = useHistory()
   const missingFields = !name
   const activeErrors = Object.values(errors).includes(true)
+  const noChanges =
+    isEditMode &&
+    name === prevState.name &&
+    otherNames === (prevState.other_names || "") &&
+    description === (prevState.description || "") &&
+    plantSeason === (prevState.plant_season || "") &&
+    harvestSeason === (prevState.harvest_season || "") &&
+    pruneSeason === (prevState.prune_season || "") &&
+    tips === (prevState.tips || "")
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0)
@@ -65,6 +74,16 @@ export function AddPlant(): JSX.Element {
       setStatus(HTTPStatus.SUCCESS)
     }
   }, [isEditMode, prevState])
+
+  useEffect(() => {
+    if (isEditMode) {
+      if (noChanges || activeErrors) {
+        setButtonDisabled(true)
+      } else {
+        setButtonDisabled(false)
+      }
+    }
+  }, [activeErrors, isEditMode, noChanges])
 
   function updateName(event: ChangeEvent<HTMLInputElement>): void {
     if (!event.target.value) {
@@ -207,6 +226,7 @@ export function AddPlant(): JSX.Element {
           {isEditMode ? (
             <Button
               color="primary"
+              disabled={buttonDisabled}
               fullWidth
               onClick={editPlant}
               style={{marginTop: "30px"}}
