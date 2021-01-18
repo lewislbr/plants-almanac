@@ -2,6 +2,7 @@ package authenticate
 
 import (
 	"os"
+	"time"
 
 	u "users/src/user"
 
@@ -50,6 +51,7 @@ func (s *service) Authenticate(cred u.Credentials) (string, error) {
 
 func generateJWT(uid u.ID) (string, error) {
 	jwt := jwtgo.NewWithClaims(jwtgo.SigningMethodHS256, jwtgo.MapClaims{
+		"exp": time.Now().Add(time.Hour * 24 * 7).Unix(),
 		"iss": "users",
 		"uid": uid,
 	})

@@ -81,11 +81,11 @@ func logInUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isDevelopment {
-		w.Header().Add("Set-Cookie", "st="+jwt+"; HttpOnly; Max-Age=63072000")
-		w.Header().Add("Set-Cookie", "te=true; Max-Age=63072000")
+		w.Header().Add("Set-Cookie", "st="+jwt+"; HttpOnly; Max-Age=604800")
+		w.Header().Add("Set-Cookie", "te=true; Max-Age=604800")
 	} else {
-		w.Header().Add("Set-Cookie", "st="+jwt+"; Domain=plantdex.app; HttpOnly; Max-Age=63072000; SameSite=Strict; Secure")
-		w.Header().Add("Set-Cookie", "te=true; Domain=plantdex.app; Max-Age=63072000; SameSite=Strict; Secure")
+		w.Header().Add("Set-Cookie", "st="+jwt+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; SameSite=Strict; Secure")
+		w.Header().Add("Set-Cookie", "te=true; Domain=plantdex.app; Max-Age=604800; SameSite=Strict; Secure")
 	}
 }
 
