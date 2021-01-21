@@ -29,11 +29,6 @@ export function CreateAccount(): JSX.Element {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const userState = {
-    name,
-    email,
-    password,
-  }
   const {setAuthenticatedUser} = useContext(AuthContext)
   const history = useHistory()
   const missingFields = !name || !email || !password
@@ -85,8 +80,15 @@ export function CreateAccount(): JSX.Element {
     setStatus(HTTPStatus.LOADING)
 
     try {
-      await userService.signUp(userState)
-      await userService.logIn(userState)
+      await userService.signUp({
+        name,
+        email,
+        password,
+      })
+      await userService.logIn({
+        email,
+        password,
+      })
 
       setAuthenticatedUser(true)
       setStatus(HTTPStatus.SUCCESS)

@@ -9,20 +9,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Service defines a service to authorize a user.
-type Service interface {
-	Authorize(string) (string, error)
-}
-
-type service struct{}
-
-// NewService creates an authorization service with the necessary dependencies.
-func NewService() Service {
-	return &service{}
-}
-
 // Authorize checks if a user is authorized and returns its ID.
-func (s *service) Authorize(jwt string) (string, error) {
+func Authorize(jwt string) (string, error) {
+	if jwt == "" {
+		return "", u.ErrMissingData
+	}
+
 	token, err := jwtgo.Parse(jwt, func(token *jwtgo.Token) (interface{}, error) {
 		return []byte(os.Getenv("USERS_JWT_SECRET")), nil
 	})

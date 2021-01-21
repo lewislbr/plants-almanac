@@ -14,9 +14,6 @@ export function AddPlant(): JSX.Element {
     http: "",
   })
   const [buttonDisabled, setButtonDisabled] = useState(true)
-  const location = useLocation()
-  const prevState = location.state as EditVariables
-  const [isEditMode] = useState(prevState)
   const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [name, setName] = useState("")
   const [otherNames, setOtherNames] = useState("")
@@ -25,41 +22,33 @@ export function AddPlant(): JSX.Element {
   const [harvestSeason, setHarvestSeason] = useState("")
   const [pruneSeason, setPruneSeason] = useState("")
   const [tips, setTips] = useState("")
-  const plantState = {
-    name,
-    otherNames,
-    description,
-    plantSeason,
-    harvestSeason,
-    pruneSeason,
-    tips,
-  }
   const history = useHistory()
+  const location = useLocation()
+  const prevState = location.state as EditVariables
+  const [isEditMode] = useState(Boolean(prevState))
   const missingFields = !name
   const activeErrors = Object.values(errors).includes(true)
   const noChanges =
     isEditMode &&
     name === prevState.name &&
-    otherNames === (prevState.other_names || "") &&
-    description === (prevState.description || "") &&
-    plantSeason === (prevState.plant_season || "") &&
-    harvestSeason === (prevState.harvest_season || "") &&
-    pruneSeason === (prevState.prune_season || "") &&
-    tips === (prevState.tips || "")
+    otherNames === prevState.other_names &&
+    description === prevState.description &&
+    plantSeason === prevState.plant_season &&
+    harvestSeason === prevState.harvest_season &&
+    pruneSeason === prevState.prune_season &&
+    tips === prevState.tips
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0)
   }, [location])
 
   useEffect(() => {
-    if (!isEditMode) {
-      if (missingFields || activeErrors) {
-        setButtonDisabled(true)
-      } else {
-        setButtonDisabled(false)
-      }
+    if (missingFields || activeErrors || noChanges) {
+      setButtonDisabled(true)
+    } else {
+      setButtonDisabled(false)
     }
-  }, [isEditMode, missingFields, activeErrors])
+  }, [missingFields, activeErrors, noChanges])
 
   useEffect(() => {
     if (isEditMode) {
@@ -74,16 +63,6 @@ export function AddPlant(): JSX.Element {
       setStatus(HTTPStatus.SUCCESS)
     }
   }, [isEditMode, prevState])
-
-  useEffect(() => {
-    if (isEditMode) {
-      if (noChanges || activeErrors) {
-        setButtonDisabled(true)
-      } else {
-        setButtonDisabled(false)
-      }
-    }
-  }, [activeErrors, isEditMode, noChanges])
 
   function updateName(event: ChangeEvent<HTMLInputElement>): void {
     if (!event.target.value) {
@@ -123,7 +102,15 @@ export function AddPlant(): JSX.Element {
     setStatus(HTTPStatus.LOADING)
 
     try {
-      await plantService.addOne(plantState)
+      await plantService.addOne({
+        name,
+        otherNames,
+        description,
+        plantSeason,
+        harvestSeason,
+        pruneSeason,
+        tips,
+      })
 
       setStatus(HTTPStatus.SUCCESS)
 
@@ -140,7 +127,15 @@ export function AddPlant(): JSX.Element {
     setStatus(HTTPStatus.LOADING)
 
     try {
-      await plantService.editOne(prevState.id, plantState)
+      await plantService.editOne(prevState.id, {
+        name,
+        otherNames,
+        description,
+        plantSeason,
+        harvestSeason,
+        pruneSeason,
+        tips,
+      })
 
       setStatus(HTTPStatus.SUCCESS)
 
@@ -159,6 +154,9 @@ export function AddPlant(): JSX.Element {
 
   return (
     <>
+      {status === HTTPStatus.ERROR && (
+        <Error message={errors.http} title={"Error"} />
+      )}
       <Typography variant="h1">
         {isEditMode ? plantCopy.EDIT_PLANT : plantCopy.ADD_PLANT}
       </Typography>
@@ -256,9 +254,6 @@ export function AddPlant(): JSX.Element {
             {sharedCopy.CANCEL}
           </Button>
         </>
-      )}
-      {status === HTTPStatus.ERROR && (
-        <Error message={errors.http} title={"Error"} />
       )}
     </>
   )

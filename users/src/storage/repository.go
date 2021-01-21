@@ -9,11 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// MongoDB provides methods to store data in MongoDB.
-type MongoDB struct{}
-
 // InsertOne adds a new user.
-func (m *MongoDB) InsertOne(new u.User) (interface{}, error) {
+func InsertOne(new u.User) (interface{}, error) {
 	result, err := collection.InsertOne(context.Background(), new)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
@@ -23,7 +20,7 @@ func (m *MongoDB) InsertOne(new u.User) (interface{}, error) {
 }
 
 // FindOne retuns the queried user.
-func (m *MongoDB) FindOne(email string) (u.User, error) {
+func FindOne(email string) (u.User, error) {
 	filter := bson.M{"email": email}
 
 	var result u.User

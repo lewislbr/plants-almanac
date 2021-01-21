@@ -14,7 +14,6 @@ defaults:
 env:
   REGISTRY: eu.gcr.io
   WEB_NAME: web
-  WEB_PORT: 3000
 
 jobs:
   deploy:
@@ -39,9 +38,9 @@ jobs:
 
       - name: Add environment variables
         run: |
-          echo "PLANTS_PRODUCTION_URL=${{ secrets.PLANTS_PRODUCTION_URL }}" >> .env
-          echo "USERS_LOGIN_PRODUCTION_URL=${{ secrets.USERS_LOGIN_PRODUCTION_URL }}" >> .env
-          echo "USERS_SIGNUP_PRODUCTION_URL=${{ secrets.USERS_SIGNUP_PRODUCTION_URL }}" >> .env
+          echo "PLANTS_URL=${{ secrets.PLANTS_URL }}" >> .env
+          echo "USERS_LOGIN_URL=${{ secrets.USERS_LOGIN_URL }}" >> .env
+          echo "USERS_SIGNUP_URL=${{ secrets.USERS_SIGNUP_URL }}" >> .env
 
       - name: Build image
         run: |
@@ -60,6 +59,6 @@ jobs:
           --args="-p=3000" \
           --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$WEB_NAME":"$GIT_SHA" \
           --platform=managed \
-          --port="$WEB_PORT" \
+          --port="${{ secrets.WEB_PORT }}" \
           --quiet \
           --region=europe-west1

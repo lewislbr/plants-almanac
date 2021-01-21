@@ -9,11 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// MongoDB provides methods to store data in MongoDB.
-type MongoDB struct{}
-
 // InsertOne adds a plant.
-func (m *MongoDB) InsertOne(uid string, new p.Plant) (interface{}, error) {
+func InsertOne(uid string, new p.Plant) (interface{}, error) {
 	result, err := db.Collection(uid).InsertOne(context.Background(), new)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
@@ -23,7 +20,7 @@ func (m *MongoDB) InsertOne(uid string, new p.Plant) (interface{}, error) {
 }
 
 // FindAll returns all the plants.
-func (m *MongoDB) FindAll(uid string) ([]p.Plant, error) {
+func FindAll(uid string) ([]p.Plant, error) {
 	cursor, err := db.Collection(uid).Find(context.Background(), bson.M{})
 	if err != nil {
 		return nil, errors.Wrap(err, "")
@@ -40,7 +37,7 @@ func (m *MongoDB) FindAll(uid string) ([]p.Plant, error) {
 }
 
 // FindOne retuns the queried plant.
-func (m *MongoDB) FindOne(uid string, id p.ID) (p.Plant, error) {
+func FindOne(uid string, id string) (p.Plant, error) {
 	filter := bson.M{"_id": id}
 
 	var result p.Plant
@@ -54,7 +51,7 @@ func (m *MongoDB) FindOne(uid string, id p.ID) (p.Plant, error) {
 }
 
 // UpdateOne modifies the queried plant.
-func (m *MongoDB) UpdateOne(uid string, id p.ID, update p.Plant) (int64, error) {
+func UpdateOne(uid string, id string, update p.Plant) (int64, error) {
 	filter := bson.M{"_id": id}
 	updated := bson.M{
 		"$set": bson.M{
@@ -78,7 +75,7 @@ func (m *MongoDB) UpdateOne(uid string, id p.ID, update p.Plant) (int64, error) 
 }
 
 // DeleteOne deletes a plant.
-func (m *MongoDB) DeleteOne(uid string, id p.ID) (int64, error) {
+func DeleteOne(uid string, id string) (int64, error) {
 	filter := bson.M{"_id": id}
 	result, err := db.Collection(uid).DeleteOne(context.Background(), filter)
 	if err != nil {

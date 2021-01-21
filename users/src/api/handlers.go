@@ -5,34 +5,29 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"users/src/authenticate"
 	"users/src/authorize"
 	"users/src/create"
-	"users/src/storage"
 	u "users/src/user"
 )
 
-var (
-	createService       = create.NewService(&storage.MongoDB{})
-	authenticateService = authenticate.NewService(&storage.MongoDB{})
-	authorizeService    = authorize.NewService()
-)
+var isDevelopment = os.Getenv("MODE") == "development"
 
 func createUser(w http.ResponseWriter, r *http.Request) {
 	var new u.User
 
 	json.NewDecoder(r.Body).Decode(&new)
 
-	if new.Name == "" || new.Email == "" || new.Password == "" {
-		http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
-
-		return
-	}
-
-	err := createService.Create(new)
+	err := create.Create(new)
 	if err != nil {
+		if err == u.ErrMissingData {
+			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
+
+			return
+		}
 		if err == u.ErrUserExists {
 			http.Error(w, u.ErrUserExists.Error(), http.StatusConflict)
 
@@ -54,14 +49,13 @@ func logInUser(w http.ResponseWriter, r *http.Request) {
 
 	json.NewDecoder(r.Body).Decode(&cred)
 
-	if cred.Email == "" || cred.Password == "" {
-		http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
-
-		return
-	}
-
-	jwt, err := authenticateService.Authenticate(cred)
+	jwt, err := authenticate.Authenticate(cred)
 	if err != nil {
+		if err == u.ErrMissingData {
+			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
+
+			return
+		}
 		if err == u.ErrNotFound {
 			http.Error(w, u.ErrNotFound.Error(), http.StatusNotFound)
 
@@ -98,8 +92,13 @@ func authorizeUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jwt := strings.Split(authHeader, " ")[1]
-	userID, err := authorizeService.Authorize(jwt)
+	userID, err := authorize.Authorize(jwt)
 	if err != nil {
+		if err == u.ErrMissingData {
+			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
+
+			return
+		}
 		if err == u.ErrInvalidToken {
 			w.WriteHeader(http.StatusUnauthorized)
 

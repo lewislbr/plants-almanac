@@ -13,7 +13,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-var isDevelopment = os.Getenv("MODE") == "development"
 var uid string
 
 // Start initalizes the GraphQL API.
@@ -45,17 +44,10 @@ func Start() error {
 
 func corsMiddleware(h http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var origin string
-		if isDevelopment {
-			origin = os.Getenv("WEB_DEVELOPMENT_URL")
-		} else {
-			origin = os.Getenv("WEB_PRODUCTION_URL")
-		}
-
 		w.Header().Add("Access-Control-Allow-Credentials", "true")
 		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Origin")
 		w.Header().Add("Access-Control-Allow-Methods", "POST")
-		w.Header().Add("Access-Control-Allow-Origin", origin)
+		w.Header().Add("Access-Control-Allow-Origin", os.Getenv("WEB_URL"))
 		w.Header().Add("Access-Control-Max-Age", "86400")
 		w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
 
@@ -71,14 +63,7 @@ func corsMiddleware(h http.Handler) http.HandlerFunc {
 
 func authorizationMiddleware(h http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var authURL string
-		if isDevelopment {
-			authURL = os.Getenv("USERS_AUTHORIZATION_DEVELOPMENT_URL")
-		} else {
-			authURL = os.Getenv("USERS_AUTHORIZATION_PRODUCTION_URL")
-		}
-
-		req, err := http.NewRequest("GET", authURL, nil)
+		req, err := http.NewRequest("GET", os.Getenv("USERS_AUTHORIZATION_URL"), nil)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 

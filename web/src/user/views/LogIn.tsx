@@ -27,10 +27,6 @@ export function LogIn(): JSX.Element {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const userState = {
-    email,
-    password,
-  }
   const {setAuthenticatedUser} = useContext(AuthContext)
   const history = useHistory()
   const missingFields = !email || !password
@@ -72,7 +68,10 @@ export function LogIn(): JSX.Element {
     setStatus(HTTPStatus.LOADING)
 
     try {
-      await userService.logIn(userState)
+      await userService.logIn({
+        email,
+        password,
+      })
 
       setAuthenticatedUser(true)
       setStatus(HTTPStatus.SUCCESS)

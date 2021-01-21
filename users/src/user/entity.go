@@ -10,7 +10,7 @@ import (
 // for the API and storage components, respectively, but this being a small
 // service they are defined here for simplicity.
 type User struct {
-	ID        ID        `json:"id" bson:"_id"`
+	ID        string    `json:"id" bson:"_id"`
 	Name      string    `json:"name" bson:"name"`
 	Email     string    `json:"email" bson:"email"`
 	Password  string    `json:"password" bson:"-"`
@@ -18,9 +18,6 @@ type User struct {
 	CreatedAt time.Time `json:"created_at" bson:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" bson:"updated_at"`
 }
-
-// ID defines the id of a user.
-type ID string
 
 // Credentials defines the data needed to authenticate.
 type Credentials struct {

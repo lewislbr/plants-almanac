@@ -11,18 +11,8 @@ import (
 )
 
 func connectDatabase() *mongo.Collection {
-	isDevelopment := os.Getenv("MODE") == "development"
-
-	var mongodbURI string
-	var databaseName string
-	if isDevelopment {
-		mongodbURI = os.Getenv("USERS_DEVELOPMENT_MONGODB_URI")
-		databaseName = os.Getenv("USERS_DEVELOPMENT_DATABASE_NAME")
-	} else {
-		mongodbURI = os.Getenv("USERS_PRODUCTION_MONGODB_URI")
-		databaseName = os.Getenv("USERS_PRODUCTION_DATABASE_NAME")
-	}
-
+	mongodbURI := os.Getenv("USERS_MONGODB_URI")
+	databaseName := os.Getenv("USERS_DATABASE_NAME")
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongodbURI))
 	if err != nil {
 		log.Fatal(err)

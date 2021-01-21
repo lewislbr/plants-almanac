@@ -3,34 +3,28 @@ package edit
 import (
 	"time"
 
+	"plants/src/list"
 	p "plants/src/plant"
+	"plants/src/storage"
 
 	"github.com/pkg/errors"
 )
 
-// Service defines a service to edit a plant.
-type Service interface {
-	Edit(string, p.ID, p.Plant) (int64, error)
-}
-
-type repository interface {
-	UpdateOne(string, p.ID, p.Plant) (int64, error)
-}
-
-type service struct {
-	r repository
-}
-
-// NewService creates an edit service with the necessary dependencies.
-func NewService(r repository) Service {
-	return &service{r}
-}
-
 // Edit edits a plant.
-func (s *service) Edit(uid string, id p.ID, update p.Plant) (int64, error) {
+func Edit(uid string, id string, update p.Plant) (int64, error) {
+	if update.Name == "" {
+		return 0, p.ErrMissingData
+	}
+
+	exist, err := list.ListOne(uid, id)
+	if err != nil {
+		return 0, p.ErrNotFound
+	}
+
+	update.CreatedAt = exist.CreatedAt
 	update.EditedAt = time.Now().UTC()
 
-	result, err := s.r.UpdateOne(uid, id, update)
+	result, err := storage.UpdateOne(uid, id, update)
 	if err != nil {
 		return 0, errors.Wrap(err, "")
 	}

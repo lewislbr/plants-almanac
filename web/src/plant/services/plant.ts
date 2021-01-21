@@ -23,10 +23,7 @@ const plantsClient = new ApolloClient({
   cache,
   link: createHttpLink({
     credentials: "include",
-    uri:
-      process.env.NODE_ENV === "production"
-        ? process.env.PLANTS_PRODUCTION_URL
-        : process.env.PLANTS_DEVELOPMENT_URL,
+    uri: process.env.PLANTS_URL,
   }),
 })
 

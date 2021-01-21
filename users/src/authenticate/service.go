@@ -4,6 +4,7 @@ import (
 	"os"
 	"time"
 
+	"users/src/storage"
 	u "users/src/user"
 
 	jwtgo "github.com/dgrijalva/jwt-go"
@@ -11,27 +12,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Service defines a service to authenticate a user.
-type Service interface {
-	Authenticate(cred u.Credentials) (string, error)
-}
-
-type repository interface {
-	FindOne(string) (u.User, error)
-}
-
-type service struct {
-	r repository
-}
-
-// NewService creates an authentication service with the necessary dependencies.
-func NewService(r repository) Service {
-	return &service{r}
-}
-
 // Authenticate authenticates a user and issues a JWT.
-func (s *service) Authenticate(cred u.Credentials) (string, error) {
-	existUser, err := s.r.FindOne(cred.Email)
+func Authenticate(cred u.Credentials) (string, error) {
+	if cred.Email == "" || cred.Password == "" {
+		return "", u.ErrMissingData
+	}
+
+	existUser, err := storage.FindOne(cred.Email)
 	if err != nil {
 		return "", u.ErrNotFound
 	}
@@ -49,7 +36,7 @@ func (s *service) Authenticate(cred u.Credentials) (string, error) {
 	return jwt, nil
 }
 
-func generateJWT(uid u.ID) (string, error) {
+func generateJWT(uid string) (string, error) {
 	jwt := jwtgo.NewWithClaims(jwtgo.SigningMethodHS256, jwtgo.MapClaims{
 		"exp": time.Now().Add(time.Hour * 24 * 7).Unix(),
 		"iss": "users",
