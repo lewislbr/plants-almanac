@@ -7,11 +7,21 @@ import (
 
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
+type repository struct {
+	db *mongo.Collection
+}
+
+// NewRepository initializes a storage with the necessary dependencies.
+func NewRepository(db *mongo.Collection) u.Repository {
+	return repository{db}
+}
+
 // InsertOne adds a new user.
-func InsertOne(new u.User) (interface{}, error) {
-	result, err := collection.InsertOne(context.Background(), new)
+func (r repository) InsertOne(new u.User) (interface{}, error) {
+	result, err := r.db.InsertOne(context.Background(), new)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
 	}
@@ -20,12 +30,12 @@ func InsertOne(new u.User) (interface{}, error) {
 }
 
 // FindOne retuns the queried user.
-func FindOne(email string) (u.User, error) {
+func (r repository) FindOne(email string) (u.User, error) {
 	filter := bson.M{"email": email}
 
 	var result u.User
 
-	err := collection.FindOne(context.Background(), filter).Decode(&result)
+	err := r.db.FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
 		return u.User{}, errors.Wrap(err, "")
 	}

@@ -2,18 +2,26 @@ package delete
 
 import (
 	p "plants/src/plant"
-	"plants/src/storage"
 
 	"github.com/pkg/errors"
 )
 
+type deleteService struct {
+	r p.Repository
+}
+
+// NewDeleteService initializes a create service with the necessary dependencies.
+func NewDeleteService(r p.Repository) p.DeleteService {
+	return deleteService{r}
+}
+
 // Delete deletes a plant.
-func Delete(uid string, id string) (int64, error) {
+func (s deleteService) Delete(uid string, id string) (int64, error) {
 	if id == "" {
 		return 0, p.ErrMissingData
 	}
 
-	result, err := storage.DeleteOne(uid, id)
+	result, err := s.r.DeleteOne(uid, id)
 	if err != nil {
 		return 0, errors.Wrap(err, "")
 	}

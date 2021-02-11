@@ -1,7 +1,6 @@
 package plant
 
 import (
-	"errors"
 	"time"
 )
 
@@ -22,8 +21,32 @@ type Plant struct {
 	Tips          string    `json:"tips" bson:"tips"`
 }
 
-// ErrMissingData defines an error to use when there are missing required fields.
-var ErrMissingData = errors.New("missing data")
+// AddService defines a service to add a plant.
+type AddService interface {
+	Add(string, Plant) (interface{}, error)
+}
 
-// ErrNotFound defines an error to use when a plant is not found.
-var ErrNotFound = errors.New("plant not found")
+// ListService defines a service to list plants.
+type ListService interface {
+	ListAll(string) ([]Plant, error)
+	ListOne(string, string) (Plant, error)
+}
+
+// EditService defines a service to edit a plant.
+type EditService interface {
+	Edit(string, string, Plant) (int64, error)
+}
+
+// DeleteService defines a service to delete a plant.
+type DeleteService interface {
+	Delete(string, string) (int64, error)
+}
+
+// Repository defines storage operations.
+type Repository interface {
+	InsertOne(string, Plant) (interface{}, error)
+	FindAll(string) ([]Plant, error)
+	FindOne(string, string) (Plant, error)
+	UpdateOne(string, string, Plant) (int64, error)
+	DeleteOne(string, string) (int64, error)
+}

@@ -1,7 +1,6 @@
 package user
 
 import (
-	"errors"
 	"time"
 )
 
@@ -25,19 +24,23 @@ type Credentials struct {
 	Password string
 }
 
-// ErrMissingData defines an error to use when there are missing required fields.
-var ErrMissingData = errors.New("missing data")
+// CreateService defines a service to create a user.
+type CreateService interface {
+	Create(User) error
+}
 
-// ErrNotFound defines an error to use when a user is not found.
-var ErrNotFound = errors.New("user not found")
+// AuthenticateService defines a service to authenticate a user.
+type AuthenticateService interface {
+	Authenticate(cred Credentials) (string, error)
+}
 
-// ErrUserExists defines an error to use when a user already exists.
-var ErrUserExists = errors.New("email already registered")
+// AuthorizeService defines a service to authorize a user.
+type AuthorizeService interface {
+	Authorize(string) (string, error)
+}
 
-// ErrInvalidPassword defines an error to use when the user password does
-// not match.
-var ErrInvalidPassword = errors.New("invalid password")
-
-// ErrInvalidToken defines an error to use when the user token is not
-// valid.
-var ErrInvalidToken = errors.New("invalid token")
+// Repository defines storage operations.
+type Repository interface {
+	InsertOne(User) (interface{}, error)
+	FindOne(string) (User, error)
+}

@@ -8,20 +8,30 @@ import (
 	"os"
 	"strings"
 
-	"users/src/authenticate"
-	"users/src/authorize"
-	"users/src/create"
 	u "users/src/user"
 )
 
-var isDevelopment = os.Getenv("MODE") == "development"
+var (
+	isDevelopment = os.Getenv("MODE") == "development"
+)
 
-func createUser(w http.ResponseWriter, r *http.Request) {
+type handler struct {
+	cr u.CreateService
+	an u.AuthenticateService
+	az u.AuthorizeService
+}
+
+// NewHandler initializes a handler with the necessary dependencies.
+func NewHandler(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService) handler {
+	return handler{cr, an, az}
+}
+
+func (h handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var new u.User
 
 	json.NewDecoder(r.Body).Decode(&new)
 
-	err := create.Create(new)
+	err := h.cr.Create(new)
 	if err != nil {
 		if err == u.ErrMissingData {
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
@@ -44,12 +54,12 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func logInUser(w http.ResponseWriter, r *http.Request) {
+func (h handler) LogInUser(w http.ResponseWriter, r *http.Request) {
 	var cred u.Credentials
 
 	json.NewDecoder(r.Body).Decode(&cred)
 
-	jwt, err := authenticate.Authenticate(cred)
+	jwt, err := h.an.Authenticate(cred)
 	if err != nil {
 		if err == u.ErrMissingData {
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
@@ -83,7 +93,7 @@ func logInUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func authorizeUser(w http.ResponseWriter, r *http.Request) {
+func (h handler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -92,7 +102,7 @@ func authorizeUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jwt := strings.Split(authHeader, " ")[1]
-	userID, err := authorize.Authorize(jwt)
+	userID, err := h.az.Authorize(jwt)
 	if err != nil {
 		if err == u.ErrMissingData {
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)

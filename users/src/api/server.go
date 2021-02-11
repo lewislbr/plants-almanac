@@ -5,17 +5,20 @@ import (
 	"net/http"
 	"os"
 
+	u "users/src/user"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
 )
 
 // Start initializes the REST API.
-func Start() error {
+func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService) error {
 	router := httprouter.New()
+	handler := NewHandler(cr, an, az)
 
-	router.HandlerFunc("POST", "/signup", createUser)
-	router.HandlerFunc("POST", "/login", logInUser)
-	router.HandlerFunc("GET", "/authorize", authorizeUser)
+	router.HandlerFunc("POST", "/signup", handler.CreateUser)
+	router.HandlerFunc("POST", "/login", handler.LogInUser)
+	router.HandlerFunc("GET", "/authorize", handler.AuthorizeUser)
 
 	fmt.Println("Users API ready ✅")
 

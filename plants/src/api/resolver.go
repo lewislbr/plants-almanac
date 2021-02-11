@@ -3,16 +3,25 @@ package api
 import (
 	"encoding/json"
 	"log"
-	"plants/src/add"
-	"plants/src/delete"
-	"plants/src/edit"
-	"plants/src/list"
+
 	p "plants/src/plant"
 
 	"github.com/graphql-go/graphql"
 )
 
-func addPlant(ps graphql.ResolveParams) (interface{}, error) {
+type resolver struct {
+	ad p.AddService
+	ls p.ListService
+	ed p.EditService
+	dl p.DeleteService
+}
+
+// NewResolver initializes a handler with the necessary dependencies.
+func NewResolver(ad p.AddService, ls p.ListService, ed p.EditService, dl p.DeleteService) resolver {
+	return resolver{ad, ls, ed, dl}
+}
+
+func (r resolver) AddPlant(ps graphql.ResolveParams) (interface{}, error) {
 	payload, err := json.Marshal(ps.Args)
 	if err != nil {
 		log.Println(err)
@@ -25,7 +34,7 @@ func addPlant(ps graphql.ResolveParams) (interface{}, error) {
 	}
 
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
-	result, err := add.Add(uid, new)
+	result, err := r.ad.Add(uid, new)
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
@@ -33,9 +42,9 @@ func addPlant(ps graphql.ResolveParams) (interface{}, error) {
 	return result, nil
 }
 
-func listPlants(ps graphql.ResolveParams) (interface{}, error) {
+func (r resolver) ListPlants(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
-	result, err := list.ListAll(uid)
+	result, err := r.ls.ListAll(uid)
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
@@ -43,10 +52,10 @@ func listPlants(ps graphql.ResolveParams) (interface{}, error) {
 	return result, nil
 }
 
-func listPlant(ps graphql.ResolveParams) (interface{}, error) {
+func (r resolver) ListPlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
 	id := ps.Args["id"].(string)
-	result, err := list.ListOne(uid, id)
+	result, err := r.ls.ListOne(uid, id)
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
@@ -54,7 +63,7 @@ func listPlant(ps graphql.ResolveParams) (interface{}, error) {
 	return result, nil
 }
 
-func editPlant(ps graphql.ResolveParams) (interface{}, error) {
+func (r resolver) EditPlant(ps graphql.ResolveParams) (interface{}, error) {
 	payload, err := json.Marshal(ps.Args)
 	if err != nil {
 		log.Println(err)
@@ -68,7 +77,7 @@ func editPlant(ps graphql.ResolveParams) (interface{}, error) {
 
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
 	id := ps.Args["id"].(string)
-	result, err := edit.Edit(uid, id, update)
+	result, err := r.ed.Edit(uid, id, update)
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}
@@ -76,10 +85,10 @@ func editPlant(ps graphql.ResolveParams) (interface{}, error) {
 	return result, nil
 }
 
-func deletePlant(ps graphql.ResolveParams) (interface{}, error) {
+func (r resolver) DeletePlant(ps graphql.ResolveParams) (interface{}, error) {
 	uid := ps.Info.RootValue.(map[string]interface{})["uid"].(string)
 	id := ps.Args["id"].(string)
-	result, err := delete.Delete(uid, id)
+	result, err := r.dl.Delete(uid, id)
 	if err != nil {
 		log.Printf("%+v\n", err)
 	}

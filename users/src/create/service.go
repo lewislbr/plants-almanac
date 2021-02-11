@@ -3,7 +3,6 @@ package create
 import (
 	"time"
 
-	"users/src/storage"
 	u "users/src/user"
 
 	"github.com/google/uuid"
@@ -11,13 +10,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type createService struct {
+	r u.Repository
+}
+
+// NewCreateService initializes a create service with the necessary dependencies.
+func NewCreateService(r u.Repository) u.CreateService {
+	return createService{r}
+}
+
 // Create creates a new user.
-func Create(new u.User) error {
+func (s createService) Create(new u.User) error {
 	if new.Name == "" || new.Email == "" || new.Password == "" {
 		return u.ErrMissingData
 	}
 
-	_, err := storage.FindOne(new.Email)
+	_, err := s.r.FindOne(new.Email)
 	if err == nil {
 		return u.ErrUserExists
 	}
@@ -32,7 +40,7 @@ func Create(new u.User) error {
 
 	new.Hash = string(hash)
 
-	_, err = storage.InsertOne(new)
+	_, err = s.r.InsertOne(new)
 	if err != nil {
 		return errors.Wrap(err, "")
 	}

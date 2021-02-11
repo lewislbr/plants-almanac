@@ -4,7 +4,6 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-var schema graphql.Schema
 var plantType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Plant",
@@ -43,14 +42,15 @@ var plantType = graphql.NewObject(
 	},
 )
 
-func init() {
+// NewSchema initializes the schema with the necessary dependencies.
+func NewSchema(r resolver) (*graphql.Schema, error) {
 	queries := graphql.NewObject(graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
 			"plants": &graphql.Field{
 				Type:        graphql.NewNonNull(graphql.NewList(plantType)),
 				Description: "Lists all plants, returning an array of objects with the existing plants, or an empty array if there are none.",
-				Resolve:     listPlants,
+				Resolve:     r.ListPlants,
 			},
 			"plant": &graphql.Field{
 				Type:        plantType,
@@ -60,7 +60,7 @@ func init() {
 						Type: graphql.NewNonNull(graphql.ID),
 					},
 				},
-				Resolve: listPlant,
+				Resolve: r.ListPlant,
 			},
 		},
 	})
@@ -93,7 +93,7 @@ func init() {
 						Type: graphql.String,
 					},
 				},
-				Resolve: addPlant,
+				Resolve: r.AddPlant,
 			},
 			"edit": &graphql.Field{
 				Type:        graphql.Int,
@@ -124,7 +124,7 @@ func init() {
 						Type: graphql.String,
 					},
 				},
-				Resolve: editPlant,
+				Resolve: r.EditPlant,
 			},
 			"delete": &graphql.Field{
 				Type:        graphql.Int,
@@ -134,13 +134,18 @@ func init() {
 						Type: graphql.NewNonNull(graphql.ID),
 					},
 				},
-				Resolve: deletePlant,
+				Resolve: r.DeletePlant,
 			},
 		},
 	})
 
-	schema, _ = graphql.NewSchema(graphql.SchemaConfig{
+	schema, err := graphql.NewSchema(graphql.SchemaConfig{
 		Query:    queries,
 		Mutation: mutations,
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &schema, nil
 }

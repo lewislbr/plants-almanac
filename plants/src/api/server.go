@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 
+	p "plants/src/plant"
+
 	"github.com/graphql-go/handler"
 	"github.com/julienschmidt/httprouter"
 	"github.com/pkg/errors"
@@ -16,9 +18,16 @@ import (
 var uid string
 
 // Start initalizes the GraphQL API.
-func Start() error {
-	graphQLHandler := handler.New(&handler.Config{
-		Schema:     &schema,
+func Start(ad p.AddService, ls p.ListService, ed p.EditService, dl p.DeleteService) error {
+	resolver := NewResolver(ad, ls, ed, dl)
+	schema, err := NewSchema(resolver)
+	if err != nil {
+		return errors.Wrap(err, "")
+	}
+
+	router := httprouter.New()
+	handler := handler.New(&handler.Config{
+		Schema:     schema,
 		Pretty:     false,
 		Playground: false,
 		RootObjectFn: func(ctx context.Context, r *http.Request) map[string]interface{} {
@@ -27,14 +36,13 @@ func Start() error {
 			}
 		},
 	})
-	router := httprouter.New()
 
-	router.Handler("POST", "/", graphQLHandler)
+	router.Handler("POST", "/", handler)
 
 	fmt.Println("Plants API ready ✅")
 
 	port := os.Getenv("PLANTS_PORT")
-	err := http.ListenAndServe(":"+port, corsMiddleware(authorizationMiddleware(router)))
+	err = http.ListenAndServe(":"+port, corsMiddleware(authorizationMiddleware(router)))
 	if err != nil {
 		return errors.Wrap(err, "")
 	}

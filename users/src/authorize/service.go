@@ -9,8 +9,15 @@ import (
 	"github.com/pkg/errors"
 )
 
+type authorizeService struct{}
+
+// NewAuthorizeService initializes an authorization service with the necessary dependencies.
+func NewAuthorizeService() u.AuthorizeService {
+	return authorizeService{}
+}
+
 // Authorize checks if a user is authorized and returns its ID.
-func Authorize(jwt string) (string, error) {
+func (s authorizeService) Authorize(jwt string) (string, error) {
 	if jwt == "" {
 		return "", u.ErrMissingData
 	}

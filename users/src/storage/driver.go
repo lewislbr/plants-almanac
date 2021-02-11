@@ -10,7 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func connectDatabase() *mongo.Collection {
+// ConnectDatabase establishes a connection with the database.
+func ConnectDatabase() *mongo.Collection {
 	mongodbURI := os.Getenv("USERS_MONGODB_URI")
 	databaseName := os.Getenv("USERS_DATABASE_NAME")
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongodbURI))
@@ -29,5 +30,3 @@ func connectDatabase() *mongo.Collection {
 
 	return client.Database(databaseName).Collection(collectionName)
 }
-
-var collection = connectDatabase()

@@ -10,7 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func connectDatabase() *mongo.Database {
+// ConnectDatabase establishes a connection with the database.
+func ConnectDatabase() *mongo.Database {
 	mongodbURI := os.Getenv("PLANTS_MONGODB_URI")
 	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongodbURI))
@@ -27,5 +28,3 @@ func connectDatabase() *mongo.Database {
 
 	return client.Database(databaseName)
 }
-
-var db = connectDatabase()

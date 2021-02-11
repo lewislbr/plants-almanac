@@ -4,7 +4,6 @@ import (
 	"os"
 	"time"
 
-	"users/src/storage"
 	u "users/src/user"
 
 	jwtgo "github.com/dgrijalva/jwt-go"
@@ -12,13 +11,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type authenticateService struct {
+	r u.Repository
+}
+
+// NewAuthenticateService initializes an authentication service with the necessary dependencies.
+func NewAuthenticateService(r u.Repository) u.AuthenticateService {
+	return authenticateService{r}
+}
+
 // Authenticate authenticates a user and issues a JWT.
-func Authenticate(cred u.Credentials) (string, error) {
+func (s authenticateService) Authenticate(cred u.Credentials) (string, error) {
 	if cred.Email == "" || cred.Password == "" {
 		return "", u.ErrMissingData
 	}
 
-	existUser, err := storage.FindOne(cred.Email)
+	existUser, err := s.r.FindOne(cred.Email)
 	if err != nil {
 		return "", u.ErrNotFound
 	}
