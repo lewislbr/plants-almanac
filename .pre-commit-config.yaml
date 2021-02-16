@@ -3,21 +3,28 @@ repos:
   - repo: local
     hooks:
       - id: docker-go
-        name: plants-go
+        name: plants-format
         language: docker_image
-        entry: golang:1-alpine sh -c "cd plants && gofmt -l -s -w ."
+        entry: golang:1-alpine sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go fmt ./..."
         files: plants
         verbose: true
 
       - id: docker-go
-        name: users-go
+        name: users-format
         language: docker_image
-        entry: golang:1-alpine sh -c "cd users && gofmt -l -s -w ."
+        entry: golang:1-alpine sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go fmt ./..."
+        files: users
+        verbose: true
+
+      - id: docker-go
+        name: users-test
+        language: docker_image
+        entry: golang:1 sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
         files: users
         verbose: true
 
       - id: docker-typescript
-        name: web-typescript
+        name: web-typecheck
         language: docker_image
         pass_filenames: false
         entry: plantdex-dev/web sh -c "cd web && npm run ts"
@@ -25,7 +32,7 @@ repos:
         verbose: true
 
       - id: docker-eslint
-        name: web-eslint
+        name: web-lint
         language: docker_image
         entry: plantdex-dev/web sh -c "cd web && npm run lint"
         exclude_types: [css, html, json]
@@ -33,7 +40,7 @@ repos:
         verbose: true
 
       - id: docker-prettier
-        name: web-prettier
+        name: web-format
         language: docker_image
         entry: plantdex-dev/web sh -c "cd web && npm run format"
         files: web
