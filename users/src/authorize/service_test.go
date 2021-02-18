@@ -39,7 +39,7 @@ func TestAuthorization(t *testing.T) {
 
 		authorizeService := NewAuthorizeService()
 		expectedID := "1"
-		jwt := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxIn0.bHGULc9qoVyle089kDZjXUBqDzsFHjRO074sqv_ILW8"
+		jwt := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxIn0.bHGULc9qoVyle089kDZjXUBqDzsFHjRO074sqv_ILW8" // Token with no expiration
 		id, err := authorizeService.Authorize(jwt)
 
 		require.Equal(t, expectedID, id)

@@ -39,6 +39,11 @@ type AuthorizeService interface {
 	Authorize(string) (string, error)
 }
 
+// GenerateService defines a service to generate tokens.
+type GenerateService interface {
+	GenerateJWT(string) (string, error)
+}
+
 // Repository defines storage operations.
 type Repository interface {
 	InsertOne(User) (interface{}, error)

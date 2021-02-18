@@ -2,6 +2,7 @@ package authenticate
 
 import (
 	"testing"
+	"users/src/generate"
 	u "users/src/user"
 
 	"github.com/stretchr/testify/require"
@@ -35,7 +36,8 @@ func TestAuthenticate(t *testing.T) {
 		repo := mockRepo{
 			Users: []u.User{},
 		}
-		authenticateService := NewAuthenticateService(repo)
+		generateService := generate.NewGenerateService()
+		authenticateService := NewAuthenticateService(generateService, repo)
 		creds := u.Credentials{
 			Email: "test@test.com",
 		}
@@ -51,7 +53,8 @@ func TestAuthenticate(t *testing.T) {
 		repo := mockRepo{
 			Users: []u.User{},
 		}
-		authenticateService := NewAuthenticateService(repo)
+		generateService := generate.NewGenerateService()
+		authenticateService := NewAuthenticateService(generateService, repo)
 		creds := u.Credentials{
 			Email:    "test@test.com",
 			Password: "1234",
@@ -76,7 +79,8 @@ func TestAuthenticate(t *testing.T) {
 				},
 			},
 		}
-		authenticateService := NewAuthenticateService(repo)
+		generateService := generate.NewGenerateService()
+		authenticateService := NewAuthenticateService(generateService, repo)
 		creds := u.Credentials{
 			Email:    "test@test.com",
 			Password: "12345",
@@ -95,13 +99,15 @@ func TestAuthenticate(t *testing.T) {
 		repo := mockRepo{
 			Users: []u.User{
 				{
+					ID:    "1",
 					Name:  "test",
 					Email: "test@test.com",
 					Hash:  string(hash),
 				},
 			},
 		}
-		authenticateService := NewAuthenticateService(repo)
+		generateService := generate.NewGenerateService()
+		authenticateService := NewAuthenticateService(generateService, repo)
 		creds := u.Credentials{
 			Email:    "test@test.com",
 			Password: password,

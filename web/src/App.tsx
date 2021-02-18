@@ -1,12 +1,25 @@
-import React, {StrictMode, useContext} from "react"
+import React, {StrictMode, useContext, useEffect} from "react"
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom"
 import {Container} from "@material-ui/core"
 import {AddPlant, PlantDetails, PlantList} from "./plant/views"
 import {CreateAccount, LogIn, Welcome} from "./user/views"
 import {AuthContext} from "./user/contexts/auth"
+import * as userService from "./user/services/user"
 
 export function App(): JSX.Element {
   const {authenticatedUser} = useContext(AuthContext)
+
+  useEffect(() => {
+    if (authenticatedUser === true) {
+      ;(async (): Promise<void> => {
+        try {
+          await userService.refreshToken()
+        } catch (err) {
+          console.error(err)
+        }
+      })()
+    }
+  }, [authenticatedUser])
 
   return (
     <StrictMode>

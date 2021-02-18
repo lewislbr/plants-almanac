@@ -34,6 +34,16 @@ export async function logIn(user: Credentials): Promise<void> {
   }
 }
 
+export async function refreshToken(): Promise<void> {
+  const response = await fetch(process.env.USERS_REFRESH_URL as string, {
+    credentials: "include",
+  })
+
+  if (!response.ok) {
+    throw new Error(await response.text())
+  }
+}
+
 export function isAuthenticated(): boolean {
   return document.cookie.split("; ").includes("te=true")
 }

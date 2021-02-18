@@ -12,13 +12,14 @@ import (
 )
 
 // Start initializes the REST API.
-func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService) error {
+func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService, gn u.GenerateService) error {
 	router := httprouter.New()
-	handler := NewHandler(cr, an, az)
+	handler := NewHandler(cr, an, az, gn)
 
 	router.HandlerFunc("POST", "/signup", handler.CreateUser)
 	router.HandlerFunc("POST", "/login", handler.LogInUser)
 	router.HandlerFunc("GET", "/authorize", handler.AuthorizeUser)
+	router.HandlerFunc("GET", "/refresh", handler.RefreshToken)
 
 	fmt.Println("Users API ready ✅")
 
