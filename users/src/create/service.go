@@ -15,17 +15,17 @@ type createService struct {
 }
 
 // NewCreateService initializes a create service with the necessary dependencies.
-func NewCreateService(r u.Repository) u.CreateService {
-	return createService{r}
+func NewCreateService(r u.Repository) *createService {
+	return &createService{r}
 }
 
 // Create creates a new user.
-func (s createService) Create(new u.User) error {
+func (cs *createService) Create(new u.User) error {
 	if new.Name == "" || new.Email == "" || new.Password == "" {
 		return u.ErrMissingData
 	}
 
-	_, err := s.r.FindOne(new.Email)
+	_, err := cs.r.FindOne(new.Email)
 	if err == nil {
 		return u.ErrUserExists
 	}
@@ -40,7 +40,7 @@ func (s createService) Create(new u.User) error {
 
 	new.Hash = string(hash)
 
-	_, err = s.r.InsertOne(new)
+	_, err = cs.r.InsertOne(new)
 	if err != nil {
 		return errors.Wrap(err, "")
 	}

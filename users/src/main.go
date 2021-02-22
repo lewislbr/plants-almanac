@@ -13,13 +13,13 @@ import (
 
 func main() {
 	db := storage.ConnectDatabase()
-	repository := storage.NewRepository(db)
-	createService := create.NewCreateService(repository)
-	generateService := generate.NewGenerateService()
-	authenticateService := authenticate.NewAuthenticateService(generateService, repository)
-	authorizeService := authorize.NewAuthorizeService()
+	r := storage.NewRepository(db)
+	cs := create.NewCreateService(r)
+	gs := generate.NewGenerateService()
+	ns := authenticate.NewAuthenticateService(gs, r)
+	zs := authorize.NewAuthorizeService()
 
-	if err := api.Start(createService, authenticateService, authorizeService, generateService); err != nil {
+	if err := api.Start(cs, ns, zs, gs); err != nil {
 		log.Fatalln(err)
 	}
 }

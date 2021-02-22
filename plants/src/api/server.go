@@ -18,8 +18,8 @@ import (
 var uid string
 
 // Start initalizes the GraphQL API.
-func Start(ad p.AddService, ls p.ListService, ed p.EditService, dl p.DeleteService) error {
-	resolver := NewResolver(ad, ls, ed, dl)
+func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteService) error {
+	resolver := NewResolver(as, ls, es, ds)
 	schema, err := NewSchema(resolver)
 	if err != nil {
 		return errors.Wrap(err, "")

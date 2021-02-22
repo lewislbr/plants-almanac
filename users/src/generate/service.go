@@ -13,11 +13,11 @@ import (
 type generateService struct{}
 
 // NewGenerateService initializes a generate service with the necessary dependencies.
-func NewGenerateService() u.GenerateService {
-	return generateService{}
+func NewGenerateService() *generateService {
+	return &generateService{}
 }
 
-func (s generateService) GenerateJWT(uid string) (string, error) {
+func (gs *generateService) GenerateJWT(uid string) (string, error) {
 	if uid == "" {
 		return "", u.ErrMissingData
 	}

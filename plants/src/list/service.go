@@ -11,12 +11,12 @@ type listService struct {
 }
 
 // NewListService initializes a create service with the necessary dependencies.
-func NewListService(r p.Repository) p.ListService {
-	return listService{r}
+func NewListService(r p.Repository) *listService {
+	return &listService{r}
 }
 
 // ListAll lists all plants.
-func (s listService) ListAll(uid string) ([]p.Plant, error) {
+func (s *listService) ListAll(uid string) ([]p.Plant, error) {
 	result, err := s.r.FindAll(uid)
 	if err != nil {
 		return nil, errors.Wrap(err, "")
@@ -26,7 +26,7 @@ func (s listService) ListAll(uid string) ([]p.Plant, error) {
 }
 
 // ListOne lists a plant.
-func (s listService) ListOne(uid string, id string) (p.Plant, error) {
+func (s *listService) ListOne(uid string, id string) (p.Plant, error) {
 	if id == "" {
 		return p.Plant{}, p.ErrMissingData
 	}

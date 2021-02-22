@@ -13,13 +13,13 @@ import (
 
 func main() {
 	db := storage.ConnectDatabase()
-	repository := storage.NewRepository(db)
-	addService := add.NewAddService(repository)
-	listService := list.NewListService(repository)
-	editService := edit.NewEditService(listService, repository)
-	deleteService := delete.NewDeleteService(repository)
+	r := storage.NewRepository(db)
+	ad := add.NewAddService(r)
+	ls := list.NewListService(r)
+	ed := edit.NewEditService(ls, r)
+	dl := delete.NewDeleteService(r)
 
-	if err := api.Start(addService, listService, editService, deleteService); err != nil {
+	if err := api.Start(ad, ls, ed, dl); err != nil {
 		log.Fatalln(err)
 	}
 }

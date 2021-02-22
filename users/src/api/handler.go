@@ -14,23 +14,23 @@ import (
 var isDevelopment = os.Getenv("MODE") == "development"
 
 type handler struct {
-	cr u.CreateService
-	an u.AuthenticateService
-	az u.AuthorizeService
-	gn u.GenerateService
+	cs u.CreateService
+	ns u.AuthenticateService
+	zs u.AuthorizeService
+	gs u.GenerateService
 }
 
 // NewHandler initializes a handler with the necessary dependencies.
-func NewHandler(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService, gn u.GenerateService) handler {
-	return handler{cr, an, az, gn}
+func NewHandler(cs u.CreateService, ns u.AuthenticateService, zs u.AuthorizeService, gs u.GenerateService) *handler {
+	return &handler{cs, ns, zs, gs}
 }
 
-func (h handler) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var new u.User
 
 	json.NewDecoder(r.Body).Decode(&new)
 
-	err := h.cr.Create(new)
+	err := h.cs.Create(new)
 	if err != nil {
 		if err == u.ErrMissingData {
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
@@ -53,12 +53,12 @@ func (h handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (h handler) LogInUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) LogInUser(w http.ResponseWriter, r *http.Request) {
 	var cred u.Credentials
 
 	json.NewDecoder(r.Body).Decode(&cred)
 
-	jwt, err := h.an.Authenticate(cred)
+	jwt, err := h.ns.Authenticate(cred)
 	if err != nil {
 		if err == u.ErrMissingData {
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
@@ -92,7 +92,7 @@ func (h handler) LogInUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h handler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -101,7 +101,7 @@ func (h handler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jwt := strings.Split(authHeader, " ")[1]
-	uid, err := h.az.Authorize(jwt)
+	uid, err := h.zs.Authorize(jwt)
 	if err != nil {
 		if err == u.ErrMissingData {
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
@@ -122,7 +122,7 @@ func (h handler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, uid)
 }
 
-func (h handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+func (h *handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	var jwt string
 
 	for _, cookie := range r.Cookies() {
@@ -131,7 +131,7 @@ func (h handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	uid, err := h.az.Authorize(jwt)
+	uid, err := h.zs.Authorize(jwt)
 	if err != nil {
 		if err == u.ErrMissingData {
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
@@ -148,7 +148,7 @@ func (h handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 		log.Printf("%+v\n", err)
 	}
-	jwt, err = h.gn.GenerateJWT(uid)
+	jwt, err = h.gs.GenerateJWT(uid)
 	if err != nil {
 		if err == u.ErrMissingData {
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
