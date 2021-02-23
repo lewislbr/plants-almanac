@@ -4,4 +4,4 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . ./
 ENV MODE=development
-CMD ["go", "run", "src/main.go"]
+CMD ["go", "run", "main.go"]
