@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -32,22 +33,22 @@ func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	err := h.cs.Create(new)
 	if err != nil {
-		if err == u.ErrMissingData {
+		switch {
+		case errors.Is(err, u.ErrMissingData):
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		}
-		if err == u.ErrUserExists {
+		case errors.Is(err, u.ErrUserExists):
 			http.Error(w, u.ErrUserExists.Error(), http.StatusConflict)
 
 			return
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
 		}
-
-		w.WriteHeader(http.StatusInternalServerError)
-
-		log.Printf("%+v\n", err)
-
-		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
@@ -60,27 +61,26 @@ func (h *handler) LogInUser(w http.ResponseWriter, r *http.Request) {
 
 	jwt, err := h.ns.Authenticate(cred)
 	if err != nil {
-		if err == u.ErrMissingData {
+		switch {
+		case errors.Is(err, u.ErrMissingData):
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		}
-		if err == u.ErrNotFound {
+		case errors.Is(err, u.ErrNotFound):
 			http.Error(w, u.ErrNotFound.Error(), http.StatusNotFound)
 
 			return
-		}
-		if err == u.ErrInvalidPassword {
+		case errors.Is(err, u.ErrInvalidPassword):
 			http.Error(w, u.ErrInvalidPassword.Error(), http.StatusBadRequest)
 
 			return
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
 		}
-
-		w.WriteHeader(http.StatusInternalServerError)
-
-		log.Printf("%+v\n", err)
-
-		return
 	}
 
 	if isDevelopment {
@@ -103,20 +103,22 @@ func (h *handler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
 	jwt := strings.Split(authHeader, " ")[1]
 	uid, err := h.zs.Authorize(jwt)
 	if err != nil {
-		if err == u.ErrMissingData {
+		switch {
+		case errors.Is(err, u.ErrMissingData):
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		}
-		if err == u.ErrInvalidToken {
+		case errors.Is(err, u.ErrInvalidToken):
 			w.WriteHeader(http.StatusUnauthorized)
 
 			return
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
 		}
-
-		w.WriteHeader(http.StatusInternalServerError)
-
-		log.Printf("%+v\n", err)
 	}
 
 	io.WriteString(w, uid)
@@ -133,34 +135,37 @@ func (h *handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	uid, err := h.zs.Authorize(jwt)
 	if err != nil {
-		if err == u.ErrMissingData {
+		switch {
+		case errors.Is(err, u.ErrMissingData):
 			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		}
-		if err == u.ErrInvalidToken {
+		case errors.Is(err, u.ErrInvalidToken):
 			w.WriteHeader(http.StatusUnauthorized)
 
 			return
-		}
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
 
-		w.WriteHeader(http.StatusInternalServerError)
-
-		log.Printf("%+v\n", err)
-	}
-	jwt, err = h.gs.GenerateJWT(uid)
-	if err != nil {
-		if err == u.ErrMissingData {
-			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
+			log.Printf("%+v\n", err)
 
 			return
 		}
+	}
+	jwt, err = h.gs.GenerateJWT(uid)
+	if err != nil {
+		switch {
+		case errors.Is(err, u.ErrMissingData):
+			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
 
-		w.WriteHeader(http.StatusInternalServerError)
+			return
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+			log.Printf("%+v\n", err)
 
-		return
+			return
+		}
 	}
 
 	if isDevelopment {

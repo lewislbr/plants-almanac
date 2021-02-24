@@ -2,6 +2,7 @@ package generate
 
 import (
 	"testing"
+
 	u "users/user"
 
 	"github.com/stretchr/testify/require"
