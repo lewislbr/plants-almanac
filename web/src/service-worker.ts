@@ -26,8 +26,7 @@ registerRoute(
 )
 
 registerRoute(
-  ({request}) =>
-    request.destination === "script" || request.destination === "style",
+  ({request}) => request.destination === "script" || request.destination === "style",
   new StaleWhileRevalidate({
     cacheName: "code",
   }),

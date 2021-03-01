@@ -154,9 +154,7 @@ export function AddPlant(): JSX.Element {
 
   return (
     <>
-      {status === HTTPStatus.ERROR && (
-        <Error message={errors.http} title={"Error"} />
-      )}
+      {status === HTTPStatus.ERROR && <Error message={errors.http} title={"Error"} />}
       <Typography variant="h1">
         {isEditMode ? plantCopy.EDIT_PLANT : plantCopy.ADD_PLANT}
       </Typography>

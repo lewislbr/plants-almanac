@@ -1,11 +1,5 @@
 import React, {useState} from "react"
-import {
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-} from "@material-ui/core"
+import {Dialog, DialogContent, DialogContentText, DialogTitle, IconButton} from "@material-ui/core"
 import CancelIcon from "@material-ui/icons/Cancel"
 import {makeStyles} from "@material-ui/core/styles"
 import {GENERIC_MESSAGE} from "../constants/error"
@@ -52,9 +46,7 @@ export function Error({
         </IconButton>
       </div>
       <DialogContent>
-        <DialogContentText style={{color: "#000000"}}>
-          {message}
-        </DialogContentText>
+        <DialogContentText style={{color: "#000000"}}>{message}</DialogContentText>
       </DialogContent>
     </Dialog>
   )

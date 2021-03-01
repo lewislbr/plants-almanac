@@ -166,9 +166,7 @@ export function PlantDetails(): JSX.Element {
               title={plantCopy.DELETE_PLANT}
             />
           )}
-          {status === HTTPStatus.ERROR && (
-            <Error message={errors.http} title={"Error"} />
-          )}
+          {status === HTTPStatus.ERROR && <Error message={errors.http} title={"Error"} />}
         </>
       )}
     </>

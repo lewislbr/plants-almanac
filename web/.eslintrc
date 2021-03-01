@@ -20,13 +20,7 @@
     },
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint",
-    "react",
-    "react-hooks",
-    "jest",
-    "testing-library"
-  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "jest", "testing-library"],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/no-extra-semi": ["off"],

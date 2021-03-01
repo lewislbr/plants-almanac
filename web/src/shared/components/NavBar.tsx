@@ -15,18 +15,8 @@ export function NavBar(): JSX.Element {
         zIndex: 10,
       }}
     >
-      <BottomNavigationAction
-        component={Link}
-        icon={"🌱"}
-        label="Plants"
-        to="/"
-      />
-      <BottomNavigationAction
-        component={Link}
-        icon={"➕"}
-        label="Add plant"
-        to="/add-plant"
-      />
+      <BottomNavigationAction component={Link} icon={"🌱"} label="Plants" to="/" />
+      <BottomNavigationAction component={Link} icon={"➕"} label="Add plant" to="/add-plant" />
     </BottomNavigation>
   )
 }

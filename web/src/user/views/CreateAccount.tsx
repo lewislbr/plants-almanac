@@ -1,12 +1,6 @@
 import React, {ChangeEvent, useContext, useEffect, useState} from "react"
 import {useHistory} from "react-router-dom"
-import {
-  Button,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@material-ui/core"
+import {Button, IconButton, InputAdornment, TextField, Typography} from "@material-ui/core"
 import {Visibility, VisibilityOff} from "@material-ui/icons"
 import {Error, Loading} from "../../shared/components"
 import * as userService from "../services/user"
@@ -172,9 +166,7 @@ export function CreateAccount(): JSX.Element {
           </Button>
         </section>
       )}
-      {status === HTTPStatus.ERROR && (
-        <Error message={errors.http} title={"Error"} />
-      )}
+      {status === HTTPStatus.ERROR && <Error message={errors.http} title={"Error"} />}
     </>
   )
 }

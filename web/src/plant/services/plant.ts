@@ -1,10 +1,4 @@
-import {
-  ApolloClient,
-  ApolloQueryResult,
-  createHttpLink,
-  gql,
-  InMemoryCache,
-} from "@apollo/client"
+import {ApolloClient, ApolloQueryResult, createHttpLink, gql, InMemoryCache} from "@apollo/client"
 import {persistCache, LocalStorageWrapper} from "apollo3-cache-persist"
 import {AddVariables} from "../interfaces/Add"
 import {DeleteVariables} from "../interfaces/Delete"

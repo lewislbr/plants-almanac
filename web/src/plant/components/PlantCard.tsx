@@ -1,11 +1,7 @@
 import React from "react"
 import {Paper, Typography} from "@material-ui/core"
 
-export function PlantCard({
-  name,
-}: {
-  name: string | null | undefined
-}): JSX.Element {
+export function PlantCard({name}: {name: string | null | undefined}): JSX.Element {
   return (
     <Paper
       elevation={3}

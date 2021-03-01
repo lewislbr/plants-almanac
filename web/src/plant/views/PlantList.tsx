@@ -1,12 +1,6 @@
 import React, {ChangeEvent, useEffect, useState} from "react"
 import {Link as RouterLink} from "react-router-dom"
-import {
-  FormControl,
-  Link,
-  MenuItem,
-  Select,
-  Typography,
-} from "@material-ui/core"
+import {FormControl, Link, MenuItem, Select, Typography} from "@material-ui/core"
 import {PlantCard} from "../components"
 import {Error, Loading, NavBar} from "../../shared/components"
 import * as plantService from "../services/plant"
@@ -23,8 +17,7 @@ export function PlantList(): JSX.Element {
   const [data, setData] = useState({} as Plants)
   const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [sortMethod, setSortMethod] = useState(
-    localStorage.getItem(sortConstant.SORT_METHOD) ??
-      sortConstant.Options.Created.KEY,
+    localStorage.getItem(sortConstant.SORT_METHOD) ?? sortConstant.Options.Created.KEY,
   )
 
   useEffect(() => {
@@ -36,17 +29,13 @@ export function PlantList(): JSX.Element {
         switch (sortMethod) {
           case sortConstant.Options.Created.KEY:
             setData({
-              plants: result.data.plants
-                ?.slice()
-                .sort(sortService.desc("created_at")),
+              plants: result.data.plants?.slice().sort(sortService.desc("created_at")),
             })
 
             break
           case sortConstant.Options.Edited.KEY:
             setData({
-              plants: result.data.plants
-                ?.slice()
-                .sort(sortService.desc("edited_at")),
+              plants: result.data.plants?.slice().sort(sortService.desc("edited_at")),
             })
 
             break
@@ -77,10 +66,7 @@ export function PlantList(): JSX.Element {
         })
         setSortMethod(sortConstant.Options.Created.KEY)
 
-        localStorage.setItem(
-          sortConstant.SORT_METHOD,
-          sortConstant.Options.Created.KEY,
-        )
+        localStorage.setItem(sortConstant.SORT_METHOD, sortConstant.Options.Created.KEY)
 
         break
       case sortConstant.Options.Edited.KEY:
@@ -89,10 +75,7 @@ export function PlantList(): JSX.Element {
         })
         setSortMethod(sortConstant.Options.Edited.KEY)
 
-        localStorage.setItem(
-          sortConstant.SORT_METHOD,
-          sortConstant.Options.Edited.KEY,
-        )
+        localStorage.setItem(sortConstant.SORT_METHOD, sortConstant.Options.Edited.KEY)
 
         break
       case sortConstant.Options.Name.KEY:
@@ -101,10 +84,7 @@ export function PlantList(): JSX.Element {
         })
         setSortMethod(sortConstant.Options.Name.KEY)
 
-        localStorage.setItem(
-          sortConstant.SORT_METHOD,
-          sortConstant.Options.Name.KEY,
-        )
+        localStorage.setItem(sortConstant.SORT_METHOD, sortConstant.Options.Name.KEY)
 
         break
     }
@@ -120,10 +100,7 @@ export function PlantList(): JSX.Element {
         }}
       >
         <Typography variant="h1">{plantCopy.PLANTS}</Typography>
-        <FormControl
-          style={{fontSize: "15px", padding: "0"}}
-          variant="outlined"
-        >
+        <FormControl style={{fontSize: "15px", padding: "0"}} variant="outlined">
           <Select onChange={(event): void => sortBy(event)} value={sortMethod}>
             <MenuItem value={sortConstant.Options.Created.KEY}>
               {sortConstant.Options.Created.TEXT}
@@ -155,9 +132,7 @@ export function PlantList(): JSX.Element {
           </div>
         )}
       </section>
-      {status === HTTPStatus.ERROR && (
-        <Error message={errors.http} title={"Error"} />
-      )}
+      {status === HTTPStatus.ERROR && <Error message={errors.http} title={"Error"} />}
       <NavBar />
     </>
   )
