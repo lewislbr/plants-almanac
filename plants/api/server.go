@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -103,7 +103,7 @@ func authorizationMiddleware(h http.Handler) http.HandlerFunc {
 
 		defer res.Body.Close()
 
-		body, err := ioutil.ReadAll(res.Body)
+		body, err := io.ReadAll(res.Body)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 
