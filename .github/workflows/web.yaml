@@ -57,7 +57,6 @@ jobs:
         run: |
           gcloud run deploy "$WEB_NAME" \
           --allow-unauthenticated \
-          --args="-p=3000" \
           --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$WEB_NAME":"$GIT_SHA" \
           --platform=managed \
           --port="${{ secrets.WEB_PORT }}" \
