@@ -47,6 +47,7 @@ jobs:
           gcloud run deploy "$USERS_NAME" \
           --allow-unauthenticated \
           --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$USERS_NAME":"$GIT_SHA" \
+          --max-instances=4 \
           --platform=managed \
           --port="${{ secrets.USERS_PORT }}" \
           --quiet \
