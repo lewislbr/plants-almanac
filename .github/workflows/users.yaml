@@ -2,7 +2,7 @@ name: Deploy users app
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - "users/**"
   workflow_dispatch:

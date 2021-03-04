@@ -2,7 +2,7 @@ name: Deploy plants app
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - "plants/**"
   workflow_dispatch:
