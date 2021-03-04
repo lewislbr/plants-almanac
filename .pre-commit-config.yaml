@@ -17,6 +17,13 @@ repos:
         verbose: true
 
       - id: docker-go
+        name: plants-test
+        language: docker_image
+        entry: golang:1 sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
+        files: plants
+        verbose: true
+
+      - id: docker-go
         name: users-format
         language: docker_image
         entry: golang:1-alpine sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go fmt ./..."
