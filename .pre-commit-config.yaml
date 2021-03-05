@@ -6,42 +6,42 @@ repos:
         name: plants-format
         language: docker_image
         entry: golang:1-alpine sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go fmt ./..."
-        files: plants
+        files: ^plants/
         verbose: true
 
       - id: docker-go
         name: plants-vet
         language: docker_image
         entry: golang:1 sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
-        files: plants
+        files: ^plants/
         verbose: true
 
       - id: docker-go
         name: plants-test
         language: docker_image
         entry: golang:1 sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
-        files: plants
+        files: ^plants/
         verbose: true
 
       - id: docker-go
         name: users-format
         language: docker_image
         entry: golang:1-alpine sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go fmt ./..."
-        files: users
+        files: ^users/
         verbose: true
 
       - id: docker-go
         name: users-vet
         language: docker_image
         entry: golang:1 sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
-        files: users
+        files: ^users/
         verbose: true
 
       - id: docker-go
         name: users-test
         language: docker_image
         entry: golang:1 sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
-        files: users
+        files: ^users/
         verbose: true
 
       - id: docker-typescript
@@ -49,7 +49,7 @@ repos:
         language: docker_image
         pass_filenames: false
         entry: plantdex-dev/web sh -c "cd web && npm run ts"
-        files: web
+        files: ^web/
         verbose: true
 
       - id: docker-eslint
@@ -57,12 +57,12 @@ repos:
         language: docker_image
         entry: plantdex-dev/web sh -c "cd web && npm run lint"
         exclude_types: [css, html, json]
-        files: web
+        files: ^web/
         verbose: true
 
       - id: docker-prettier
         name: web-format
         language: docker_image
         entry: plantdex-dev/web sh -c "cd web && npm run format"
-        files: web
+        files: ^web/
         verbose: true
