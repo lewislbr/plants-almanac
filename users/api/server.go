@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -11,8 +12,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Start initializes the REST API.
+// Server defines the server struct.
+var Server = &http.Server{}
+
+// Start initializes the server.
 func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService, gn u.GenerateService) error {
+	port := os.Getenv("USERS_PORT")
+	Server.Addr = ":" + port
+
 	router := httprouter.New()
 	handler := NewHandler(cr, an, az, gn)
 
@@ -21,12 +28,25 @@ func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService, 
 	router.HandlerFunc("GET", "/authorize", handler.AuthorizeUser)
 	router.HandlerFunc("GET", "/refresh", handler.RefreshToken)
 
-	fmt.Println("Users API ready ✅")
+	Server.Handler = corsMiddleware(router)
 
-	port := os.Getenv("USERS_PORT")
-	err := http.ListenAndServe(":"+port, corsMiddleware(router))
-	if err != nil {
+	fmt.Println("Users server ready ✅")
+
+	err := Server.ListenAndServe()
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors.Wrap(err, "")
+	}
+
+	return nil
+}
+
+// Stop stops the server.
+func Stop(ctx context.Context) error {
+	fmt.Println("Stopping server...")
+
+	err := Server.Shutdown(ctx)
+	if err != nil {
+		return err
 	}
 
 	return nil

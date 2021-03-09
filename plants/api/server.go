@@ -15,10 +15,17 @@ import (
 	"github.com/pkg/errors"
 )
 
-var uid string
+var (
+	uid string
+	// Server defines the server struct.
+	Server = &http.Server{}
+)
 
-// Start initalizes the GraphQL API.
+// Start initalizes the server.
 func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteService) error {
+	port := os.Getenv("PLANTS_PORT")
+	Server.Addr = ":" + port
+
 	resolver := NewResolver(as, ls, es, ds)
 	schema, err := NewSchema(resolver)
 	if err != nil {
@@ -39,12 +46,25 @@ func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteServi
 
 	router.Handler("POST", "/", handler)
 
-	fmt.Println("Plants API ready ✅")
+	Server.Handler = corsMiddleware(authorizationMiddleware(router))
 
-	port := os.Getenv("PLANTS_PORT")
-	err = http.ListenAndServe(":"+port, corsMiddleware(authorizationMiddleware(router)))
-	if err != nil {
+	fmt.Println("Plants server ready ✅")
+
+	err = Server.ListenAndServe()
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors.Wrap(err, "")
+	}
+
+	return nil
+}
+
+// Stop stops the server.
+func Stop(ctx context.Context) error {
+	fmt.Println("Stopping server...")
+
+	err := Server.Shutdown(ctx)
+	if err != nil {
+		return err
 	}
 
 	return nil

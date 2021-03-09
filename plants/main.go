@@ -1,7 +1,13 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"plants/add"
 	"plants/api"
@@ -11,15 +17,39 @@ import (
 	"plants/storage"
 )
 
+var db = storage.ConnectDatabase()
+
 func main() {
-	db := storage.ConnectDatabase()
 	r := storage.NewRepository(db)
 	ad := add.NewAddService(r)
 	ls := list.NewListService(r)
 	ed := edit.NewEditService(ls, r)
 	dl := delete.NewDeleteService(r)
 
-	if err := api.Start(ad, ls, ed, dl); err != nil {
+	go gracefulShutdown()
+
+	err := api.Start(ad, ls, ed, dl)
+	if err != nil {
 		log.Fatalln(err)
+	}
+}
+
+func gracefulShutdown() {
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	<-quit
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := storage.DisconnectDatabase(ctx, db)
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	err = api.Stop(ctx)
+	if err != nil {
+		fmt.Print(err)
 	}
 }

@@ -30,3 +30,15 @@ func ConnectDatabase() *mongo.Collection {
 
 	return client.Database(databaseName).Collection(collectionName)
 }
+
+// DisconnectDatabase closes the connection with the database.
+func DisconnectDatabase(ctx context.Context, db *mongo.Collection) error {
+	fmt.Println("Disconnecting database...")
+
+	err := db.Database().Client().Disconnect(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

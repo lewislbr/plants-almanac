@@ -11,6 +11,8 @@ services:
       - plants/.env
     ports:
       - "127.0.0.1:4040:4040"
+    stdin_open: true
+    tty: true
 
   users:
     build:
@@ -22,6 +24,8 @@ services:
       - users/.env
     ports:
       - "127.0.0.1:4041:4041"
+    stdin_open: true
+    tty: true
 
   web:
     build:
