@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	u "users/user"
 
@@ -29,6 +30,10 @@ func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService, 
 	router.HandlerFunc("GET", "/refresh", handler.RefreshToken)
 
 	Server.Handler = corsMiddleware(router)
+
+	Server.IdleTimeout = 120 * time.Second
+	Server.ReadTimeout = 5 * time.Second
+	Server.WriteTimeout = 10 * time.Second
 
 	fmt.Println("Users server ready ✅")
 

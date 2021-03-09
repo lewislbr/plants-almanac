@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	p "plants/plant"
 
@@ -47,6 +48,10 @@ func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteServi
 	router.Handler("POST", "/", handler)
 
 	Server.Handler = corsMiddleware(authorizationMiddleware(router))
+
+	Server.IdleTimeout = 120 * time.Second
+	Server.ReadTimeout = 5 * time.Second
+	Server.WriteTimeout = 10 * time.Second
 
 	fmt.Println("Plants server ready ✅")
 
