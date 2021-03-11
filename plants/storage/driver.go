@@ -16,12 +16,12 @@ func ConnectDatabase() *mongo.Database {
 	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongodbURI))
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	fmt.Println("Plants database ready ✅")

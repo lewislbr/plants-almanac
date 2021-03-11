@@ -30,7 +30,7 @@ func main() {
 
 	err := api.Start(cs, ns, zs, gs)
 	if err != nil {
-		log.Fatalln(err)
+		log.Panic(err)
 	}
 }
 
