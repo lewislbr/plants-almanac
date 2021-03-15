@@ -6,7 +6,7 @@ import (
 
 // Plant defines the properties of a plant.
 // Ideally the JSON and BSON tags should be defined in an specific entity
-// for the API and storage components, respectively, but this being a small
+// for the server and storage components, respectively, but this being a small
 // service they are defined here for simplicity.
 type Plant struct {
 	ID            string    `json:"id" bson:"_id"`

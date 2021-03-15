@@ -9,11 +9,11 @@ import (
 	"syscall"
 	"time"
 
-	"users/api"
 	"users/authenticate"
 	"users/authorize"
 	"users/create"
 	"users/generate"
+	"users/server"
 	"users/storage"
 )
 
@@ -28,7 +28,7 @@ func main() {
 
 	go gracefulShutdown()
 
-	err := api.Start(cs, ns, zs, gs)
+	err := server.Start(cs, ns, zs, gs)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -48,7 +48,7 @@ func gracefulShutdown() {
 		fmt.Print(err)
 	}
 
-	err = api.Stop(ctx)
+	err = server.Stop(ctx)
 	if err != nil {
 		fmt.Print(err)
 	}

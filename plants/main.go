@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"plants/add"
-	"plants/api"
 	"plants/delete"
 	"plants/edit"
 	"plants/list"
+	"plants/server"
 	"plants/storage"
 )
 
@@ -28,7 +28,7 @@ func main() {
 
 	go gracefulShutdown()
 
-	err := api.Start(ad, ls, ed, dl)
+	err := server.Start(ad, ls, ed, dl)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -48,7 +48,7 @@ func gracefulShutdown() {
 		fmt.Print(err)
 	}
 
-	err = api.Stop(ctx)
+	err = server.Stop(ctx)
 	if err != nil {
 		fmt.Print(err)
 	}
