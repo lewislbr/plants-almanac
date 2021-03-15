@@ -6,7 +6,6 @@ import (
 	u "users/user"
 
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -35,14 +34,14 @@ func (cs *createService) Create(new u.User) error {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(new.Password), 10)
 	if err != nil {
-		return errors.Wrap(err, "")
+		return err
 	}
 
 	new.Hash = string(hash)
 
 	_, err = cs.r.InsertOne(new)
 	if err != nil {
-		return errors.Wrap(err, "")
+		return err
 	}
 
 	return nil

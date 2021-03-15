@@ -2,8 +2,6 @@ package list
 
 import (
 	p "plants/plant"
-
-	"github.com/pkg/errors"
 )
 
 type listService struct {
@@ -19,7 +17,7 @@ func NewListService(r p.Repository) *listService {
 func (s *listService) ListAll(uid string) ([]p.Plant, error) {
 	result, err := s.r.FindAll(uid)
 	if err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, err
 	}
 
 	return result, nil

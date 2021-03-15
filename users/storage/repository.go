@@ -5,7 +5,6 @@ import (
 
 	u "users/user"
 
-	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -23,7 +22,7 @@ func NewRepository(db *mongo.Collection) *repository {
 func (r *repository) InsertOne(new u.User) (interface{}, error) {
 	result, err := r.db.InsertOne(context.Background(), new)
 	if err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, err
 	}
 
 	return result.InsertedID, nil
@@ -37,7 +36,7 @@ func (r *repository) FindOne(email string) (u.User, error) {
 
 	err := r.db.FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
-		return u.User{}, errors.Wrap(err, "")
+		return u.User{}, err
 	}
 
 	return result, nil

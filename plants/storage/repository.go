@@ -5,7 +5,6 @@ import (
 
 	p "plants/plant"
 
-	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -23,7 +22,7 @@ func NewRepository(db *mongo.Database) *repository {
 func (r *repository) InsertOne(uid string, new p.Plant) (interface{}, error) {
 	result, err := r.db.Collection(uid).InsertOne(context.Background(), new)
 	if err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, err
 	}
 
 	return result.InsertedID, nil
@@ -33,14 +32,14 @@ func (r *repository) InsertOne(uid string, new p.Plant) (interface{}, error) {
 func (r *repository) FindAll(uid string) ([]p.Plant, error) {
 	cursor, err := r.db.Collection(uid).Find(context.Background(), bson.M{})
 	if err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, err
 	}
 
 	var results []p.Plant
 
 	err = cursor.All(context.Background(), &results)
 	if err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, err
 	}
 
 	return results, nil
@@ -54,7 +53,7 @@ func (r *repository) FindOne(uid string, id string) (p.Plant, error) {
 
 	err := r.db.Collection(uid).FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
-		return p.Plant{}, errors.Wrap(err, "")
+		return p.Plant{}, err
 	}
 
 	return result, nil
@@ -78,7 +77,7 @@ func (r *repository) UpdateOne(uid string, id string, update p.Plant) (int64, er
 	}
 	result, err := r.db.Collection(uid).UpdateOne(context.Background(), filter, updated)
 	if err != nil {
-		return 0, errors.Wrap(err, "")
+		return 0, err
 	}
 
 	return result.ModifiedCount, nil
@@ -89,7 +88,7 @@ func (r *repository) DeleteOne(uid string, id string) (int64, error) {
 	filter := bson.M{"_id": id}
 	result, err := r.db.Collection(uid).DeleteOne(context.Background(), filter)
 	if err != nil {
-		return 0, errors.Wrap(err, "")
+		return 0, err
 	}
 
 	return result.DeletedCount, nil

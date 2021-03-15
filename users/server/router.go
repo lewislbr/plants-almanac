@@ -39,7 +39,7 @@ func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService, 
 
 	err := Server.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
-		return errors.Wrap(err, "")
+		return err
 	}
 
 	return nil

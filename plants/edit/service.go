@@ -4,8 +4,6 @@ import (
 	"time"
 
 	p "plants/plant"
-
-	"github.com/pkg/errors"
 )
 
 type editService struct {
@@ -34,7 +32,7 @@ func (es *editService) Edit(uid string, id string, update p.Plant) (int64, error
 
 	result, err := es.r.UpdateOne(uid, id, update)
 	if err != nil {
-		return 0, errors.Wrap(err, "")
+		return 0, err
 	}
 
 	return result, nil

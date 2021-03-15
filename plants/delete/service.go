@@ -2,8 +2,6 @@ package delete
 
 import (
 	p "plants/plant"
-
-	"github.com/pkg/errors"
 )
 
 type deleteService struct {
@@ -23,7 +21,7 @@ func (ds *deleteService) Delete(uid string, id string) (int64, error) {
 
 	result, err := ds.r.DeleteOne(uid, id)
 	if err != nil {
-		return 0, errors.Wrap(err, "")
+		return 0, err
 	}
 
 	return result, nil

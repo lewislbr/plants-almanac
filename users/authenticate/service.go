@@ -3,7 +3,6 @@ package authenticate
 import (
 	u "users/user"
 
-	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -36,7 +35,7 @@ func (ns *authenticateService) Authenticate(cred u.Credentials) (string, error) 
 	jwt, err := ns.gs.GenerateJWT(existUser.ID)
 	if err != nil {
 
-		return "", errors.Wrap(err, "")
+		return "", err
 	}
 
 	return jwt, nil

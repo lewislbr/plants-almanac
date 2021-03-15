@@ -6,7 +6,6 @@ import (
 	p "plants/plant"
 
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 )
 
 type addService struct {
@@ -30,7 +29,7 @@ func (as *addService) Add(uid string, new p.Plant) (interface{}, error) {
 
 	result, err := as.r.InsertOne(uid, new)
 	if err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, err
 	}
 
 	return result, nil

@@ -30,7 +30,7 @@ func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteServi
 	resolver := NewResolver(as, ls, es, ds)
 	schema, err := NewSchema(resolver)
 	if err != nil {
-		return errors.Wrap(err, "")
+		return err
 	}
 
 	router := httprouter.New()
@@ -57,7 +57,7 @@ func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteServi
 
 	err = Server.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
-		return errors.Wrap(err, "")
+		return err
 	}
 
 	return nil

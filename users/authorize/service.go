@@ -6,7 +6,6 @@ import (
 	u "users/user"
 
 	jwtgo "github.com/dgrijalva/jwt-go"
-	"github.com/pkg/errors"
 )
 
 type authorizeService struct{}
@@ -29,7 +28,7 @@ func (zs *authorizeService) Authorize(jwt string) (string, error) {
 		return "", u.ErrInvalidToken
 	}
 	if err != nil {
-		return "", errors.Wrap(err, "")
+		return "", err
 	}
 
 	userID := token.Claims.(jwtgo.MapClaims)["uid"]

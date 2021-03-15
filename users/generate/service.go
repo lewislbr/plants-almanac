@@ -7,7 +7,6 @@ import (
 	u "users/user"
 
 	jwtgo "github.com/dgrijalva/jwt-go"
-	"github.com/pkg/errors"
 )
 
 type generateService struct{}
@@ -30,7 +29,7 @@ func (gs *generateService) GenerateJWT(uid string) (string, error) {
 	secret := os.Getenv("USERS_JWT_SECRET")
 	jwtString, err := jwt.SignedString([]byte(secret))
 	if err != nil {
-		return "", errors.Wrap(err, "")
+		return "", err
 	}
 
 	return jwtString, nil
