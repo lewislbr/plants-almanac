@@ -3,7 +3,6 @@ package storage
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,24 +10,24 @@ import (
 )
 
 // ConnectDatabase establishes a connection with the database.
-func ConnectDatabase() *mongo.Collection {
+func ConnectDatabase() (*mongo.Collection, error) {
 	mongodbURI := os.Getenv("USERS_MONGODB_URI")
 	databaseName := os.Getenv("USERS_DATABASE_NAME")
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongodbURI))
 	if err != nil {
-		log.Panic(err)
+		return nil, err
 	}
 
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
-		log.Panic(err)
+		return nil, err
 	}
 
 	fmt.Println("Users database ready ✅")
 
 	collectionName := os.Getenv("USERS_COLLECTION_NAME")
 
-	return client.Database(databaseName).Collection(collectionName)
+	return client.Database(databaseName).Collection(collectionName), nil
 }
 
 // DisconnectDatabase closes the connection with the database.
