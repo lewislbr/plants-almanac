@@ -10,12 +10,10 @@ import (
 
 type authorizeService struct{}
 
-// NewAuthorizeService initializes an authorization service with the necessary dependencies.
 func NewAuthorizeService() *authorizeService {
 	return &authorizeService{}
 }
 
-// Authorize checks if a user is authorized and returns its ID.
 func (zs *authorizeService) Authorize(jwt string) (string, error) {
 	if jwt == "" {
 		return "", u.ErrMissingData

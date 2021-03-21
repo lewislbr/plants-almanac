@@ -21,7 +21,6 @@ type handler struct {
 	gs u.GenerateService
 }
 
-// NewHandler initializes a handler with the necessary dependencies.
 func NewHandler(cs u.CreateService, ns u.AuthenticateService, zs u.AuthorizeService, gs u.GenerateService) *handler {
 	return &handler{cs, ns, zs, gs}
 }

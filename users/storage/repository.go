@@ -13,12 +13,10 @@ type repository struct {
 	db *mongo.Collection
 }
 
-// NewRepository initializes a storage with the necessary dependencies.
 func NewRepository(db *mongo.Collection) *repository {
 	return &repository{db}
 }
 
-// InsertOne adds a new user.
 func (r *repository) InsertOne(new u.User) (interface{}, error) {
 	result, err := r.db.InsertOne(context.Background(), new)
 	if err != nil {
@@ -28,7 +26,6 @@ func (r *repository) InsertOne(new u.User) (interface{}, error) {
 	return result.InsertedID, nil
 }
 
-// FindOne retuns the queried user.
 func (r *repository) FindOne(email string) (u.User, error) {
 	filter := bson.M{"email": email}
 

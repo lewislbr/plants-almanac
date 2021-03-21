@@ -9,7 +9,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// ConnectDatabase establishes a connection with the database.
 func ConnectDatabase() (*mongo.Collection, error) {
 	mongodbURI := os.Getenv("USERS_MONGODB_URI")
 	databaseName := os.Getenv("USERS_DATABASE_NAME")
@@ -30,7 +29,6 @@ func ConnectDatabase() (*mongo.Collection, error) {
 	return client.Database(databaseName).Collection(collectionName), nil
 }
 
-// DisconnectDatabase closes the connection with the database.
 func DisconnectDatabase(ctx context.Context, db *mongo.Collection) error {
 	fmt.Println("Disconnecting database...")
 

@@ -11,12 +11,10 @@ type authenticateService struct {
 	r  u.Repository
 }
 
-// NewAuthenticateService initializes an authentication service with the necessary dependencies.
 func NewAuthenticateService(gs u.GenerateService, r u.Repository) *authenticateService {
 	return &authenticateService{gs, r}
 }
 
-// Authenticate authenticates a user and issues a JWT.
 func (ns *authenticateService) Authenticate(cred u.Credentials) (string, error) {
 	if cred.Email == "" || cred.Password == "" {
 		return "", u.ErrMissingData

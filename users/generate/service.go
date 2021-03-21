@@ -11,7 +11,6 @@ import (
 
 type generateService struct{}
 
-// NewGenerateService initializes a generate service with the necessary dependencies.
 func NewGenerateService() *generateService {
 	return &generateService{}
 }

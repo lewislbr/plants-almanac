@@ -13,12 +13,10 @@ type createService struct {
 	r u.Repository
 }
 
-// NewCreateService initializes a create service with the necessary dependencies.
 func NewCreateService(r u.Repository) *createService {
 	return &createService{r}
 }
 
-// Create creates a new user.
 func (cs *createService) Create(new u.User) error {
 	if new.Name == "" || new.Email == "" || new.Password == "" {
 		return u.ErrMissingData

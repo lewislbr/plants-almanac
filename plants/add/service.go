@@ -12,12 +12,10 @@ type addService struct {
 	r p.Repository
 }
 
-// NewAddService initializes a create service with the necessary dependencies.
 func NewAddService(r p.Repository) *addService {
 	return &addService{r}
 }
 
-// Add adds a plant.
 func (as *addService) Add(uid string, new p.Plant) (interface{}, error) {
 	if new.Name == "" {
 		return nil, p.ErrMissingData

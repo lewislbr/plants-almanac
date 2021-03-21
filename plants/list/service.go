@@ -8,12 +8,10 @@ type listService struct {
 	r p.Repository
 }
 
-// NewListService initializes a create service with the necessary dependencies.
 func NewListService(r p.Repository) *listService {
 	return &listService{r}
 }
 
-// ListAll lists all plants.
 func (s *listService) ListAll(uid string) ([]p.Plant, error) {
 	result, err := s.r.FindAll(uid)
 	if err != nil {
@@ -23,7 +21,6 @@ func (s *listService) ListAll(uid string) ([]p.Plant, error) {
 	return result, nil
 }
 
-// ListOne lists a plant.
 func (s *listService) ListOne(uid string, id string) (p.Plant, error) {
 	if id == "" {
 		return p.Plant{}, p.ErrMissingData

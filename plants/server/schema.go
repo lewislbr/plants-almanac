@@ -42,7 +42,6 @@ var plantType = graphql.NewObject(
 	},
 )
 
-// NewSchema initializes the schema with the necessary dependencies.
 func NewSchema(r *resolver) (*graphql.Schema, error) {
 	queries := graphql.NewObject(graphql.ObjectConfig{
 		Name: "Query",

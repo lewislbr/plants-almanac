@@ -13,10 +13,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Server defines the server struct.
 var Server = &http.Server{}
 
-// Start initializes the server.
 func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService, gn u.GenerateService) error {
 	port := os.Getenv("USERS_PORT")
 	Server.Addr = ":" + port
@@ -24,10 +22,10 @@ func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService, 
 	router := httprouter.New()
 	handler := NewHandler(cr, an, az, gn)
 
-	router.HandlerFunc("POST", "/signup", handler.CreateUser)
-	router.HandlerFunc("POST", "/login", handler.LogInUser)
-	router.HandlerFunc("GET", "/authorize", handler.AuthorizeUser)
-	router.HandlerFunc("GET", "/refresh", handler.RefreshToken)
+	router.HandlerFunc(http.MethodPost, "/signup", handler.CreateUser)
+	router.HandlerFunc(http.MethodPost, "/login", handler.LogInUser)
+	router.HandlerFunc(http.MethodGet, "/authorize", handler.AuthorizeUser)
+	router.HandlerFunc(http.MethodGet, "/refresh", handler.RefreshToken)
 
 	Server.Handler = corsMiddleware(router)
 
@@ -45,7 +43,6 @@ func Start(cr u.CreateService, an u.AuthenticateService, az u.AuthorizeService, 
 	return nil
 }
 
-// Stop stops the server.
 func Stop(ctx context.Context) error {
 	fmt.Println("Stopping server...")
 

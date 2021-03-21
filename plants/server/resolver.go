@@ -16,7 +16,6 @@ type resolver struct {
 	ds p.DeleteService
 }
 
-// NewResolver initializes a handler with the necessary dependencies.
 func NewResolver(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteService) *resolver {
 	return &resolver{as, ls, es, ds}
 }

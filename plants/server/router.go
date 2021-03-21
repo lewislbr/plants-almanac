@@ -15,12 +15,10 @@ import (
 )
 
 var (
-	uid string
-	// Server defines the server struct.
+	uid    string
 	Server = &http.Server{}
 )
 
-// Start initalizes the server.
 func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteService) error {
 	port := os.Getenv("PLANTS_PORT")
 	Server.Addr = ":" + port
@@ -43,7 +41,7 @@ func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteServi
 		},
 	})
 
-	router.Handler("POST", "/", handler)
+	router.Handler(http.MethodPost, "/", handler)
 
 	Server.Handler = corsMiddleware(authorizationMiddleware(router))
 
@@ -61,7 +59,6 @@ func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteServi
 	return nil
 }
 
-// Stop stops the server.
 func Stop(ctx context.Context) error {
 	fmt.Println("Stopping server...")
 

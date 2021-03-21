@@ -13,12 +13,10 @@ type repository struct {
 	db *mongo.Database
 }
 
-// NewRepository initializes a storage with the necessary dependencies.
 func NewRepository(db *mongo.Database) *repository {
 	return &repository{db}
 }
 
-// InsertOne adds a plant.
 func (r *repository) InsertOne(uid string, new p.Plant) (interface{}, error) {
 	result, err := r.db.Collection(uid).InsertOne(context.Background(), new)
 	if err != nil {
@@ -28,7 +26,6 @@ func (r *repository) InsertOne(uid string, new p.Plant) (interface{}, error) {
 	return result.InsertedID, nil
 }
 
-// FindAll returns all the plants.
 func (r *repository) FindAll(uid string) ([]p.Plant, error) {
 	cursor, err := r.db.Collection(uid).Find(context.Background(), bson.M{})
 	if err != nil {
@@ -45,7 +42,6 @@ func (r *repository) FindAll(uid string) ([]p.Plant, error) {
 	return results, nil
 }
 
-// FindOne retuns the queried plant.
 func (r *repository) FindOne(uid string, id string) (p.Plant, error) {
 	filter := bson.M{"_id": id}
 
@@ -59,7 +55,6 @@ func (r *repository) FindOne(uid string, id string) (p.Plant, error) {
 	return result, nil
 }
 
-// UpdateOne modifies the queried plant.
 func (r *repository) UpdateOne(uid string, id string, update p.Plant) (int64, error) {
 	filter := bson.M{"_id": id}
 	updated := bson.M{
@@ -83,7 +78,6 @@ func (r *repository) UpdateOne(uid string, id string, update p.Plant) (int64, er
 	return result.ModifiedCount, nil
 }
 
-// DeleteOne deletes a plant.
 func (r *repository) DeleteOne(uid string, id string) (int64, error) {
 	filter := bson.M{"_id": id}
 	result, err := r.db.Collection(uid).DeleteOne(context.Background(), filter)

@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-// Plant defines the properties of a plant.
 // Ideally the JSON and BSON tags should be defined in an specific entity
 // for the server and storage components, respectively, but this being a small
 // service they are defined here for simplicity.
@@ -21,28 +20,23 @@ type Plant struct {
 	Tips          string    `json:"tips" bson:"tips"`
 }
 
-// AddService defines a service to add a plant.
 type AddService interface {
 	Add(string, Plant) (interface{}, error)
 }
 
-// ListService defines a service to list plants.
 type ListService interface {
 	ListAll(string) ([]Plant, error)
 	ListOne(string, string) (Plant, error)
 }
 
-// EditService defines a service to edit a plant.
 type EditService interface {
 	Edit(string, string, Plant) (int64, error)
 }
 
-// DeleteService defines a service to delete a plant.
 type DeleteService interface {
 	Delete(string, string) (int64, error)
 }
 
-// Repository defines storage operations.
 type Repository interface {
 	InsertOne(string, Plant) (interface{}, error)
 	FindAll(string) ([]Plant, error)

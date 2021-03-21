@@ -11,12 +11,10 @@ type editService struct {
 	r  p.Repository
 }
 
-// NewEditService initializes a create service with the necessary dependencies.
 func NewEditService(ls p.ListService, r p.Repository) *editService {
 	return &editService{ls, r}
 }
 
-// Edit edits a plant.
 func (es *editService) Edit(uid string, id string, update p.Plant) (int64, error) {
 	if update.Name == "" {
 		return 0, p.ErrMissingData
