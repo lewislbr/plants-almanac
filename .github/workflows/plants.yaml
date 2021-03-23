@@ -37,7 +37,11 @@ jobs:
         run: gcloud auth configure-docker
 
       - name: Build image
-        run: docker build -t "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA" -f Dockerfile.prod ./
+        run: |
+          docker build \
+          -t "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA" \
+          --target=prod \
+          ./
 
       - name: Push image
         run: docker push "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA"

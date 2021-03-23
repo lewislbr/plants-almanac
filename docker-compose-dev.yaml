@@ -4,7 +4,7 @@ services:
   plants:
     build:
       context: plants
-      dockerfile: Dockerfile.dev
+      target: dev
     image: plantdex-dev/plants
     container_name: plants
     env_file:
@@ -17,7 +17,7 @@ services:
   users:
     build:
       context: users
-      dockerfile: Dockerfile.dev
+      target: dev
     image: plantdex-dev/users
     container_name: users
     env_file:
@@ -30,7 +30,7 @@ services:
   web:
     build:
       context: web
-      dockerfile: Dockerfile.dev
+      target: dev
     image: plantdex-dev/web
     container_name: web
     env_file:

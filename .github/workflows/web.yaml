@@ -47,7 +47,7 @@ jobs:
         run: |
           docker build \
           -t "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$WEB_NAME":"$GIT_SHA" \
-          -f Dockerfile.prod \
+          --target=prod \
           ./
 
       - name: Push image
