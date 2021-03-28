@@ -8,9 +8,12 @@ FROM base AS dev
 ENV MODE=development
 CMD ["go", "run", "main.go"]
 
-FROM base AS prod-builder
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
+FROM base as ci
+RUN apk add build-base
+
+FROM base AS prod-build
+ENV CGO_ENABLED=0 \
+    GO111MODULE=on \
     GOARCH=amd64 \
     GOOS=linux \
     MODE=production
@@ -20,6 +23,6 @@ FROM alpine:latest AS certs
 RUN apk --no-cache add ca-certificates
 
 FROM scratch AS prod
-COPY --from=prod-builder /go/bin/users ./
+COPY --from=prod-build /go/bin/users ./
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 ENTRYPOINT [ "/users" ]

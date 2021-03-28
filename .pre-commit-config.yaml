@@ -2,60 +2,84 @@ fail_fast: true
 repos:
   - repo: local
     hooks:
+      # Plants
+      - id: docker-go
+        name: plants-build
+        language: system
+        entry: sh -c "docker build -t plantdex/plants:ci --target=ci plants"
+        files: ^plants/
+        verbose: true
+
       - id: docker-go
         name: plants-format
         language: docker_image
-        entry: golang:1-alpine sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go fmt ./..."
+        entry: plantdex/plants:ci sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go fmt ./..."
         files: ^plants/
         verbose: true
 
       - id: docker-go
         name: plants-vet
         language: docker_image
-        entry: golang:1 sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
+        entry: plantdex/plants:ci sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
         files: ^plants/
         verbose: true
 
       - id: docker-go
         name: plants-test
         language: docker_image
-        entry: golang:1 sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
+        entry: plantdex/plants:ci sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
         files: ^plants/
+        verbose: true
+
+      # Users
+      - id: docker-go
+        name: users-build
+        language: system
+        entry: sh -c "docker build -t plantdex/users:ci --target=ci users"
+        files: ^users/
         verbose: true
 
       - id: docker-go
         name: users-format
         language: docker_image
-        entry: golang:1-alpine sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go fmt ./..."
+        entry: plantdex/users:ci sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go fmt ./..."
         files: ^users/
         verbose: true
 
       - id: docker-go
         name: users-vet
         language: docker_image
-        entry: golang:1 sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
+        entry: plantdex/users:ci sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
         files: ^users/
         verbose: true
 
       - id: docker-go
         name: users-test
         language: docker_image
-        entry: golang:1 sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
+        entry: plantdex/users:ci sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
         files: ^users/
+        verbose: true
+
+      # Web
+      - id: docker-node
+        name: web-build
+        language: system
+        entry: sh -c "docker build -t plantdex/web:ci --target=ci web"
+        files: ^web/
         verbose: true
 
       - id: docker-typescript
         name: web-typecheck
         language: docker_image
         pass_filenames: false
-        entry: plantdex-dev/web sh -c "cd web && npm run ts"
+        entry: plantdex/web:ci sh -c "cd web && npm run ts"
         files: ^web/
         verbose: true
 
       - id: docker-eslint
         name: web-lint
         language: docker_image
-        entry: plantdex-dev/web sh -c "cd web && npm run lint"
+        entry: plantdex/web:ci sh -c "cd web && npm run lint"
         exclude_types: [css, html, json]
         files: ^web/
         verbose: true
@@ -63,6 +87,6 @@ repos:
       - id: docker-prettier
         name: web-format
         language: docker_image
-        entry: plantdex-dev/web sh -c "cd web && npm run format"
+        entry: plantdex/web:ci sh -c "cd web && npm run format"
         files: ^web/
         verbose: true

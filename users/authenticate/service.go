@@ -32,7 +32,6 @@ func (ns *authenticateService) Authenticate(cred u.Credentials) (string, error) 
 
 	jwt, err := ns.gs.GenerateJWT(existUser.ID)
 	if err != nil {
-
 		return "", err
 	}
 

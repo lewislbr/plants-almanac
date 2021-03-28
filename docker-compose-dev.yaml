@@ -5,7 +5,7 @@ services:
     build:
       context: plants
       target: dev
-    image: plantdex-dev/plants
+    image: plantdex/plants:dev
     container_name: plants
     env_file:
       - plants/.env
@@ -18,7 +18,7 @@ services:
     build:
       context: users
       target: dev
-    image: plantdex-dev/users
+    image: plantdex/users:dev
     container_name: users
     env_file:
       - users/.env
@@ -31,7 +31,7 @@ services:
     build:
       context: web
       target: dev
-    image: plantdex-dev/web
+    image: plantdex/web:dev
     container_name: web
     env_file:
       - web/.env
