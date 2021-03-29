@@ -12,32 +12,53 @@ import (
 	"users/create"
 	"users/generate"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
+	"github.com/go-chi/httprate"
 	"github.com/pkg/errors"
 )
 
-var Server = &http.Server{}
+var server = &http.Server{}
+
+func setUpRouter(h *handler) *chi.Mux {
+	r := chi.NewRouter()
+
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.Timeout(30 * time.Second))
+	r.Use(httprate.LimitByIP(100, 1*time.Minute))
+	r.Use(cors.Handler(cors.Options{
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Origin"},
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedOrigins:   []string{os.Getenv("WEB_URL")},
+		MaxAge:           86400,
+	}))
+	r.Use(headersMiddleware)
+
+	r.Post("/signup", h.Create)
+	r.Post("/login", h.LogIn)
+	r.Get("/authorize", h.Authorize)
+	r.Get("/refresh", h.Refresh)
+
+	return r
+}
 
 func Start(cs create.CreateService, ns authenticate.AuthenticateService, zs authorize.AuthorizeService, gs generate.GenerateService) error {
-	port := os.Getenv("USERS_PORT")
-	Server.Addr = ":" + port
-
-	router := httprouter.New()
 	handler := NewHandler(cs, ns, zs, gs)
+	router := setUpRouter(handler)
+	port := os.Getenv("USERS_PORT")
 
-	router.HandlerFunc(http.MethodPost, "/signup", handler.Create)
-	router.HandlerFunc(http.MethodPost, "/login", handler.LogIn)
-	router.HandlerFunc(http.MethodGet, "/authorize", handler.Authorize)
-	router.HandlerFunc(http.MethodGet, "/refresh", handler.Refresh)
-
-	Server.Handler = corsMiddleware(router)
-	Server.IdleTimeout = 120 * time.Second
-	Server.ReadTimeout = 5 * time.Second
-	Server.WriteTimeout = 10 * time.Second
+	server.Addr = ":" + port
+	server.Handler = router
+	server.IdleTimeout = 120 * time.Second
+	server.MaxHeaderBytes = 1 << 20 // 1 MB
+	server.ReadTimeout = 5 * time.Second
+	server.WriteTimeout = 10 * time.Second
 
 	fmt.Println("Users server ready ✅")
 
-	err := Server.ListenAndServe()
+	err := server.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
@@ -48,7 +69,7 @@ func Start(cs create.CreateService, ns authenticate.AuthenticateService, zs auth
 func Stop(ctx context.Context) error {
 	fmt.Println("Stopping server...")
 
-	err := Server.Shutdown(ctx)
+	err := server.Shutdown(ctx)
 	if err != nil {
 		return err
 	}

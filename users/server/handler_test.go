@@ -14,7 +14,6 @@ import (
 	"users/generate"
 	"users/user"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -28,9 +27,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodPost, "/signup", handler.Create)
+		router := setUpRouter(handler)
 
 		csMock.On("Create", mock.AnythingOfType("user.User")).Return(nil)
 
@@ -56,9 +53,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodPost, "/signup", handler.Create)
+		router := setUpRouter(handler)
 
 		csMock.On("Create", mock.AnythingOfType("user.User")).Return(user.ErrMissingData)
 
@@ -84,9 +79,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodPost, "/signup", handler.Create)
+		router := setUpRouter(handler)
 
 		csMock.On("Create", mock.AnythingOfType("user.User")).Return(user.ErrUserExists)
 
@@ -112,9 +105,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodPost, "/signup", handler.Create)
+		router := setUpRouter(handler)
 
 		csMock.On("Create", mock.AnythingOfType("user.User")).Return(errors.New("error"))
 
@@ -140,9 +131,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodPost, "/login", handler.LogIn)
+		router := setUpRouter(handler)
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", nil)
 
@@ -168,9 +157,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodPost, "/login", handler.LogIn)
+		router := setUpRouter(handler)
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", user.ErrMissingData)
 
@@ -196,9 +183,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodPost, "/login", handler.LogIn)
+		router := setUpRouter(handler)
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", user.ErrNotFound)
 
@@ -224,9 +209,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodPost, "/login", handler.LogIn)
+		router := setUpRouter(handler)
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", user.ErrInvalidPassword)
 
@@ -252,9 +235,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodPost, "/login", handler.LogIn)
+		router := setUpRouter(handler)
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", errors.New("error"))
 
@@ -280,9 +261,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodGet, "/authorize", handler.Authorize)
+		router := setUpRouter(handler)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 
@@ -304,9 +283,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodGet, "/authorize", handler.Authorize)
+		router := setUpRouter(handler)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 
@@ -326,9 +303,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodGet, "/authorize", handler.Authorize)
+		router := setUpRouter(handler)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrMissingData)
 
@@ -350,9 +325,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodGet, "/authorize", handler.Authorize)
+		router := setUpRouter(handler)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrInvalidToken)
 
@@ -374,9 +347,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodGet, "/authorize", handler.Authorize)
+		router := setUpRouter(handler)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", errors.New("error"))
 
@@ -398,9 +369,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodGet, "/refresh", handler.Refresh)
+		router := setUpRouter(handler)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
@@ -421,9 +390,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodGet, "/refresh", handler.Refresh)
+		router := setUpRouter(handler)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrMissingData)
 		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
@@ -444,9 +411,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodGet, "/refresh", handler.Refresh)
+		router := setUpRouter(handler)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrInvalidToken)
 		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
@@ -467,9 +432,7 @@ func TestHandler(t *testing.T) {
 		zsMock := &authorize.MockAuthorizeService{}
 		gsMock := &generate.MockGenerateService{}
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
-		router := httprouter.New()
-
-		router.HandlerFunc(http.MethodGet, "/refresh", handler.Refresh)
+		router := setUpRouter(handler)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", errors.New("error"))
 		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
