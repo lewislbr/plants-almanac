@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"users/storage"
-	u "users/user"
+	"users/user"
 
 	"github.com/stretchr/testify/require"
 )
@@ -14,23 +14,23 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Users: []u.User{},
+			Users: []user.User{},
 		}
 		createService := NewCreateService(repo)
-		newUser := u.User{
+		newUser := user.User{
 			Email:    "test@test.com",
 			Password: "1234",
 		}
 		err := createService.Create(newUser)
 
-		require.EqualError(t, err, u.ErrMissingData.Error())
+		require.EqualError(t, err, user.ErrMissingData.Error())
 	})
 
 	t.Run("should error when the user already exists", func(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Users: []u.User{
+			Users: []user.User{
 				{
 					Name:     "test",
 					Email:    "test@test.com",
@@ -39,24 +39,24 @@ func TestCreate(t *testing.T) {
 			},
 		}
 		createService := NewCreateService(repo)
-		newUser := u.User{
+		newUser := user.User{
 			Name:     "test",
 			Email:    "test@test.com",
 			Password: "1234",
 		}
 		err := createService.Create(newUser)
 
-		require.EqualError(t, err, u.ErrUserExists.Error())
+		require.EqualError(t, err, user.ErrUserExists.Error())
 	})
 
 	t.Run("should create a user with no error", func(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Users: []u.User{},
+			Users: []user.User{},
 		}
 		createService := NewCreateService(repo)
-		newUser := u.User{
+		newUser := user.User{
 			Name:     "test",
 			Email:    "test@test.com",
 			Password: "1234",

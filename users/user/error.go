@@ -4,12 +4,10 @@ import (
 	"errors"
 )
 
-var ErrMissingData = errors.New("missing data")
-
-var ErrNotFound = errors.New("user not found")
-
-var ErrUserExists = errors.New("email already registered")
-
-var ErrInvalidPassword = errors.New("invalid password")
-
-var ErrInvalidToken = errors.New("invalid token")
+var (
+	ErrMissingData     = errors.New("missing data")
+	ErrNotFound        = errors.New("user not found")
+	ErrUserExists      = errors.New("email already registered")
+	ErrInvalidPassword = errors.New("invalid password")
+	ErrInvalidToken    = errors.New("invalid token")
+)

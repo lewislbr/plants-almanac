@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	u "users/user"
+	"users/user"
 
 	"github.com/stretchr/testify/require"
 )
@@ -18,7 +18,7 @@ func TestAuthorization(t *testing.T) {
 		id, err := authorizeService.Authorize(jwt)
 
 		require.Empty(t, id)
-		require.EqualError(t, err, u.ErrMissingData.Error())
+		require.EqualError(t, err, user.ErrMissingData.Error())
 	})
 
 	t.Run("should error when JWT is invalid", func(t *testing.T) {
@@ -29,7 +29,7 @@ func TestAuthorization(t *testing.T) {
 		id, err := authorizeService.Authorize(jwt)
 
 		require.Empty(t, id)
-		require.EqualError(t, err, u.ErrInvalidToken.Error())
+		require.EqualError(t, err, user.ErrInvalidToken.Error())
 	})
 
 	t.Run("should return an ID", func(t *testing.T) {

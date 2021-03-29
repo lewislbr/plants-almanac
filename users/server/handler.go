@@ -9,36 +9,40 @@ import (
 	"os"
 	"strings"
 
-	u "users/user"
+	"users/authenticate"
+	"users/authorize"
+	"users/create"
+	"users/generate"
+	"users/user"
 )
 
 var isDevelopment = os.Getenv("MODE") == "development"
 
 type handler struct {
-	cs u.CreateService
-	ns u.AuthenticateService
-	zs u.AuthorizeService
-	gs u.GenerateService
+	cs create.CreateService
+	ns authenticate.AuthenticateService
+	zs authorize.AuthorizeService
+	gs generate.GenerateService
 }
 
-func NewHandler(cs u.CreateService, ns u.AuthenticateService, zs u.AuthorizeService, gs u.GenerateService) *handler {
+func NewHandler(cs create.CreateService, ns authenticate.AuthenticateService, zs authorize.AuthorizeService, gs generate.GenerateService) *handler {
 	return &handler{cs, ns, zs, gs}
 }
 
-func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var new u.User
+func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
+	var new user.User
 
 	json.NewDecoder(r.Body).Decode(&new)
 
 	err := h.cs.Create(new)
 	if err != nil {
 		switch {
-		case errors.Is(err, u.ErrMissingData):
-			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		case errors.Is(err, u.ErrUserExists):
-			http.Error(w, u.ErrUserExists.Error(), http.StatusConflict)
+		case errors.Is(err, user.ErrUserExists):
+			http.Error(w, user.ErrUserExists.Error(), http.StatusConflict)
 
 			return
 		default:
@@ -53,24 +57,24 @@ func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (h *handler) LogInUser(w http.ResponseWriter, r *http.Request) {
-	var cred u.Credentials
+func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
+	var cred user.Credentials
 
 	json.NewDecoder(r.Body).Decode(&cred)
 
 	jwt, err := h.ns.Authenticate(cred)
 	if err != nil {
 		switch {
-		case errors.Is(err, u.ErrMissingData):
-			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		case errors.Is(err, u.ErrNotFound):
-			http.Error(w, u.ErrNotFound.Error(), http.StatusNotFound)
+		case errors.Is(err, user.ErrNotFound):
+			http.Error(w, user.ErrNotFound.Error(), http.StatusNotFound)
 
 			return
-		case errors.Is(err, u.ErrInvalidPassword):
-			http.Error(w, u.ErrInvalidPassword.Error(), http.StatusBadRequest)
+		case errors.Is(err, user.ErrInvalidPassword):
+			http.Error(w, user.ErrInvalidPassword.Error(), http.StatusBadRequest)
 
 			return
 		default:
@@ -91,7 +95,7 @@ func (h *handler) LogInUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *handler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -103,11 +107,11 @@ func (h *handler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
 	uid, err := h.zs.Authorize(jwt)
 	if err != nil {
 		switch {
-		case errors.Is(err, u.ErrMissingData):
-			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		case errors.Is(err, u.ErrInvalidToken):
+		case errors.Is(err, user.ErrInvalidToken):
 			w.WriteHeader(http.StatusUnauthorized)
 
 			return
@@ -123,7 +127,7 @@ func (h *handler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, uid)
 }
 
-func (h *handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	var jwt string
 
 	for _, cookie := range r.Cookies() {
@@ -135,11 +139,11 @@ func (h *handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	uid, err := h.zs.Authorize(jwt)
 	if err != nil {
 		switch {
-		case errors.Is(err, u.ErrMissingData):
-			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		case errors.Is(err, u.ErrInvalidToken):
+		case errors.Is(err, user.ErrInvalidToken):
 			w.WriteHeader(http.StatusUnauthorized)
 
 			return
@@ -154,8 +158,8 @@ func (h *handler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	jwt, err = h.gs.GenerateJWT(uid)
 	if err != nil {
 		switch {
-		case errors.Is(err, u.ErrMissingData):
-			http.Error(w, u.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
 		default:

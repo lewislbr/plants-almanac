@@ -21,24 +21,3 @@ type Credentials struct {
 	Email    string
 	Password string
 }
-
-type CreateService interface {
-	Create(User) error
-}
-
-type AuthenticateService interface {
-	Authenticate(cred Credentials) (string, error)
-}
-
-type AuthorizeService interface {
-	Authorize(string) (string, error)
-}
-
-type GenerateService interface {
-	GenerateJWT(string) (string, error)
-}
-
-type Repository interface {
-	InsertOne(User) (interface{}, error)
-	FindOne(string) (User, error)
-}

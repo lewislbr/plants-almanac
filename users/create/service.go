@@ -3,28 +3,33 @@ package create
 import (
 	"time"
 
-	u "users/user"
+	"users/storage"
+	"users/user"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type createService struct {
-	r u.Repository
+type CreateService interface {
+	Create(user.User) error
 }
 
-func NewCreateService(r u.Repository) *createService {
+type createService struct {
+	r storage.Repository
+}
+
+func NewCreateService(r storage.Repository) *createService {
 	return &createService{r}
 }
 
-func (cs *createService) Create(new u.User) error {
+func (cs *createService) Create(new user.User) error {
 	if new.Name == "" || new.Email == "" || new.Password == "" {
-		return u.ErrMissingData
+		return user.ErrMissingData
 	}
 
 	_, err := cs.r.FindOne(new.Email)
 	if err == nil {
-		return u.ErrUserExists
+		return user.ErrUserExists
 	}
 
 	new.ID = uuid.New().String()

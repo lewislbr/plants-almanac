@@ -4,10 +4,14 @@ import (
 	"os"
 	"time"
 
-	u "users/user"
+	"users/user"
 
 	jwtgo "github.com/dgrijalva/jwt-go"
 )
+
+type GenerateService interface {
+	GenerateJWT(string) (string, error)
+}
 
 type generateService struct{}
 
@@ -17,7 +21,7 @@ func NewGenerateService() *generateService {
 
 func (gs *generateService) GenerateJWT(uid string) (string, error) {
 	if uid == "" {
-		return "", u.ErrMissingData
+		return "", user.ErrMissingData
 	}
 
 	jwt := jwtgo.NewWithClaims(jwtgo.SigningMethodHS256, jwtgo.MapClaims{

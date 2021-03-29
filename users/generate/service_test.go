@@ -3,7 +3,7 @@ package generate
 import (
 	"testing"
 
-	u "users/user"
+	"users/user"
 
 	"github.com/stretchr/testify/require"
 )
@@ -17,7 +17,7 @@ func TestGenerate(t *testing.T) {
 		id, err := generateService.GenerateJWT(uid)
 
 		require.Empty(t, id)
-		require.EqualError(t, err, u.ErrMissingData.Error())
+		require.EqualError(t, err, user.ErrMissingData.Error())
 	})
 
 	t.Run("should generate a JWT given a uid", func(t *testing.T) {
