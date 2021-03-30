@@ -3,7 +3,7 @@ package delete
 import (
 	"testing"
 
-	p "plants/plant"
+	"plants/plant"
 	"plants/storage"
 
 	"github.com/stretchr/testify/require"
@@ -16,7 +16,7 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{
+			Plants: []plant.Plant{
 				{
 					ID:   "123",
 					Name: "test",
@@ -27,7 +27,7 @@ func TestCreate(t *testing.T) {
 		id := ""
 		result, err := deleteService.Delete(uid, id)
 
-		require.EqualError(t, err, p.ErrMissingData.Error())
+		require.EqualError(t, err, plant.ErrMissingData.Error())
 		require.Equal(t, int64(0), result)
 	})
 
@@ -35,7 +35,7 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{
+			Plants: []plant.Plant{
 				{
 					ID:   "123",
 					Name: "test",

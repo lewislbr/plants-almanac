@@ -3,7 +3,7 @@ package add
 import (
 	"testing"
 
-	p "plants/plant"
+	"plants/plant"
 	"plants/storage"
 
 	"github.com/stretchr/testify/require"
@@ -16,15 +16,15 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{},
+			Plants: []plant.Plant{},
 		}
 		addService := NewAddService(repo)
-		newPlant := p.Plant{
+		newPlant := plant.Plant{
 			Name: "",
 		}
 		result, err := addService.Add(uid, newPlant)
 
-		require.EqualError(t, err, p.ErrMissingData.Error())
+		require.EqualError(t, err, plant.ErrMissingData.Error())
 		require.Nil(t, result)
 	})
 
@@ -32,10 +32,10 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{},
+			Plants: []plant.Plant{},
 		}
 		addService := NewAddService(repo)
-		newPlant := p.Plant{
+		newPlant := plant.Plant{
 			Name: "test",
 		}
 		result, err := addService.Add(uid, newPlant)

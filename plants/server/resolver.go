@@ -4,19 +4,19 @@ import (
 	"encoding/json"
 	"log"
 
-	p "plants/plant"
+	"plants/plant"
 
 	"github.com/graphql-go/graphql"
 )
 
 type resolver struct {
-	as p.AddService
-	ls p.ListService
-	es p.EditService
-	ds p.DeleteService
+	as plant.AddService
+	ls plant.ListService
+	es plant.EditService
+	ds plant.DeleteService
 }
 
-func NewResolver(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteService) *resolver {
+func NewResolver(as plant.AddService, ls plant.ListService, es plant.EditService, ds plant.DeleteService) *resolver {
 	return &resolver{as, ls, es, ds}
 }
 
@@ -26,7 +26,7 @@ func (r *resolver) AddPlant(ps graphql.ResolveParams) (interface{}, error) {
 		log.Println(err)
 	}
 
-	new := p.Plant{}
+	new := plant.Plant{}
 	err = json.Unmarshal(payload, &new)
 	if err != nil {
 		log.Println(err)
@@ -68,7 +68,7 @@ func (r *resolver) EditPlant(ps graphql.ResolveParams) (interface{}, error) {
 		log.Println(err)
 	}
 
-	update := p.Plant{}
+	update := plant.Plant{}
 	err = json.Unmarshal(payload, &update)
 	if err != nil {
 		log.Println(err)

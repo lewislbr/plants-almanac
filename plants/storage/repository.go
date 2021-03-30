@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 
-	p "plants/plant"
+	"plants/plant"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,7 +17,7 @@ func NewRepository(db *mongo.Database) *repository {
 	return &repository{db}
 }
 
-func (r *repository) InsertOne(uid string, new p.Plant) (interface{}, error) {
+func (r *repository) InsertOne(uid string, new plant.Plant) (interface{}, error) {
 	result, err := r.db.Collection(uid).InsertOne(context.Background(), new)
 	if err != nil {
 		return nil, err
@@ -26,13 +26,13 @@ func (r *repository) InsertOne(uid string, new p.Plant) (interface{}, error) {
 	return result.InsertedID, nil
 }
 
-func (r *repository) FindAll(uid string) ([]p.Plant, error) {
+func (r *repository) FindAll(uid string) ([]plant.Plant, error) {
 	cursor, err := r.db.Collection(uid).Find(context.Background(), bson.M{})
 	if err != nil {
 		return nil, err
 	}
 
-	var results []p.Plant
+	var results []plant.Plant
 
 	err = cursor.All(context.Background(), &results)
 	if err != nil {
@@ -42,20 +42,20 @@ func (r *repository) FindAll(uid string) ([]p.Plant, error) {
 	return results, nil
 }
 
-func (r *repository) FindOne(uid string, id string) (p.Plant, error) {
+func (r *repository) FindOne(uid string, id string) (plant.Plant, error) {
 	filter := bson.M{"_id": id}
 
-	var result p.Plant
+	var result plant.Plant
 
 	err := r.db.Collection(uid).FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
-		return p.Plant{}, err
+		return plant.Plant{}, err
 	}
 
 	return result, nil
 }
 
-func (r *repository) UpdateOne(uid string, id string, update p.Plant) (int64, error) {
+func (r *repository) UpdateOne(uid string, id string, update plant.Plant) (int64, error) {
 	filter := bson.M{"_id": id}
 	updated := bson.M{
 		"$set": bson.M{

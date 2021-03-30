@@ -3,26 +3,26 @@ package edit
 import (
 	"time"
 
-	p "plants/plant"
+	"plants/plant"
 )
 
 type editService struct {
-	ls p.ListService
-	r  p.Repository
+	ls plant.ListService
+	r  plant.Repository
 }
 
-func NewEditService(ls p.ListService, r p.Repository) *editService {
+func NewEditService(ls plant.ListService, r plant.Repository) *editService {
 	return &editService{ls, r}
 }
 
-func (es *editService) Edit(uid string, id string, update p.Plant) (int64, error) {
+func (es *editService) Edit(uid string, id string, update plant.Plant) (int64, error) {
 	if update.Name == "" {
-		return 0, p.ErrMissingData
+		return 0, plant.ErrMissingData
 	}
 
 	exist, err := es.ls.ListOne(uid, id)
 	if err != nil {
-		return 0, p.ErrNotFound
+		return 0, plant.ErrNotFound
 	}
 
 	update.CreatedAt = exist.CreatedAt

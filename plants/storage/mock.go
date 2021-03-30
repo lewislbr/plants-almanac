@@ -2,32 +2,33 @@ package storage
 
 import (
 	"errors"
-	p "plants/plant"
+
+	"plants/plant"
 )
 
 type MockRepo struct {
-	Plants []p.Plant
+	Plants []plant.Plant
 }
 
-func (m *MockRepo) InsertOne(uid string, new p.Plant) (interface{}, error) {
+func (m *MockRepo) InsertOne(uid string, new plant.Plant) (interface{}, error) {
 	return new, nil
 }
 
-func (m *MockRepo) FindAll(uid string) ([]p.Plant, error) {
-	return []p.Plant{}, nil
+func (m *MockRepo) FindAll(uid string) ([]plant.Plant, error) {
+	return []plant.Plant{}, nil
 }
 
-func (m *MockRepo) FindOne(uid string, id string) (p.Plant, error) {
+func (m *MockRepo) FindOne(uid string, id string) (plant.Plant, error) {
 	for _, p := range m.Plants {
 		if id == p.ID {
 			return p, nil
 		}
 	}
 
-	return p.Plant{}, errors.New("")
+	return plant.Plant{}, errors.New("")
 }
 
-func (m *MockRepo) UpdateOne(uid string, id string, update p.Plant) (int64, error) {
+func (m *MockRepo) UpdateOne(uid string, id string, update plant.Plant) (int64, error) {
 	for _, p := range m.Plants {
 		if id != p.ID {
 			return 0, nil

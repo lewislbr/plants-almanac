@@ -37,8 +37,8 @@ func TestHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
 
 		router.ServeHTTP(w, r)
 
@@ -63,8 +63,8 @@ func TestHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
 
 		router.ServeHTTP(w, r)
 
@@ -89,8 +89,8 @@ func TestHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
 
 		router.ServeHTTP(w, r)
 
@@ -115,8 +115,8 @@ func TestHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
 
 		router.ServeHTTP(w, r)
 
@@ -141,8 +141,8 @@ func TestHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 
 		router.ServeHTTP(w, r)
 
@@ -167,8 +167,8 @@ func TestHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 
 		router.ServeHTTP(w, r)
 
@@ -193,8 +193,8 @@ func TestHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 
 		router.ServeHTTP(w, r)
 
@@ -219,8 +219,8 @@ func TestHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 
 		router.ServeHTTP(w, r)
 
@@ -245,8 +245,8 @@ func TestHandler(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
 
 		router.ServeHTTP(w, r)
 
@@ -265,8 +265,8 @@ func TestHandler(t *testing.T) {
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 
-		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 
 		r.Header.Add("Authorization", "Bearer test")
 
@@ -287,8 +287,8 @@ func TestHandler(t *testing.T) {
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 
-		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 
 		router.ServeHTTP(w, r)
 
@@ -307,8 +307,8 @@ func TestHandler(t *testing.T) {
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrMissingData)
 
-		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 
 		r.Header.Add("Authorization", "Bearer test")
 
@@ -329,8 +329,8 @@ func TestHandler(t *testing.T) {
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrInvalidToken)
 
-		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 
 		r.Header.Add("Authorization", "Bearer test")
 
@@ -351,8 +351,8 @@ func TestHandler(t *testing.T) {
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", errors.New("error"))
 
-		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/authorize", nil)
 
 		r.Header.Add("Authorization", "Bearer test")
 
@@ -374,8 +374,8 @@ func TestHandler(t *testing.T) {
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
 
-		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
 
 		router.ServeHTTP(w, r)
 
@@ -395,8 +395,8 @@ func TestHandler(t *testing.T) {
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrMissingData)
 		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
 
-		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
 
 		router.ServeHTTP(w, r)
 
@@ -416,8 +416,8 @@ func TestHandler(t *testing.T) {
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrInvalidToken)
 		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
 
-		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
 
 		router.ServeHTTP(w, r)
 
@@ -437,8 +437,8 @@ func TestHandler(t *testing.T) {
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", errors.New("error"))
 		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
 
-		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
 		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
 
 		router.ServeHTTP(w, r)
 

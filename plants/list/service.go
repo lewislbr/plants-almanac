@@ -1,18 +1,16 @@
 package list
 
-import (
-	p "plants/plant"
-)
+import "plants/plant"
 
 type listService struct {
-	r p.Repository
+	r plant.Repository
 }
 
-func NewListService(r p.Repository) *listService {
+func NewListService(r plant.Repository) *listService {
 	return &listService{r}
 }
 
-func (s *listService) ListAll(uid string) ([]p.Plant, error) {
+func (s *listService) ListAll(uid string) ([]plant.Plant, error) {
 	result, err := s.r.FindAll(uid)
 	if err != nil {
 		return nil, err
@@ -21,14 +19,14 @@ func (s *listService) ListAll(uid string) ([]p.Plant, error) {
 	return result, nil
 }
 
-func (s *listService) ListOne(uid string, id string) (p.Plant, error) {
+func (s *listService) ListOne(uid string, id string) (plant.Plant, error) {
 	if id == "" {
-		return p.Plant{}, p.ErrMissingData
+		return plant.Plant{}, plant.ErrMissingData
 	}
 
 	result, err := s.r.FindOne(uid, id)
 	if err != nil {
-		return p.Plant{}, p.ErrNotFound
+		return plant.Plant{}, plant.ErrNotFound
 	}
 
 	return result, nil

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"plants/list"
-	p "plants/plant"
+	"plants/plant"
 	"plants/storage"
 
 	"github.com/stretchr/testify/require"
@@ -17,7 +17,7 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{
+			Plants: []plant.Plant{
 				{
 					ID:   "123",
 					Name: "test",
@@ -27,12 +27,12 @@ func TestCreate(t *testing.T) {
 		findService := list.NewListService(repo)
 		editService := NewEditService(findService, repo)
 		id := "123"
-		newPlant := p.Plant{
+		newPlant := plant.Plant{
 			Name: "",
 		}
 		result, err := editService.Edit(uid, id, newPlant)
 
-		require.EqualError(t, err, p.ErrMissingData.Error())
+		require.EqualError(t, err, plant.ErrMissingData.Error())
 		require.Equal(t, int64(0), result)
 	})
 
@@ -40,7 +40,7 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{
+			Plants: []plant.Plant{
 				{
 					ID:   "123",
 					Name: "test",
@@ -50,12 +50,12 @@ func TestCreate(t *testing.T) {
 		findService := list.NewListService(repo)
 		editService := NewEditService(findService, repo)
 		id := "122"
-		newPlant := p.Plant{
+		newPlant := plant.Plant{
 			Name: "test",
 		}
 		result, err := editService.Edit(uid, id, newPlant)
 
-		require.EqualError(t, err, p.ErrNotFound.Error())
+		require.EqualError(t, err, plant.ErrNotFound.Error())
 		require.Equal(t, int64(0), result)
 	})
 
@@ -63,7 +63,7 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{
+			Plants: []plant.Plant{
 				{
 					ID:   "123",
 					Name: "test",
@@ -73,7 +73,7 @@ func TestCreate(t *testing.T) {
 		findService := list.NewListService(repo)
 		editService := NewEditService(findService, repo)
 		id := "123"
-		newPlant := p.Plant{
+		newPlant := plant.Plant{
 			Name: "test2",
 		}
 		result, err := editService.Edit(uid, id, newPlant)

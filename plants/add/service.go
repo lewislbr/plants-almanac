@@ -3,22 +3,22 @@ package add
 import (
 	"time"
 
-	p "plants/plant"
+	"plants/plant"
 
 	"github.com/google/uuid"
 )
 
 type addService struct {
-	r p.Repository
+	r plant.Repository
 }
 
-func NewAddService(r p.Repository) *addService {
+func NewAddService(r plant.Repository) *addService {
 	return &addService{r}
 }
 
-func (as *addService) Add(uid string, new p.Plant) (interface{}, error) {
+func (as *addService) Add(uid string, new plant.Plant) (interface{}, error) {
 	if new.Name == "" {
-		return nil, p.ErrMissingData
+		return nil, plant.ErrMissingData
 	}
 
 	new.ID = uuid.New().String()

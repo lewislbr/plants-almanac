@@ -3,7 +3,7 @@ package list
 import (
 	"testing"
 
-	p "plants/plant"
+	"plants/plant"
 	"plants/storage"
 
 	"github.com/stretchr/testify/require"
@@ -16,7 +16,7 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{
+			Plants: []plant.Plant{
 				{
 					ID:   "123",
 					Name: "test",
@@ -34,7 +34,7 @@ func TestCreate(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{
+			Plants: []plant.Plant{
 				{
 					ID:   "123",
 					Name: "test",
@@ -45,15 +45,15 @@ func TestCreate(t *testing.T) {
 		id := ""
 		result, err := listService.ListOne(uid, id)
 
-		require.EqualError(t, err, p.ErrMissingData.Error())
-		require.Equal(t, p.Plant{}, result)
+		require.EqualError(t, err, plant.ErrMissingData.Error())
+		require.Equal(t, plant.Plant{}, result)
 	})
 
 	t.Run("should error when a plant is not found", func(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{
+			Plants: []plant.Plant{
 				{
 					ID:   "123",
 					Name: "test",
@@ -64,15 +64,15 @@ func TestCreate(t *testing.T) {
 		id := "122"
 		result, err := listService.ListOne(uid, id)
 
-		require.EqualError(t, err, p.ErrNotFound.Error())
-		require.Equal(t, p.Plant{}, result)
+		require.EqualError(t, err, plant.ErrNotFound.Error())
+		require.Equal(t, plant.Plant{}, result)
 	})
 
 	t.Run("should list a plant with no error", func(t *testing.T) {
 		t.Parallel()
 
 		repo := &storage.MockRepo{
-			Plants: []p.Plant{
+			Plants: []plant.Plant{
 				{
 					ID:   "123",
 					Name: "test",

@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	p "plants/plant"
+	"plants/plant"
 
 	"github.com/graphql-go/handler"
 	"github.com/julienschmidt/httprouter"
@@ -19,7 +19,7 @@ var (
 	Server = &http.Server{}
 )
 
-func Start(as p.AddService, ls p.ListService, es p.EditService, ds p.DeleteService) error {
+func Start(as plant.AddService, ls plant.ListService, es plant.EditService, ds plant.DeleteService) error {
 	port := os.Getenv("PLANTS_PORT")
 	Server.Addr = ":" + port
 

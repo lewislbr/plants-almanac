@@ -30,7 +30,7 @@ func setUpRouter(h *handler) *chi.Mux {
 	r.Use(cors.Handler(cors.Options{
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Origin"},
-		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "OPTIONS", "POST"},
 		AllowedOrigins:   []string{os.Getenv("WEB_URL")},
 		MaxAge:           86400,
 	}))
