@@ -8,13 +8,13 @@ import * as sortService from "../services/sort"
 import * as plantCopy from "../constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
 import * as sortConstant from "../constants/sort"
-import {Plants} from "../interfaces/Plants"
+import {Plant} from "../interfaces/plant"
 
 export function PlantList(): JSX.Element {
   const [errors, setErrors] = useState({
     http: "",
   })
-  const [data, setData] = useState({} as Plants)
+  const [data, setData] = useState([] as Plant[])
   const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [sortMethod, setSortMethod] = useState(
     localStorage.getItem(sortConstant.SORT_METHOD) ?? sortConstant.Options.Created.KEY,
@@ -28,21 +28,15 @@ export function PlantList(): JSX.Element {
 
         switch (sortMethod) {
           case sortConstant.Options.Created.KEY:
-            setData({
-              plants: result.data.plants?.slice().sort(sortService.desc("created_at")),
-            })
+            setData(result.slice().sort(sortService.desc("created_at")))
 
             break
           case sortConstant.Options.Edited.KEY:
-            setData({
-              plants: result.data.plants?.slice().sort(sortService.desc("edited_at")),
-            })
+            setData(result.slice().sort(sortService.desc("edited_at")))
 
             break
           case sortConstant.Options.Name.KEY:
-            setData({
-              plants: result.data.plants?.slice().sort(sortService.asc("name")),
-            })
+            setData(result.slice().sort(sortService.asc("name")))
 
             break
         }
@@ -61,27 +55,21 @@ export function PlantList(): JSX.Element {
   function sortBy(event: ChangeEvent<{name?: string; value: unknown}>): void {
     switch (event.target.value) {
       case sortConstant.Options.Created.KEY:
-        setData({
-          plants: data.plants?.slice().sort(sortService.desc("created_at")),
-        })
+        setData(data.slice().sort(sortService.desc("created_at")))
         setSortMethod(sortConstant.Options.Created.KEY)
 
         localStorage.setItem(sortConstant.SORT_METHOD, sortConstant.Options.Created.KEY)
 
         break
       case sortConstant.Options.Edited.KEY:
-        setData({
-          plants: data.plants?.slice().sort(sortService.desc("edited_at")),
-        })
+        setData(data.slice().sort(sortService.desc("edited_at")))
         setSortMethod(sortConstant.Options.Edited.KEY)
 
         localStorage.setItem(sortConstant.SORT_METHOD, sortConstant.Options.Edited.KEY)
 
         break
       case sortConstant.Options.Name.KEY:
-        setData({
-          plants: data.plants?.slice().sort(sortService.asc("name")),
-        })
+        setData(data.slice().sort(sortService.asc("name")))
         setSortMethod(sortConstant.Options.Name.KEY)
 
         localStorage.setItem(sortConstant.SORT_METHOD, sortConstant.Options.Name.KEY)
@@ -119,14 +107,14 @@ export function PlantList(): JSX.Element {
           <Loading />
         ) : (
           <div>
-            {data.plants?.map((plant) => (
+            {data.map((plant) => (
               <Link
                 component={RouterLink}
-                key={plant?.id}
-                to={`/plants/${plant?.id}`}
+                key={plant.id}
+                to={`/plants/${plant.id}`}
                 underline="none"
               >
-                <PlantCard {...{name: plant?.name}} />
+                <PlantCard {...{name: plant.name}} />
               </Link>
             ))}
           </div>

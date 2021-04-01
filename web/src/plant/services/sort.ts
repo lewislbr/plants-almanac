@@ -1,13 +1,9 @@
-import {Plants_plants} from "../interfaces/Plants"
+import {Plant} from "../interfaces/plant"
 
-export function asc(
-  key: keyof Plants_plants,
-): (a: Plants_plants | null, b: Plants_plants | null) => number {
-  return (a, b): number => a?.[key].localeCompare(b?.[key])
+export function asc(key: keyof Plant): (a: Plant, b: Plant) => number {
+  return (a, b): number => a[key].localeCompare(b[key])
 }
 
-export function desc(
-  key: keyof Plants_plants,
-): (a: Plants_plants | null, b: Plants_plants | null) => number {
-  return (a, b): number => b?.[key].localeCompare(a?.[key])
+export function desc(key: keyof Plant): (a: Plant, b: Plant) => number {
+  return (a, b): number => b[key].localeCompare(a[key])
 }

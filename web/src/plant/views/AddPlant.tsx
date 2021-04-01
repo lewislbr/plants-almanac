@@ -6,7 +6,7 @@ import * as plantService from "../services/plant"
 import * as plantCopy from "../constants/copy"
 import * as sharedCopy from "../../shared/constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
-import {EditVariables} from "../interfaces/Edit"
+import {Plant} from "../interfaces/plant"
 
 export function AddPlant(): JSX.Element {
   const [errors, setErrors] = useState({
@@ -24,7 +24,7 @@ export function AddPlant(): JSX.Element {
   const [tips, setTips] = useState("")
   const history = useHistory()
   const location = useLocation()
-  const prevState = location.state as EditVariables
+  const prevState = location.state as Plant
   const [isEditMode] = useState(Boolean(prevState))
   const missingFields = !name
   const activeErrors = Object.values(errors).includes(true)
@@ -54,12 +54,12 @@ export function AddPlant(): JSX.Element {
     if (isEditMode) {
       setStatus(HTTPStatus.LOADING)
       setName(prevState.name)
-      setOtherNames(prevState.other_names || "")
-      setDescription(prevState.description || "")
-      setPlantSeason(prevState.plant_season || "")
-      setHarvestSeason(prevState.harvest_season || "")
-      setPruneSeason(prevState.prune_season || "")
-      setTips(prevState.tips || "")
+      setOtherNames(prevState.other_names)
+      setDescription(prevState.description)
+      setPlantSeason(prevState.plant_season)
+      setHarvestSeason(prevState.harvest_season)
+      setPruneSeason(prevState.prune_season)
+      setTips(prevState.tips)
       setStatus(HTTPStatus.SUCCESS)
     }
   }, [isEditMode, prevState])
@@ -103,13 +103,13 @@ export function AddPlant(): JSX.Element {
 
     try {
       await plantService.addOne({
-        name,
-        otherNames,
-        description,
-        plantSeason,
-        harvestSeason,
-        pruneSeason,
-        tips,
+        name: name,
+        other_names: otherNames,
+        description: description,
+        plant_season: plantSeason,
+        harvest_season: harvestSeason,
+        prune_season: pruneSeason,
+        tips: tips,
       })
 
       setStatus(HTTPStatus.SUCCESS)
@@ -128,13 +128,13 @@ export function AddPlant(): JSX.Element {
 
     try {
       await plantService.editOne(prevState.id, {
-        name,
-        otherNames,
-        description,
-        plantSeason,
-        harvestSeason,
-        pruneSeason,
-        tips,
+        name: name,
+        other_names: otherNames,
+        description: description,
+        plant_season: plantSeason,
+        harvest_season: harvestSeason,
+        prune_season: pruneSeason,
+        tips: tips,
       })
 
       setStatus(HTTPStatus.SUCCESS)

@@ -9,49 +9,54 @@ import (
 
 	"plants/plant"
 
-	"github.com/graphql-go/handler"
-	"github.com/julienschmidt/httprouter"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
+	"github.com/go-chi/httprate"
 	"github.com/pkg/errors"
 )
 
-var (
-	uid    string
-	Server = &http.Server{}
-)
+var server = &http.Server{}
+
+func setUpRouter(h *handler) *chi.Mux {
+	r := chi.NewRouter()
+
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.Timeout(30 * time.Second))
+	r.Use(httprate.LimitByIP(100, 1*time.Minute))
+	r.Use(cors.Handler(cors.Options{
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Origin"},
+		AllowedMethods:   []string{"DELETE", "GET", "OPTIONS", "PUT", "POST"},
+		AllowedOrigins:   []string{os.Getenv("WEB_URL")},
+		MaxAge:           86400,
+	}))
+	r.Use(headersMiddleware, authorizationMiddleware)
+
+	r.Post("/add", h.Add)
+	r.Get("/list", h.ListAll)
+	r.Get("/list/{id}", h.ListOne)
+	r.Put("/edit/{id}", h.Edit)
+	r.Delete("/delete/{id}", h.Delete)
+
+	return r
+}
 
 func Start(as plant.AddService, ls plant.ListService, es plant.EditService, ds plant.DeleteService) error {
+	handler := NewHandler(as, ls, es, ds)
+	router := setUpRouter(handler)
 	port := os.Getenv("PLANTS_PORT")
-	Server.Addr = ":" + port
 
-	resolver := NewResolver(as, ls, es, ds)
-	schema, err := NewSchema(resolver)
-	if err != nil {
-		return err
-	}
-
-	router := httprouter.New()
-	handler := handler.New(&handler.Config{
-		Schema:     schema,
-		Pretty:     false,
-		Playground: false,
-		RootObjectFn: func(ctx context.Context, r *http.Request) map[string]interface{} {
-			return map[string]interface{}{
-				"uid": uid,
-			}
-		},
-	})
-
-	router.Handler(http.MethodPost, "/", handler)
-
-	Server.Handler = corsMiddleware(authorizationMiddleware(router))
-
-	Server.IdleTimeout = 120 * time.Second
-	Server.ReadTimeout = 5 * time.Second
-	Server.WriteTimeout = 10 * time.Second
+	server.Addr = ":" + port
+	server.Handler = router
+	server.IdleTimeout = 120 * time.Second
+	server.MaxHeaderBytes = 1 << 20 // 1 MB
+	server.ReadTimeout = 5 * time.Second
+	server.WriteTimeout = 10 * time.Second
 
 	fmt.Println("Plants server ready ✅")
 
-	err = Server.ListenAndServe()
+	err := server.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
@@ -62,7 +67,7 @@ func Start(as plant.AddService, ls plant.ListService, es plant.EditService, ds p
 func Stop(ctx context.Context) error {
 	fmt.Println("Stopping server...")
 
-	err := Server.Shutdown(ctx)
+	err := server.Shutdown(ctx)
 	if err != nil {
 		return err
 	}

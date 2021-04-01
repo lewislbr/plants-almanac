@@ -4,7 +4,6 @@
   "scripts": {
     "start": "webpack serve --mode=development",
     "build": "rm -rf dist && webpack --mode=production",
-    "gql": "npx apollo client:codegen --target=typescript --addTypename --endpoint=http://localhost:4040/plants --outputFlat=src/plant/interfaces",
     "ts": "tsc",
     "test": "jest",
     "lint": "eslint --ext .js,.ts,.tsx .",
@@ -12,12 +11,9 @@
     "pwa-assets": "pwa-asset-generator src/assets/images/original/plant.svg src/assets/images -t png"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.6",
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
-    "apollo3-cache-persist": "^0.9.1",
-    "graphql": "^15.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0"
@@ -37,7 +33,6 @@
     "@typescript-eslint/eslint-plugin": "^4.12.0",
     "@typescript-eslint/parser": "^4.12.0",
     "babel-loader": "^8.2.2",
-    "babel-plugin-graphql-tag": "^3.1.0",
     "compression-webpack-plugin": "^7.1.1",
     "copy-webpack-plugin": "^7.0.0",
     "dotenv-webpack": "^6.0.0",

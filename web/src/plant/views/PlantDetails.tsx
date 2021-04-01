@@ -7,7 +7,7 @@ import * as plantService from "../services/plant"
 import * as plantCopy from "../constants/copy"
 import * as sharedCopy from "../../shared/constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
-import {Plant} from "../interfaces/Plant"
+import {Plant} from "../interfaces/plant"
 
 export function PlantDetails(): JSX.Element {
   const [errors, setErrors] = useState({
@@ -16,7 +16,7 @@ export function PlantDetails(): JSX.Element {
   const [data, setData] = useState({} as Plant)
   const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const {id} = useParams<{id: string}>()
+  const {id} = useParams<{id: Plant["id"]}>()
   const history = useHistory()
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function PlantDetails(): JSX.Element {
       try {
         const result = await plantService.listOne(id)
 
-        setData(result.data as Plant)
+        setData(result)
         setStatus(HTTPStatus.SUCCESS)
       } catch (error) {
         setErrors((errors) => ({...errors, http: String(error)}))
@@ -41,7 +41,7 @@ export function PlantDetails(): JSX.Element {
   }
 
   function editPlant(): void {
-    history.push({pathname: "/edit/" + id, state: data.plant})
+    history.push({pathname: "/edit/" + id, state: data})
   }
 
   function openDialog(): void {
@@ -82,7 +82,7 @@ export function PlantDetails(): JSX.Element {
               justifyContent: "space-between",
             }}
           >
-            <Typography variant="h1">{data.plant?.name}</Typography>
+            <Typography variant="h1">{data.name}</Typography>
             <IconButton onClick={close}>
               <CancelIcon />
             </IconButton>
@@ -93,7 +93,7 @@ export function PlantDetails(): JSX.Element {
                 {"Other Names"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.other_names || plantCopy.NO_DATA}
+                {data.other_names || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -101,7 +101,7 @@ export function PlantDetails(): JSX.Element {
                 {"Description"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.description || plantCopy.NO_DATA}
+                {data.description || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -109,7 +109,7 @@ export function PlantDetails(): JSX.Element {
                 {"Plant Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.plant_season || plantCopy.NO_DATA}
+                {data.plant_season || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -117,7 +117,7 @@ export function PlantDetails(): JSX.Element {
                 {"Harvest Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.harvest_season || plantCopy.NO_DATA}
+                {data.harvest_season || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -125,7 +125,7 @@ export function PlantDetails(): JSX.Element {
                 {"Prune Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.prune_season || plantCopy.NO_DATA}
+                {data.prune_season || plantCopy.NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -133,7 +133,7 @@ export function PlantDetails(): JSX.Element {
                 {"Tips"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant?.tips || plantCopy.NO_DATA}
+                {data.tips || plantCopy.NO_DATA}
               </Typography>
             </div>
           </section>
@@ -161,7 +161,7 @@ export function PlantDetails(): JSX.Element {
               actionText={plantCopy.DELETE_PLANT}
               cancel={closeDialog}
               cancelText={sharedCopy.CANCEL}
-              message={data.plant?.name + " will be deleted."}
+              message={data.name + " will be deleted."}
               open={dialogOpen}
               title={plantCopy.DELETE_PLANT}
             />
