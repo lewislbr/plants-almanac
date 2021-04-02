@@ -1,9 +1,8 @@
 package plant
 
-import (
-	"errors"
+import "errors"
+
+var (
+	ErrMissingData = errors.New("missing data")
+	ErrNotFound    = errors.New("plant not found")
 )
-
-var ErrMissingData = errors.New("missing data")
-
-var ErrNotFound = errors.New("plant not found")

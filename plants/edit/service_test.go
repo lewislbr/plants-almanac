@@ -24,13 +24,13 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		findService := list.NewListService(repo)
-		editService := NewEditService(findService, repo)
+		ls := list.NewService(repo)
+		es := NewService(ls, repo)
 		id := "123"
 		newPlant := plant.Plant{
 			Name: "",
 		}
-		err := editService.Edit(uid, id, newPlant)
+		err := es.Edit(uid, id, newPlant)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
 	})
@@ -46,13 +46,13 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		findService := list.NewListService(repo)
-		editService := NewEditService(findService, repo)
+		ls := list.NewService(repo)
+		es := NewService(ls, repo)
 		id := "122"
 		newPlant := plant.Plant{
 			Name: "test",
 		}
-		err := editService.Edit(uid, id, newPlant)
+		err := es.Edit(uid, id, newPlant)
 
 		require.EqualError(t, err, plant.ErrNotFound.Error())
 	})
@@ -68,13 +68,13 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		findService := list.NewListService(repo)
-		editService := NewEditService(findService, repo)
+		ls := list.NewService(repo)
+		es := NewService(ls, repo)
 		id := "123"
 		newPlant := plant.Plant{
 			Name: "test2",
 		}
-		err := editService.Edit(uid, id, newPlant)
+		err := es.Edit(uid, id, newPlant)
 
 		require.NoError(t, err)
 	})

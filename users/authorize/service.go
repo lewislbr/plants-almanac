@@ -6,27 +6,23 @@ import (
 	jwtgo "github.com/dgrijalva/jwt-go"
 )
 
-type AuthorizeService interface {
-	Authorize(string) (string, error)
-}
-
-type authorizeService struct {
+type service struct {
 	secret string
 }
 
-func NewAuthorizeService(secret string) *authorizeService {
-	return &authorizeService{
+func NewService(secret string) *service {
+	return &service{
 		secret: secret,
 	}
 }
 
-func (zs *authorizeService) Authorize(jwt string) (string, error) {
+func (s *service) Authorize(jwt string) (string, error) {
 	if jwt == "" {
 		return "", user.ErrMissingData
 	}
 
 	token, err := jwtgo.Parse(jwt, func(token *jwtgo.Token) (interface{}, error) {
-		return []byte(zs.secret), nil
+		return []byte(s.secret), nil
 	})
 	if !token.Valid {
 		return "", user.ErrInvalidToken

@@ -27,11 +27,6 @@ type envVars struct {
 	WebURL     string
 }
 
-var (
-	env     = getEnvVars()
-	db, err = storage.ConnectDatabase(env.MongoURI, env.Database, env.Collection)
-)
-
 func main() {
 	defer func() {
 		r := recover()
@@ -42,19 +37,23 @@ func main() {
 		}
 	}()
 
+	env := getEnvVars()
+	db, err := storage.Connect(env.MongoURI, env.Database, env.Collection)
 	if err != nil {
 		log.Panic(err)
 	}
 
 	r := storage.NewRepository(db)
-	cs := create.NewCreateService(r)
-	gs := generate.NewGenerateService(env.Secret)
-	ns := authenticate.NewAuthenticateService(gs, r)
-	zs := authorize.NewAuthorizeService(env.Secret)
+	cs := create.NewService(r)
+	gs := generate.NewService(env.Secret)
+	ns := authenticate.NewService(gs, r)
+	zs := authorize.NewService(env.Secret)
+
+	server.New(cs, ns, zs, gs, env.Port, env.WebURL)
 
 	go gracefulShutdown()
 
-	err := server.Start(cs, ns, zs, gs, env.Port, env.WebURL)
+	err = server.Start()
 	if err != nil {
 		log.Panic(err)
 	}
@@ -80,23 +79,6 @@ func getEnvVars() *envVars {
 	}
 }
 
-func cleanUp() {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	if db != nil {
-		err := storage.DisconnectDatabase(ctx, db)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-
-	err = server.Stop(ctx)
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
 func gracefulShutdown() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
@@ -104,4 +86,19 @@ func gracefulShutdown() {
 	<-quit
 
 	cleanUp()
+}
+
+func cleanUp() {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := storage.Disconnect(ctx)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = server.Stop(ctx)
+	if err != nil {
+		fmt.Println(err)
+	}
 }

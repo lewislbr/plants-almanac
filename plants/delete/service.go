@@ -5,24 +5,20 @@ import (
 	"plants/storage"
 )
 
-type DeleteService interface {
-	Delete(string, string) error
-}
-
-type deleteService struct {
+type service struct {
 	r storage.Repository
 }
 
-func NewDeleteService(r storage.Repository) *deleteService {
-	return &deleteService{r}
+func NewService(r storage.Repository) *service {
+	return &service{r}
 }
 
-func (ds *deleteService) Delete(uid, id string) error {
+func (s *service) Delete(uid, id string) error {
 	if id == "" {
 		return plant.ErrMissingData
 	}
 
-	result, err := ds.r.DeleteOne(uid, id)
+	result, err := s.r.DeleteOne(uid, id)
 	if err != nil {
 		return err
 	}

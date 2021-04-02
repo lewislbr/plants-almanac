@@ -9,10 +9,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"plants/add"
-	"plants/delete"
-	"plants/edit"
-	"plants/list"
 	"plants/plant"
 
 	"github.com/stretchr/testify/mock"
@@ -23,10 +19,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Add should return 201 after successful request", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		asMock.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(nil)
@@ -49,10 +45,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Add should return 400 if required data is missing", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		asMock.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrMissingData)
@@ -75,10 +71,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Add should return 500 if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		asMock.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(errors.New("error"))
@@ -101,10 +97,10 @@ func TestHandler(t *testing.T) {
 	t.Run("ListAll should return 200 if the request is successful", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		lsMock.On("ListAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
@@ -121,10 +117,10 @@ func TestHandler(t *testing.T) {
 	t.Run("ListAll should return 500 if if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		lsMock.On("ListAll", mock.AnythingOfType("string")).Return(nil, errors.New("error"))
@@ -141,10 +137,10 @@ func TestHandler(t *testing.T) {
 	t.Run("ListOne should return 200 if the request is successful", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		lsMock.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{Name: "test"}, nil)
@@ -161,10 +157,10 @@ func TestHandler(t *testing.T) {
 	t.Run("ListOne should return 400 if required data is missing", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		lsMock.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, plant.ErrMissingData)
@@ -181,10 +177,10 @@ func TestHandler(t *testing.T) {
 	t.Run("ListOne should return 404 if the plant is not found", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		lsMock.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, plant.ErrNotFound)
@@ -201,10 +197,10 @@ func TestHandler(t *testing.T) {
 	t.Run("ListOne should return 500 if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		lsMock.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("error"))
@@ -221,10 +217,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Edit should return 204 if the request is successful", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		esMock.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(nil)
@@ -247,10 +243,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Edit should return 400 if required data is missing", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		esMock.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrMissingData)
@@ -273,10 +269,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Edit should return 404 if the plant is not found", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		esMock.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrNotFound)
@@ -299,10 +295,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Edit should return 500 if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		esMock.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(errors.New("error"))
@@ -325,10 +321,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Delete should return 204 if the request is successful", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		dsMock.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil)
@@ -345,10 +341,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Delete should return 400 if required data is missing", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		dsMock.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.ErrMissingData)
@@ -365,10 +361,10 @@ func TestHandler(t *testing.T) {
 	t.Run("Delete should return 500 if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		asMock := &add.MockAddService{}
-		dsMock := &delete.MockDeleteService{}
-		esMock := &edit.MockEditService{}
-		lsMock := &list.MockListService{}
+		asMock := &MockAdder{}
+		dsMock := &MockDeleter{}
+		esMock := &MockEditer{}
+		lsMock := &MockLister{}
 		handler := NewHandler(asMock, lsMock, esMock, dsMock)
 
 		dsMock.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(errors.New("error"))

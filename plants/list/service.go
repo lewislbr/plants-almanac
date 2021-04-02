@@ -5,20 +5,15 @@ import (
 	"plants/storage"
 )
 
-type ListService interface {
-	ListAll(string) ([]plant.Plant, error)
-	ListOne(string, string) (plant.Plant, error)
-}
-
-type listService struct {
+type service struct {
 	r storage.Repository
 }
 
-func NewListService(r storage.Repository) *listService {
-	return &listService{r}
+func NewService(r storage.Repository) *service {
+	return &service{r}
 }
 
-func (s *listService) ListAll(uid string) ([]plant.Plant, error) {
+func (s *service) ListAll(uid string) ([]plant.Plant, error) {
 	result, err := s.r.FindAll(uid)
 	if err != nil {
 		return nil, err
@@ -27,7 +22,7 @@ func (s *listService) ListAll(uid string) ([]plant.Plant, error) {
 	return result, nil
 }
 
-func (s *listService) ListOne(uid, id string) (plant.Plant, error) {
+func (s *service) ListOne(uid, id string) (plant.Plant, error) {
 	if id == "" {
 		return plant.Plant{}, plant.ErrMissingData
 	}

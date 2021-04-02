@@ -9,19 +9,15 @@ import (
 	"github.com/google/uuid"
 )
 
-type AddService interface {
-	Add(string, plant.Plant) error
-}
-
-type addService struct {
+type service struct {
 	r storage.Repository
 }
 
-func NewAddService(r storage.Repository) *addService {
-	return &addService{r}
+func NewService(r storage.Repository) *service {
+	return &service{r}
 }
 
-func (as *addService) Add(uid string, new plant.Plant) error {
+func (s *service) Add(uid string, new plant.Plant) error {
 	if new.Name == "" {
 		return plant.ErrMissingData
 	}
@@ -30,7 +26,7 @@ func (as *addService) Add(uid string, new plant.Plant) error {
 	new.CreatedAt = time.Now().UTC()
 	new.EditedAt = time.Now().UTC()
 
-	_, err := as.r.InsertOne(uid, new)
+	_, err := s.r.InsertOne(uid, new)
 	if err != nil {
 		return err
 	}

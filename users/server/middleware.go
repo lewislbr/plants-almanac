@@ -1,8 +1,6 @@
 package server
 
-import (
-	"net/http"
-)
+import "net/http"
 
 func headersMiddleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

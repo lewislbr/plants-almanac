@@ -1,8 +1,6 @@
 package plant
 
-import (
-	"time"
-)
+import "time"
 
 // Ideally the JSON and BSON tags should be defined in an specific entity
 // for the server and storage components, respectively, but this being a small

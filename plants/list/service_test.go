@@ -23,8 +23,8 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		listService := NewListService(repo)
-		result, err := listService.ListAll(uid)
+		ls := NewService(repo)
+		result, err := ls.ListAll(uid)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -41,9 +41,9 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		listService := NewListService(repo)
+		ls := NewService(repo)
 		id := ""
-		result, err := listService.ListOne(uid, id)
+		result, err := ls.ListOne(uid, id)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
 		require.Equal(t, plant.Plant{}, result)
@@ -60,9 +60,9 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		listService := NewListService(repo)
+		ls := NewService(repo)
 		id := "122"
-		result, err := listService.ListOne(uid, id)
+		result, err := ls.ListOne(uid, id)
 
 		require.EqualError(t, err, plant.ErrNotFound.Error())
 		require.Equal(t, plant.Plant{}, result)
@@ -79,9 +79,9 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		listService := NewListService(repo)
+		ls := NewService(repo)
 		id := "123"
-		result, err := listService.ListOne(uid, id)
+		result, err := ls.ListOne(uid, id)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)

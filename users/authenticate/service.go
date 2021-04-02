@@ -1,33 +1,33 @@
 package authenticate
 
 import (
-	"users/generate"
 	"users/storage"
-
 	"users/user"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthenticateService interface {
-	Authenticate(cred user.Credentials) (string, error)
+type (
+	Generater interface {
+		GenerateJWT(string) (string, error)
+	}
+
+	service struct {
+		gs Generater
+		r  storage.Repository
+	}
+)
+
+func NewService(gs Generater, r storage.Repository) *service {
+	return &service{gs, r}
 }
 
-type authenticateService struct {
-	gs generate.GenerateService
-	r  storage.Repository
-}
-
-func NewAuthenticateService(gs generate.GenerateService, r storage.Repository) *authenticateService {
-	return &authenticateService{gs, r}
-}
-
-func (ns *authenticateService) Authenticate(cred user.Credentials) (string, error) {
+func (s *service) Authenticate(cred user.Credentials) (string, error) {
 	if cred.Email == "" || cred.Password == "" {
 		return "", user.ErrMissingData
 	}
 
-	existUser, err := ns.r.FindOne(cred.Email)
+	existUser, err := s.r.FindOne(cred.Email)
 	if err != nil {
 		return "", user.ErrNotFound
 	}
@@ -37,7 +37,7 @@ func (ns *authenticateService) Authenticate(cred user.Credentials) (string, erro
 		return "", user.ErrInvalidPassword
 	}
 
-	jwt, err := ns.gs.GenerateJWT(existUser.ID)
+	jwt, err := s.gs.GenerateJWT(existUser.ID)
 	if err != nil {
 		return "", err
 	}

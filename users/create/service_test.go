@@ -16,12 +16,12 @@ func TestCreate(t *testing.T) {
 		repo := &storage.MockRepo{
 			Users: []user.User{},
 		}
-		createService := NewCreateService(repo)
-		newUser := user.User{
+		cs := NewService(repo)
+		new := user.User{
 			Email:    "test@test.com",
 			Password: "1234",
 		}
-		err := createService.Create(newUser)
+		err := cs.Create(new)
 
 		require.EqualError(t, err, user.ErrMissingData.Error())
 	})
@@ -38,13 +38,13 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		createService := NewCreateService(repo)
-		newUser := user.User{
+		cs := NewService(repo)
+		new := user.User{
 			Name:     "test",
 			Email:    "test@test.com",
 			Password: "1234",
 		}
-		err := createService.Create(newUser)
+		err := cs.Create(new)
 
 		require.EqualError(t, err, user.ErrUserExists.Error())
 	})
@@ -55,13 +55,13 @@ func TestCreate(t *testing.T) {
 		repo := &storage.MockRepo{
 			Users: []user.User{},
 		}
-		createService := NewCreateService(repo)
-		newUser := user.User{
+		cs := NewService(repo)
+		new := user.User{
 			Name:     "test",
 			Email:    "test@test.com",
 			Password: "1234",
 		}
-		err := createService.Create(newUser)
+		err := cs.Create(new)
 
 		require.NoError(t, err)
 	})

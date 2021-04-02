@@ -10,24 +10,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type CreateService interface {
-	Create(user.User) error
-}
-
-type createService struct {
+type service struct {
 	r storage.Repository
 }
 
-func NewCreateService(r storage.Repository) *createService {
-	return &createService{r}
+func NewService(r storage.Repository) *service {
+	return &service{r}
 }
 
-func (cs *createService) Create(new user.User) error {
+func (s *service) Create(new user.User) error {
 	if new.Name == "" || new.Email == "" || new.Password == "" {
 		return user.ErrMissingData
 	}
 
-	_, err := cs.r.FindOne(new.Email)
+	_, err := s.r.FindOne(new.Email)
 	if err == nil {
 		return user.ErrUserExists
 	}
@@ -42,7 +38,7 @@ func (cs *createService) Create(new user.User) error {
 
 	new.Hash = string(hash)
 
-	_, err = cs.r.InsertOne(new)
+	_, err = s.r.InsertOne(new)
 	if err != nil {
 		return err
 	}

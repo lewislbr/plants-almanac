@@ -23,9 +23,9 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		deleteService := NewDeleteService(repo)
+		ds := NewService(repo)
 		id := ""
-		err := deleteService.Delete(uid, id)
+		err := ds.Delete(uid, id)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
 	})
@@ -41,9 +41,9 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		deleteService := NewDeleteService(repo)
+		ds := NewService(repo)
 		id := "124"
-		err := deleteService.Delete(uid, id)
+		err := ds.Delete(uid, id)
 
 		require.EqualError(t, err, plant.ErrNotFound.Error())
 	})
@@ -59,9 +59,9 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}
-		deleteService := NewDeleteService(repo)
+		ds := NewService(repo)
 		id := "123"
-		err := deleteService.Delete(uid, id)
+		err := ds.Delete(uid, id)
 
 		require.NoError(t, err)
 	})

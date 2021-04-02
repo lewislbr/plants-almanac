@@ -9,23 +9,34 @@ import (
 	"os"
 	"strings"
 
-	"users/authenticate"
-	"users/authorize"
-	"users/create"
-	"users/generate"
 	"users/user"
 )
 
 var isDevelopment = os.Getenv("MODE") == "development"
 
-type handler struct {
-	cs create.CreateService
-	ns authenticate.AuthenticateService
-	zs authorize.AuthorizeService
-	gs generate.GenerateService
-}
+type (
+	Creater interface {
+		Create(user.User) error
+	}
+	Authenticater interface {
+		Authenticate(cred user.Credentials) (string, error)
+	}
+	Authorizer interface {
+		Authorize(string) (string, error)
+	}
+	Generater interface {
+		GenerateJWT(string) (string, error)
+	}
 
-func NewHandler(cs create.CreateService, ns authenticate.AuthenticateService, zs authorize.AuthorizeService, gs generate.GenerateService) *handler {
+	handler struct {
+		cs Creater
+		ns Authenticater
+		zs Authorizer
+		gs Generater
+	}
+)
+
+func NewHandler(cs Creater, ns Authenticater, zs Authorizer, gs Generater) *handler {
 	return &handler{cs, ns, zs, gs}
 }
 

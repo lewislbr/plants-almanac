@@ -5,24 +5,36 @@ import (
 	"log"
 	"net/http"
 
-	"plants/add"
-	"plants/delete"
-	"plants/edit"
-	"plants/list"
 	"plants/plant"
 
 	"github.com/go-chi/chi"
 	"github.com/pkg/errors"
 )
 
-type handler struct {
-	as add.AddService
-	ls list.ListService
-	es edit.EditService
-	ds delete.DeleteService
-}
+type (
+	Adder interface {
+		Add(string, plant.Plant) error
+	}
+	Lister interface {
+		ListAll(string) ([]plant.Plant, error)
+		ListOne(string, string) (plant.Plant, error)
+	}
+	Editer interface {
+		Edit(string, string, plant.Plant) error
+	}
+	Deleter interface {
+		Delete(string, string) error
+	}
 
-func NewHandler(as add.AddService, ls list.ListService, es edit.EditService, ds delete.DeleteService) *handler {
+	handler struct {
+		as Adder
+		ls Lister
+		es Editer
+		ds Deleter
+	}
+)
+
+func NewHandler(as Adder, ls Lister, es Editer, ds Deleter) *handler {
 	return &handler{as, ls, es, ds}
 }
 

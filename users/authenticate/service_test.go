@@ -18,12 +18,12 @@ func TestAuthenticate(t *testing.T) {
 		repo := &storage.MockRepo{
 			Users: []user.User{},
 		}
-		generateService := generate.NewGenerateService("test")
-		authenticateService := NewAuthenticateService(generateService, repo)
+		gs := generate.NewService("test")
+		ns := NewService(gs, repo)
 		creds := user.Credentials{
 			Email: "test@test.com",
 		}
-		jwt, err := authenticateService.Authenticate(creds)
+		jwt, err := ns.Authenticate(creds)
 
 		require.Empty(t, jwt)
 		require.EqualError(t, err, user.ErrMissingData.Error())
@@ -35,13 +35,13 @@ func TestAuthenticate(t *testing.T) {
 		repo := &storage.MockRepo{
 			Users: []user.User{},
 		}
-		generateService := generate.NewGenerateService("test")
-		authenticateService := NewAuthenticateService(generateService, repo)
+		gs := generate.NewService("test")
+		ns := NewService(gs, repo)
 		creds := user.Credentials{
 			Email:    "test@test.com",
 			Password: "1234",
 		}
-		jwt, err := authenticateService.Authenticate(creds)
+		jwt, err := ns.Authenticate(creds)
 
 		require.Empty(t, jwt)
 		require.EqualError(t, err, user.ErrNotFound.Error())
@@ -61,13 +61,13 @@ func TestAuthenticate(t *testing.T) {
 				},
 			},
 		}
-		generateService := generate.NewGenerateService("test")
-		authenticateService := NewAuthenticateService(generateService, repo)
+		gs := generate.NewService("test")
+		ns := NewService(gs, repo)
 		creds := user.Credentials{
 			Email:    "test@test.com",
 			Password: "12345",
 		}
-		jwt, err := authenticateService.Authenticate(creds)
+		jwt, err := ns.Authenticate(creds)
 
 		require.Empty(t, jwt)
 		require.EqualError(t, err, user.ErrInvalidPassword.Error())
@@ -88,13 +88,13 @@ func TestAuthenticate(t *testing.T) {
 				},
 			},
 		}
-		generateService := generate.NewGenerateService("test")
-		authenticateService := NewAuthenticateService(generateService, repo)
+		gs := generate.NewService("test")
+		ns := NewService(gs, repo)
 		creds := user.Credentials{
 			Email:    "test@test.com",
 			Password: password,
 		}
-		jwt, err := authenticateService.Authenticate(creds)
+		jwt, err := ns.Authenticate(creds)
 
 		require.NotEmpty(t, jwt)
 		require.NoError(t, err)

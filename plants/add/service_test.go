@@ -18,11 +18,11 @@ func TestCreate(t *testing.T) {
 		repo := &storage.MockRepo{
 			Plants: []plant.Plant{},
 		}
-		addService := NewAddService(repo)
+		as := NewService(repo)
 		newPlant := plant.Plant{
 			Name: "",
 		}
-		err := addService.Add(uid, newPlant)
+		err := as.Add(uid, newPlant)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
 	})
@@ -33,11 +33,11 @@ func TestCreate(t *testing.T) {
 		repo := &storage.MockRepo{
 			Plants: []plant.Plant{},
 		}
-		addService := NewAddService(repo)
+		as := NewService(repo)
 		newPlant := plant.Plant{
 			Name: "test",
 		}
-		err := addService.Add(uid, newPlant)
+		err := as.Add(uid, newPlant)
 
 		require.NoError(t, err)
 	})

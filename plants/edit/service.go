@@ -3,30 +3,32 @@ package edit
 import (
 	"time"
 
-	"plants/list"
 	"plants/plant"
 	"plants/storage"
 )
 
-type EditService interface {
-	Edit(string, string, plant.Plant) error
+type (
+	Lister interface {
+		ListAll(string) ([]plant.Plant, error)
+		ListOne(string, string) (plant.Plant, error)
+	}
+
+	service struct {
+		ls Lister
+		r  storage.Repository
+	}
+)
+
+func NewService(ls Lister, r storage.Repository) *service {
+	return &service{ls, r}
 }
 
-type editService struct {
-	ls list.ListService
-	r  storage.Repository
-}
-
-func NewEditService(ls list.ListService, r storage.Repository) *editService {
-	return &editService{ls, r}
-}
-
-func (es *editService) Edit(uid, id string, update plant.Plant) error {
+func (s *service) Edit(uid, id string, update plant.Plant) error {
 	if update.Name == "" {
 		return plant.ErrMissingData
 	}
 
-	exist, err := es.ls.ListOne(uid, id)
+	exist, err := s.ls.ListOne(uid, id)
 	if err != nil {
 		return plant.ErrNotFound
 	}
@@ -34,7 +36,7 @@ func (es *editService) Edit(uid, id string, update plant.Plant) error {
 	update.CreatedAt = exist.CreatedAt
 	update.EditedAt = time.Now().UTC()
 
-	result, err := es.r.UpdateOne(uid, id, update)
+	result, err := s.r.UpdateOne(uid, id, update)
 	if err != nil {
 		return err
 	}

@@ -6,11 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"plants/add"
-	"plants/delete"
-	"plants/edit"
-	"plants/list"
-
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -20,7 +15,7 @@ import (
 
 var server = &http.Server{}
 
-func setUpRouter(h *handler, auth, web string) *chi.Mux {
+func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, port, web string) *http.Server {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
@@ -29,33 +24,31 @@ func setUpRouter(h *handler, auth, web string) *chi.Mux {
 	r.Use(cors.Handler(cors.Options{
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Origin"},
-		AllowedMethods:   []string{"DELETE", "GET", "OPTIONS", "PUT", "POST"},
+		AllowedMethods:   []string{"GET", "OPTIONS", "POST"},
 		AllowedOrigins:   []string{web},
 		MaxAge:           86400,
 	}))
-	r.Use(headersMiddleware, authorizationMiddleware(auth))
+	r.Use(headersMiddleware)
 
-	r.Post("/add", h.Add)
-	r.Get("/list", h.ListAll)
-	r.Get("/list/{id}", h.ListOne)
-	r.Put("/edit/{id}", h.Edit)
-	r.Delete("/delete/{id}", h.Delete)
+	h := NewHandler(cs, ns, zs, gs)
 
-	return r
-}
-
-func Start(as add.AddService, ls list.ListService, es edit.EditService, ds delete.DeleteService, port, auth, web string) error {
-	handler := NewHandler(as, ls, es, ds)
-	router := setUpRouter(handler, auth, web)
+	r.Post("/signup", h.Create)
+	r.Post("/login", h.LogIn)
+	r.Get("/authorization", h.Authorize)
+	r.Get("/refresh", h.Refresh)
 
 	server.Addr = ":" + port
-	server.Handler = router
+	server.Handler = r
 	server.IdleTimeout = 120 * time.Second
 	server.MaxHeaderBytes = 1 << 20 // 1 MB
 	server.ReadTimeout = 5 * time.Second
 	server.WriteTimeout = 10 * time.Second
 
-	fmt.Println("Plants server ready ✅")
+	return server
+}
+
+func Start() error {
+	fmt.Println("Users server ready ✅")
 
 	err := server.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {

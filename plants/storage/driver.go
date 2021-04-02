@@ -8,7 +8,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectDatabase(uri, db string) (*mongo.Database, error) {
+var database *mongo.Database
+
+func Connect(uri, db string) (*mongo.Database, error) {
 	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
@@ -22,11 +24,17 @@ func ConnectDatabase(uri, db string) (*mongo.Database, error) {
 
 	fmt.Println("Plants database ready ✅")
 
-	return client.Database(db), nil
+	database = client.Database(db)
+
+	return database, nil
 }
 
-func DisconnectDatabase(ctx context.Context, db *mongo.Database) error {
+func Disconnect(ctx context.Context) error {
+	if database == nil {
+		return nil
+	}
+
 	fmt.Println("Disconnecting database...")
 
-	return db.Client().Disconnect(ctx)
+	return database.Client().Disconnect(ctx)
 }

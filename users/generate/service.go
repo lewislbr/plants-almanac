@@ -8,21 +8,17 @@ import (
 	jwtgo "github.com/dgrijalva/jwt-go"
 )
 
-type GenerateService interface {
-	GenerateJWT(string) (string, error)
-}
-
-type generateService struct {
+type service struct {
 	secret string
 }
 
-func NewGenerateService(secret string) *generateService {
-	return &generateService{
+func NewService(secret string) *service {
+	return &service{
 		secret: secret,
 	}
 }
 
-func (gs *generateService) GenerateJWT(uid string) (string, error) {
+func (s *service) GenerateJWT(uid string) (string, error) {
 	if uid == "" {
 		return "", user.ErrMissingData
 	}
@@ -32,7 +28,7 @@ func (gs *generateService) GenerateJWT(uid string) (string, error) {
 		"iss": "users",
 		"uid": uid,
 	})
-	jwtString, err := jwt.SignedString([]byte(gs.secret))
+	jwtString, err := jwt.SignedString([]byte(s.secret))
 	if err != nil {
 		return "", err
 	}
