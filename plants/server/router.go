@@ -67,10 +67,5 @@ func Start(as plant.AddService, ls plant.ListService, es plant.EditService, ds p
 func Stop(ctx context.Context) error {
 	fmt.Println("Stopping server...")
 
-	err := server.Shutdown(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return server.Shutdown(ctx)
 }

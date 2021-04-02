@@ -3,10 +3,10 @@ import {useHistory} from "react-router-dom"
 import {Button, IconButton, InputAdornment, TextField, Typography} from "@material-ui/core"
 import {Visibility, VisibilityOff} from "@material-ui/icons"
 import {Error, Loading} from "../../shared/components"
-import * as userService from "../services/user"
-import * as userCopy from "../constants/copy"
-import * as userConstant from "../constants/user"
-import * as sharedCopy from "../../shared/constants/copy"
+import {logIn} from "../services/user"
+import {LOG_IN} from "../constants/copy"
+import {EMAIL_PATTERN, PASSWORD_PATTERN} from "../constants/user"
+import {CANCEL} from "../../shared/constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
 import {AuthContext} from "../contexts/auth"
 
@@ -35,7 +35,7 @@ export function LogIn(): JSX.Element {
   }, [missingFields, activeErrors])
 
   function updateEmail(event: ChangeEvent<HTMLInputElement>): void {
-    if (!userConstant.EMAIL_PATTERN.test(event.target.value)) {
+    if (!EMAIL_PATTERN.test(event.target.value)) {
       setErrors((errors) => ({...errors, email: true}))
     } else {
       setErrors((errors) => ({...errors, email: false}))
@@ -45,7 +45,7 @@ export function LogIn(): JSX.Element {
   }
 
   function updatePassword(event: ChangeEvent<HTMLTextAreaElement>): void {
-    if (!userConstant.PASSWORD_PATTERN.test(event.target.value)) {
+    if (!PASSWORD_PATTERN.test(event.target.value)) {
       setErrors((errors) => ({...errors, password: true}))
     } else {
       setErrors((errors) => ({...errors, password: false}))
@@ -58,11 +58,11 @@ export function LogIn(): JSX.Element {
     setShowPassword(!showPassword)
   }
 
-  async function logIn(): Promise<void> {
+  async function handleLogIn(): Promise<void> {
     setStatus(HTTPStatus.LOADING)
 
     try {
-      await userService.logIn({
+      await logIn({
         email,
         password,
       })
@@ -85,7 +85,7 @@ export function LogIn(): JSX.Element {
 
   return (
     <>
-      <Typography variant="h1">{userCopy.LOG_IN}</Typography>
+      <Typography variant="h1">{LOG_IN}</Typography>
       {status === HTTPStatus.LOADING ? (
         <Loading />
       ) : (
@@ -123,11 +123,11 @@ export function LogIn(): JSX.Element {
             color="primary"
             disabled={buttonDisabled}
             fullWidth
-            onClick={logIn}
+            onClick={handleLogIn}
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {userCopy.LOG_IN}
+            {LOG_IN}
           </Button>
           <Button
             color="secondary"
@@ -136,7 +136,7 @@ export function LogIn(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {sharedCopy.CANCEL}
+            {CANCEL}
           </Button>
         </section>
       )}

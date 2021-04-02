@@ -66,7 +66,14 @@ func (h *handler) ListAll(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("content-type", "application/json")
 
-	json.NewEncoder(w).Encode(result)
+	err = json.NewEncoder(w).Encode(result)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		log.Printf("%+v\n", err)
+
+		return
+	}
 }
 
 func (h *handler) ListOne(w http.ResponseWriter, r *http.Request) {
@@ -94,7 +101,14 @@ func (h *handler) ListOne(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("content-type", "application/json")
 
-	json.NewEncoder(w).Encode(result)
+	err = json.NewEncoder(w).Encode(result)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		log.Printf("%+v\n", err)
+
+		return
+	}
 }
 
 func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {

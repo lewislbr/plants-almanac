@@ -1,5 +1,5 @@
 import React, {createContext, Dispatch, ReactNode, SetStateAction, useState} from "react"
-import * as userService from "../services/user"
+import {isAuthenticated} from "../services/user"
 
 export const AuthContext = createContext<{
   authenticatedUser: boolean
@@ -7,7 +7,7 @@ export const AuthContext = createContext<{
 }>({authenticatedUser: false, setAuthenticatedUser: () => true})
 
 export function AuthProvider({children}: {children: ReactNode}): JSX.Element {
-  const [authenticatedUser, setAuthenticatedUser] = useState(userService.isAuthenticated())
+  const [authenticatedUser, setAuthenticatedUser] = useState(isAuthenticated())
 
   return (
     <AuthContext.Provider value={{authenticatedUser, setAuthenticatedUser}}>

@@ -38,7 +38,7 @@ func setUpRouter(h *handler) *chi.Mux {
 
 	r.Post("/signup", h.Create)
 	r.Post("/login", h.LogIn)
-	r.Get("/authorize", h.Authorize)
+	r.Get("/authorization", h.Authorize)
 	r.Get("/refresh", h.Refresh)
 
 	return r
@@ -69,10 +69,5 @@ func Start(cs create.CreateService, ns authenticate.AuthenticateService, zs auth
 func Stop(ctx context.Context) error {
 	fmt.Println("Stopping server...")
 
-	err := server.Shutdown(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return server.Shutdown(ctx)
 }

@@ -1,5 +1,5 @@
 FROM golang:1-alpine AS base
-WORKDIR /go/src/plants
+WORKDIR /plants
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . ./
@@ -17,12 +17,12 @@ ENV CGO_ENABLED=0 \
     GOARCH=amd64 \
     GOOS=linux \
     MODE=production
-RUN go build -ldflags="-s -w" -o /go/bin/plants main.go
+RUN go build -ldflags="-s -w" -o /bin/plants main.go
 
 FROM alpine:latest AS certs
-RUN apk --no-cache add ca-certificates
+RUN apk --no-cache --update add ca-certificates
 
 FROM scratch AS prod
-COPY --from=prod-build /go/bin/plants ./
+COPY --from=prod-build /bin/plants ./
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 ENTRYPOINT [ "/plants" ]

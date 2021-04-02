@@ -56,4 +56,4 @@ jobs:
           --port="${{ secrets.PLANTS_PORT }}" \
           --quiet \
           --region=europe-west1 \
-          --set-env-vars=PLANTS_DATABASE_NAME="${{ secrets.PLANTS_DATABASE_NAME }}",PLANTS_MONGODB_URI="${{ secrets.PLANTS_MONGODB_URI }}",PLANTS_PORT="${{ secrets.PLANTS_PORT }}",USERS_AUTHORIZATION_URL="${{ secrets.USERS_AUTHORIZATION_URL }}",WEB_URL="${{ secrets.WEB_URL }}"
+          --set-env-vars=PLANTS_DATABASE_NAME="${{ secrets.PLANTS_DATABASE_NAME }}",PLANTS_MONGODB_URI="${{ secrets.PLANTS_MONGODB_URI }}",PLANTS_PORT="${{ secrets.PLANTS_PORT }}",USERS_URL="${{ secrets.USERS_URL }}",WEB_URL="${{ secrets.WEB_URL }}"

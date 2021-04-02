@@ -22,7 +22,7 @@ func headersMiddleware(h http.Handler) http.Handler {
 
 func authorizationMiddleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		req, err := http.NewRequest("GET", os.Getenv("USERS_AUTHORIZATION_URL"), nil)
+		req, err := http.NewRequest("GET", os.Getenv("USERS_URL")+"/authorization", nil)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 

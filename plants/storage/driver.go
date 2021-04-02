@@ -10,19 +10,21 @@ import (
 )
 
 func ConnectDatabase() (*mongo.Database, error) {
+	ctx := context.Background()
 	mongodbURI := os.Getenv("PLANTS_MONGODB_URI")
-	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongodbURI))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongodbURI))
 	if err != nil {
 		return nil, err
 	}
 
-	err = client.Ping(context.Background(), nil)
+	err = client.Ping(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	fmt.Println("Plants database ready ✅")
+
+	databaseName := os.Getenv("PLANTS_DATABASE_NAME")
 
 	return client.Database(databaseName), nil
 }
@@ -30,10 +32,5 @@ func ConnectDatabase() (*mongo.Database, error) {
 func DisconnectDatabase(ctx context.Context, db *mongo.Database) error {
 	fmt.Println("Disconnecting database...")
 
-	err := db.Client().Disconnect(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return db.Client().Disconnect(ctx)
 }

@@ -4,7 +4,7 @@ import {Container} from "@material-ui/core"
 import {AddPlant, PlantDetails, PlantList} from "./plant/views"
 import {CreateAccount, LogIn, Welcome} from "./user/views"
 import {AuthContext} from "./user/contexts/auth"
-import * as userService from "./user/services/user"
+import {refreshToken} from "./user/services/user"
 
 export function App(): JSX.Element {
   const {authenticatedUser} = useContext(AuthContext)
@@ -13,7 +13,7 @@ export function App(): JSX.Element {
     if (authenticatedUser === true) {
       ;(async (): Promise<void> => {
         try {
-          await userService.refreshToken()
+          await refreshToken()
         } catch (err) {
           console.error(err)
         }

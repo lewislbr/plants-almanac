@@ -1,13 +1,8 @@
 import {Credentials, NewUser} from "../interfaces/user"
 
 export async function signUp(user: NewUser): Promise<void> {
-  const newUserDTO = {
-    name: user.name,
-    email: user.email,
-    password: user.password,
-  }
-  const response = await fetch(process.env.USERS_SIGNUP_URL as string, {
-    body: JSON.stringify(newUserDTO),
+  const response = await fetch(`${process.env.USERS_URL as string}/signup`, {
+    body: JSON.stringify(user),
     headers: {"Content-Type": "application/json"},
     method: "POST",
   })
@@ -17,13 +12,9 @@ export async function signUp(user: NewUser): Promise<void> {
   }
 }
 
-export async function logIn(user: Credentials): Promise<void> {
-  const credentialsDTO = {
-    email: user.email,
-    password: user.password,
-  }
-  const response = await fetch(process.env.USERS_LOGIN_URL as string, {
-    body: JSON.stringify(credentialsDTO),
+export async function logIn(credentials: Credentials): Promise<void> {
+  const response = await fetch(`${process.env.USERS_URL as string}/login`, {
+    body: JSON.stringify(credentials),
     credentials: "include",
     headers: {"Content-Type": "application/json"},
     method: "POST",
@@ -35,7 +26,7 @@ export async function logIn(user: Credentials): Promise<void> {
 }
 
 export async function refreshToken(): Promise<void> {
-  const response = await fetch(process.env.USERS_REFRESH_URL as string, {
+  const response = await fetch(`${process.env.USERS_URL as string}/refresh`, {
     credentials: "include",
   })
 

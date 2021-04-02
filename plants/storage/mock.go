@@ -18,7 +18,7 @@ func (m *MockRepo) FindAll(uid string) ([]plant.Plant, error) {
 	return []plant.Plant{}, nil
 }
 
-func (m *MockRepo) FindOne(uid string, id string) (plant.Plant, error) {
+func (m *MockRepo) FindOne(uid, id string) (plant.Plant, error) {
 	for _, p := range m.Plants {
 		if id == p.ID {
 			return p, nil
@@ -28,7 +28,7 @@ func (m *MockRepo) FindOne(uid string, id string) (plant.Plant, error) {
 	return plant.Plant{}, errors.New("")
 }
 
-func (m *MockRepo) UpdateOne(uid string, id string, update plant.Plant) (int64, error) {
+func (m *MockRepo) UpdateOne(uid, id string, update plant.Plant) (int64, error) {
 	for _, p := range m.Plants {
 		if id != p.ID {
 			return 0, nil
@@ -38,7 +38,7 @@ func (m *MockRepo) UpdateOne(uid string, id string, update plant.Plant) (int64, 
 	return 1, nil
 }
 
-func (m *MockRepo) DeleteOne(uid string, id string) (int64, error) {
+func (m *MockRepo) DeleteOne(uid, id string) (int64, error) {
 	for _, p := range m.Plants {
 		if id != p.ID {
 			return 0, nil

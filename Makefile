@@ -1,8 +1,8 @@
 start:
-	@docker-compose -f docker-compose-dev.yaml -p plantdex up -d --build
+	@docker-compose -p plantdex up --build -d
 
 start-%:
-	@docker-compose -f docker-compose-dev.yaml -p plantdex up --build $*
+	@docker-compose -p plantdex up --build $*
 
 stop:
-	@docker-compose -f docker-compose-dev.yaml -p plantdex down
+	@docker-compose -p plantdex down

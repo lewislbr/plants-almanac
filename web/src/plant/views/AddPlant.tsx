@@ -2,9 +2,9 @@ import React, {ChangeEvent, useEffect, useLayoutEffect, useState} from "react"
 import {useHistory, useLocation} from "react-router-dom"
 import {Button, TextField, Typography} from "@material-ui/core"
 import {Error, Loading} from "../../shared/components"
-import * as plantService from "../services/plant"
-import * as plantCopy from "../constants/copy"
-import * as sharedCopy from "../../shared/constants/copy"
+import {addOne, editOne} from "../services/plant"
+import {ADD_PLANT, EDIT_PLANT, SAVE_CHANGES} from "../constants/copy"
+import {CANCEL} from "../../shared/constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
 import {Plant} from "../interfaces/plant"
 
@@ -102,7 +102,7 @@ export function AddPlant(): JSX.Element {
     setStatus(HTTPStatus.LOADING)
 
     try {
-      await plantService.addOne({
+      await addOne({
         name: name,
         other_names: otherNames,
         description: description,
@@ -127,7 +127,7 @@ export function AddPlant(): JSX.Element {
     setStatus(HTTPStatus.LOADING)
 
     try {
-      await plantService.editOne(prevState.id, {
+      await editOne(prevState.id, {
         name: name,
         other_names: otherNames,
         description: description,
@@ -155,9 +155,7 @@ export function AddPlant(): JSX.Element {
   return (
     <>
       {status === HTTPStatus.ERROR && <Error message={errors.http} title={"Error"} />}
-      <Typography variant="h1">
-        {isEditMode ? plantCopy.EDIT_PLANT : plantCopy.ADD_PLANT}
-      </Typography>
+      <Typography variant="h1">{isEditMode ? EDIT_PLANT : ADD_PLANT}</Typography>
       {status === HTTPStatus.LOADING ? (
         <Loading />
       ) : (
@@ -228,7 +226,7 @@ export function AddPlant(): JSX.Element {
               style={{marginTop: "30px"}}
               variant="contained"
             >
-              {plantCopy.SAVE_CHANGES}
+              {SAVE_CHANGES}
             </Button>
           ) : (
             <Button
@@ -239,7 +237,7 @@ export function AddPlant(): JSX.Element {
               style={{marginTop: "30px"}}
               variant="contained"
             >
-              {plantCopy.ADD_PLANT}
+              {ADD_PLANT}
             </Button>
           )}
           <Button
@@ -249,7 +247,7 @@ export function AddPlant(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {sharedCopy.CANCEL}
+            {CANCEL}
           </Button>
         </>
       )}

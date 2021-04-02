@@ -19,7 +19,7 @@ func (s *listService) ListAll(uid string) ([]plant.Plant, error) {
 	return result, nil
 }
 
-func (s *listService) ListOne(uid string, id string) (plant.Plant, error) {
+func (s *listService) ListOne(uid, id string) (plant.Plant, error) {
 	if id == "" {
 		return plant.Plant{}, plant.ErrMissingData
 	}

@@ -15,7 +15,7 @@ func NewEditService(ls plant.ListService, r plant.Repository) *editService {
 	return &editService{ls, r}
 }
 
-func (es *editService) Edit(uid string, id string, update plant.Plant) (int64, error) {
+func (es *editService) Edit(uid, id string, update plant.Plant) (int64, error) {
 	if update.Name == "" {
 		return 0, plant.ErrMissingData
 	}

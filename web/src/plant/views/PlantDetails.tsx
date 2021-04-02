@@ -3,9 +3,9 @@ import {useHistory, useParams} from "react-router-dom"
 import {Button, IconButton, Typography} from "@material-ui/core"
 import CancelIcon from "@material-ui/icons/Cancel"
 import {Dialog, Error, Loading} from "../../shared/components"
-import * as plantService from "../services/plant"
-import * as plantCopy from "../constants/copy"
-import * as sharedCopy from "../../shared/constants/copy"
+import {deleteOne, listOne} from "../services/plant"
+import {DELETE_PLANT, EDIT_PLANT, NO_DATA} from "../constants/copy"
+import {CANCEL} from "../../shared/constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
 import {Plant} from "../interfaces/plant"
 
@@ -23,7 +23,7 @@ export function PlantDetails(): JSX.Element {
     setStatus(HTTPStatus.LOADING)
     ;(async (): Promise<void> => {
       try {
-        const result = await plantService.listOne(id)
+        const result = await listOne(id)
 
         setData(result)
         setStatus(HTTPStatus.SUCCESS)
@@ -56,7 +56,7 @@ export function PlantDetails(): JSX.Element {
     setStatus(HTTPStatus.LOADING)
 
     try {
-      await plantService.deleteOne(id)
+      await deleteOne(id)
 
       setStatus(HTTPStatus.SUCCESS)
 
@@ -93,7 +93,7 @@ export function PlantDetails(): JSX.Element {
                 {"Other Names"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.other_names || plantCopy.NO_DATA}
+                {data.other_names || NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -101,7 +101,7 @@ export function PlantDetails(): JSX.Element {
                 {"Description"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.description || plantCopy.NO_DATA}
+                {data.description || NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -109,7 +109,7 @@ export function PlantDetails(): JSX.Element {
                 {"Plant Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.plant_season || plantCopy.NO_DATA}
+                {data.plant_season || NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -117,7 +117,7 @@ export function PlantDetails(): JSX.Element {
                 {"Harvest Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.harvest_season || plantCopy.NO_DATA}
+                {data.harvest_season || NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -125,7 +125,7 @@ export function PlantDetails(): JSX.Element {
                 {"Prune Season"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.prune_season || plantCopy.NO_DATA}
+                {data.prune_season || NO_DATA}
               </Typography>
             </div>
             <div style={{marginBottom: "30px"}}>
@@ -133,7 +133,7 @@ export function PlantDetails(): JSX.Element {
                 {"Tips"}
               </Typography>
               <Typography gutterBottom variant="body1">
-                {data.tips || plantCopy.NO_DATA}
+                {data.tips || NO_DATA}
               </Typography>
             </div>
           </section>
@@ -144,7 +144,7 @@ export function PlantDetails(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {plantCopy.EDIT_PLANT}
+            {EDIT_PLANT}
           </Button>
           <Button
             color="secondary"
@@ -153,17 +153,17 @@ export function PlantDetails(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {plantCopy.DELETE_PLANT}
+            {DELETE_PLANT}
           </Button>
           {dialogOpen && (
             <Dialog
               action={deletePlant}
-              actionText={plantCopy.DELETE_PLANT}
+              actionText={DELETE_PLANT}
               cancel={closeDialog}
-              cancelText={sharedCopy.CANCEL}
+              cancelText={CANCEL}
               message={data.name + " will be deleted."}
               open={dialogOpen}
-              title={plantCopy.DELETE_PLANT}
+              title={DELETE_PLANT}
             />
           )}
           {status === HTTPStatus.ERROR && <Error message={errors.http} title={"Error"} />}

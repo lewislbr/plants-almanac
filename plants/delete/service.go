@@ -10,7 +10,7 @@ func NewDeleteService(r plant.Repository) *deleteService {
 	return &deleteService{r}
 }
 
-func (ds *deleteService) Delete(uid string, id string) (int64, error) {
+func (ds *deleteService) Delete(uid, id string) (int64, error) {
 	if id == "" {
 		return 0, plant.ErrMissingData
 	}

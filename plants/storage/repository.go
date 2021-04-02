@@ -42,7 +42,7 @@ func (r *repository) FindAll(uid string) ([]plant.Plant, error) {
 	return results, nil
 }
 
-func (r *repository) FindOne(uid string, id string) (plant.Plant, error) {
+func (r *repository) FindOne(uid, id string) (plant.Plant, error) {
 	filter := bson.M{"_id": id}
 
 	var result plant.Plant
@@ -55,7 +55,7 @@ func (r *repository) FindOne(uid string, id string) (plant.Plant, error) {
 	return result, nil
 }
 
-func (r *repository) UpdateOne(uid string, id string, update plant.Plant) (int64, error) {
+func (r *repository) UpdateOne(uid, id string, update plant.Plant) (int64, error) {
 	filter := bson.M{"_id": id}
 	updated := bson.M{
 		"$set": bson.M{
@@ -78,7 +78,7 @@ func (r *repository) UpdateOne(uid string, id string, update plant.Plant) (int64
 	return result.ModifiedCount, nil
 }
 
-func (r *repository) DeleteOne(uid string, id string) (int64, error) {
+func (r *repository) DeleteOne(uid, id string) (int64, error) {
 	filter := bson.M{"_id": id}
 	result, err := r.db.Collection(uid).DeleteOne(context.Background(), filter)
 	if err != nil {

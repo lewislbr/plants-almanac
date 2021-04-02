@@ -89,9 +89,13 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 	if isDevelopment {
 		w.Header().Add("Set-Cookie", "st="+jwt+"; HttpOnly; Max-Age=604800")
 		w.Header().Add("Set-Cookie", "te=true; Max-Age=604800")
+
+		w.WriteHeader(http.StatusNoContent)
 	} else {
 		w.Header().Add("Set-Cookie", "st="+jwt+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; SameSite=Strict; Secure")
 		w.Header().Add("Set-Cookie", "te=true; Domain=plantdex.app; Max-Age=604800; SameSite=Strict; Secure")
+
+		w.WriteHeader(http.StatusNoContent)
 	}
 }
 
@@ -155,6 +159,7 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+
 	jwt, err = h.gs.GenerateJWT(uid)
 	if err != nil {
 		switch {
@@ -174,8 +179,12 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	if isDevelopment {
 		w.Header().Add("Set-Cookie", "st="+jwt+"; HttpOnly; Max-Age=604800")
 		w.Header().Add("Set-Cookie", "te=true; Max-Age=604800")
+
+		w.WriteHeader(http.StatusNoContent)
 	} else {
 		w.Header().Add("Set-Cookie", "st="+jwt+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; SameSite=Strict; Secure")
 		w.Header().Add("Set-Cookie", "te=true; Domain=plantdex.app; Max-Age=604800; SameSite=Strict; Secure")
+
+		w.WriteHeader(http.StatusNoContent)
 	}
 }

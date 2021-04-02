@@ -39,9 +39,7 @@ jobs:
       - name: Add environment variables
         run: |
           echo "PLANTS_URL=${{ secrets.PLANTS_URL }}" >> .env
-          echo "USERS_LOGIN_URL=${{ secrets.USERS_LOGIN_URL }}" >> .env
-          echo "USERS_SIGNUP_URL=${{ secrets.USERS_SIGNUP_URL }}" >> .env
-          echo "USERS_REFRESH_URL=${{ secrets.USERS_REFRESH_URL }}" >> .env
+          echo "USERS_URL=${{ secrets.USERS_URL }}" >> .env
 
       - name: Build image
         run: |

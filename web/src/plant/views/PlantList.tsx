@@ -3,11 +3,11 @@ import {Link as RouterLink} from "react-router-dom"
 import {FormControl, Link, MenuItem, Select, Typography} from "@material-ui/core"
 import {PlantCard} from "../components"
 import {Error, Loading, NavBar} from "../../shared/components"
-import * as plantService from "../services/plant"
-import * as sortService from "../services/sort"
-import * as plantCopy from "../constants/copy"
+import {listAll} from "../services/plant"
+import {asc, desc} from "../services/sort"
+import {PLANTS} from "../constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
-import * as sortConstant from "../constants/sort"
+import {Options, SORT_METHOD} from "../constants/sort"
 import {Plant} from "../interfaces/plant"
 
 export function PlantList(): JSX.Element {
@@ -17,26 +17,26 @@ export function PlantList(): JSX.Element {
   const [data, setData] = useState([] as Plant[])
   const [status, setStatus] = useState(HTTPStatus.IDLE)
   const [sortMethod, setSortMethod] = useState(
-    localStorage.getItem(sortConstant.SORT_METHOD) ?? sortConstant.Options.Created.KEY,
+    localStorage.getItem(SORT_METHOD) ?? Options.Created.KEY,
   )
 
   useEffect(() => {
     setStatus(HTTPStatus.LOADING)
     ;(async (): Promise<void> => {
       try {
-        const result = await plantService.listAll()
+        const result = await listAll()
 
         switch (sortMethod) {
-          case sortConstant.Options.Created.KEY:
-            setData(result.slice().sort(sortService.desc("created_at")))
+          case Options.Created.KEY:
+            setData(result.slice().sort(desc("created_at")))
 
             break
-          case sortConstant.Options.Edited.KEY:
-            setData(result.slice().sort(sortService.desc("edited_at")))
+          case Options.Edited.KEY:
+            setData(result.slice().sort(desc("edited_at")))
 
             break
-          case sortConstant.Options.Name.KEY:
-            setData(result.slice().sort(sortService.asc("name")))
+          case Options.Name.KEY:
+            setData(result.slice().sort(asc("name")))
 
             break
         }
@@ -54,25 +54,25 @@ export function PlantList(): JSX.Element {
 
   function sortBy(event: ChangeEvent<{name?: string; value: unknown}>): void {
     switch (event.target.value) {
-      case sortConstant.Options.Created.KEY:
-        setData(data.slice().sort(sortService.desc("created_at")))
-        setSortMethod(sortConstant.Options.Created.KEY)
+      case Options.Created.KEY:
+        setData(data.slice().sort(desc("created_at")))
+        setSortMethod(Options.Created.KEY)
 
-        localStorage.setItem(sortConstant.SORT_METHOD, sortConstant.Options.Created.KEY)
-
-        break
-      case sortConstant.Options.Edited.KEY:
-        setData(data.slice().sort(sortService.desc("edited_at")))
-        setSortMethod(sortConstant.Options.Edited.KEY)
-
-        localStorage.setItem(sortConstant.SORT_METHOD, sortConstant.Options.Edited.KEY)
+        localStorage.setItem(SORT_METHOD, Options.Created.KEY)
 
         break
-      case sortConstant.Options.Name.KEY:
-        setData(data.slice().sort(sortService.asc("name")))
-        setSortMethod(sortConstant.Options.Name.KEY)
+      case Options.Edited.KEY:
+        setData(data.slice().sort(desc("edited_at")))
+        setSortMethod(Options.Edited.KEY)
 
-        localStorage.setItem(sortConstant.SORT_METHOD, sortConstant.Options.Name.KEY)
+        localStorage.setItem(SORT_METHOD, Options.Edited.KEY)
+
+        break
+      case Options.Name.KEY:
+        setData(data.slice().sort(asc("name")))
+        setSortMethod(Options.Name.KEY)
+
+        localStorage.setItem(SORT_METHOD, Options.Name.KEY)
 
         break
     }
@@ -87,18 +87,12 @@ export function PlantList(): JSX.Element {
           justifyContent: "space-between",
         }}
       >
-        <Typography variant="h1">{plantCopy.PLANTS}</Typography>
+        <Typography variant="h1">{PLANTS}</Typography>
         <FormControl style={{fontSize: "15px", padding: "0"}} variant="outlined">
           <Select onChange={(event): void => sortBy(event)} value={sortMethod}>
-            <MenuItem value={sortConstant.Options.Created.KEY}>
-              {sortConstant.Options.Created.TEXT}
-            </MenuItem>
-            <MenuItem value={sortConstant.Options.Edited.KEY}>
-              {sortConstant.Options.Edited.TEXT}
-            </MenuItem>
-            <MenuItem value={sortConstant.Options.Name.KEY}>
-              {sortConstant.Options.Name.TEXT}
-            </MenuItem>
+            <MenuItem value={Options.Created.KEY}>{Options.Created.TEXT}</MenuItem>
+            <MenuItem value={Options.Edited.KEY}>{Options.Edited.TEXT}</MenuItem>
+            <MenuItem value={Options.Name.KEY}>{Options.Name.TEXT}</MenuItem>
           </Select>
         </FormControl>
       </div>

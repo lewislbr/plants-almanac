@@ -3,10 +3,10 @@ import {useHistory} from "react-router-dom"
 import {Button, IconButton, InputAdornment, TextField, Typography} from "@material-ui/core"
 import {Visibility, VisibilityOff} from "@material-ui/icons"
 import {Error, Loading} from "../../shared/components"
-import * as userService from "../services/user"
-import * as userCopy from "../constants/copy"
-import * as userConstant from "../constants/user"
-import * as sharedCopy from "../../shared/constants/copy"
+import {logIn, signUp} from "../services/user"
+import {CREATE_ACCOUNT} from "../constants/copy"
+import {EMAIL_PATTERN, NAME_PATTERN, PASSWORD_PATTERN} from "../constants/user"
+import {CANCEL} from "../../shared/constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
 import {AuthContext} from "../contexts/auth"
 
@@ -37,7 +37,7 @@ export function CreateAccount(): JSX.Element {
   }, [missingFields, activeErrors])
 
   function updateName(event: ChangeEvent<HTMLInputElement>): void {
-    if (!userConstant.NAME_PATTERN.test(event.target.value)) {
+    if (!NAME_PATTERN.test(event.target.value)) {
       setErrors((errors) => ({...errors, name: true}))
     } else {
       setErrors((errors) => ({...errors, name: false}))
@@ -47,7 +47,7 @@ export function CreateAccount(): JSX.Element {
   }
 
   function updateEmail(event: ChangeEvent<HTMLInputElement>): void {
-    if (!userConstant.EMAIL_PATTERN.test(event.target.value)) {
+    if (!EMAIL_PATTERN.test(event.target.value)) {
       setErrors((errors) => ({...errors, email: true}))
     } else {
       setErrors((errors) => ({...errors, email: false}))
@@ -57,7 +57,7 @@ export function CreateAccount(): JSX.Element {
   }
 
   function updatePassword(event: ChangeEvent<HTMLTextAreaElement>): void {
-    if (!userConstant.PASSWORD_PATTERN.test(event.target.value)) {
+    if (!PASSWORD_PATTERN.test(event.target.value)) {
       setErrors((errors) => ({...errors, password: true}))
     } else {
       setErrors((errors) => ({...errors, password: false}))
@@ -70,16 +70,16 @@ export function CreateAccount(): JSX.Element {
     setShowPassword(!showPassword)
   }
 
-  async function signUp(): Promise<void> {
+  async function handleSignUp(): Promise<void> {
     setStatus(HTTPStatus.LOADING)
 
     try {
-      await userService.signUp({
+      await signUp({
         name,
         email,
         password,
       })
-      await userService.logIn({
+      await logIn({
         email,
         password,
       })
@@ -102,7 +102,7 @@ export function CreateAccount(): JSX.Element {
 
   return (
     <>
-      <Typography variant="h1">{userCopy.CREATE_ACCOUNT}</Typography>
+      <Typography variant="h1">{CREATE_ACCOUNT}</Typography>
       {status === HTTPStatus.LOADING ? (
         <Loading />
       ) : (
@@ -149,11 +149,11 @@ export function CreateAccount(): JSX.Element {
             color="primary"
             disabled={buttonDisabled}
             fullWidth
-            onClick={signUp}
+            onClick={handleSignUp}
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {userCopy.CREATE_ACCOUNT}
+            {CREATE_ACCOUNT}
           </Button>
           <Button
             color="secondary"
@@ -162,7 +162,7 @@ export function CreateAccount(): JSX.Element {
             style={{marginTop: "30px"}}
             variant="contained"
           >
-            {sharedCopy.CANCEL}
+            {CANCEL}
           </Button>
         </section>
       )}

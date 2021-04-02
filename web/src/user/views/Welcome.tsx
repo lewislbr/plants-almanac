@@ -1,7 +1,7 @@
 import React from "react"
 import {useHistory} from "react-router-dom"
 import {Button, Typography} from "@material-ui/core"
-import * as userCopy from "../constants/copy"
+import {CREATE_ACCOUNT, LOG_IN, WELCOME} from "../constants/copy"
 
 export function Welcome(): JSX.Element {
   const history = useHistory()
@@ -16,7 +16,7 @@ export function Welcome(): JSX.Element {
 
   return (
     <>
-      <Typography variant="h1">{userCopy.WELCOME}</Typography>
+      <Typography variant="h1">{WELCOME}</Typography>
       <section style={{marginTop: "50vh"}}>
         <Button
           color="primary"
@@ -25,7 +25,7 @@ export function Welcome(): JSX.Element {
           style={{marginTop: "30px"}}
           variant="contained"
         >
-          {userCopy.LOG_IN}
+          {LOG_IN}
         </Button>
         <Button
           color="secondary"
@@ -34,7 +34,7 @@ export function Welcome(): JSX.Element {
           style={{marginTop: "30px"}}
           variant="contained"
         >
-          {userCopy.CREATE_ACCOUNT}
+          {CREATE_ACCOUNT}
         </Button>
       </section>
     </>
