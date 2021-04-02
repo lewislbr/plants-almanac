@@ -1,24 +1,34 @@
 package delete
 
-import "plants/plant"
+import (
+	"plants/plant"
+	"plants/storage"
+)
 
-type deleteService struct {
-	r plant.Repository
+type DeleteService interface {
+	Delete(string, string) error
 }
 
-func NewDeleteService(r plant.Repository) *deleteService {
+type deleteService struct {
+	r storage.Repository
+}
+
+func NewDeleteService(r storage.Repository) *deleteService {
 	return &deleteService{r}
 }
 
-func (ds *deleteService) Delete(uid, id string) (int64, error) {
+func (ds *deleteService) Delete(uid, id string) error {
 	if id == "" {
-		return 0, plant.ErrMissingData
+		return plant.ErrMissingData
 	}
 
 	result, err := ds.r.DeleteOne(uid, id)
 	if err != nil {
-		return 0, err
+		return err
+	}
+	if result == 0 {
+		return plant.ErrNotFound
 	}
 
-	return result, nil
+	return nil
 }

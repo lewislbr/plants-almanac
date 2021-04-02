@@ -25,10 +25,27 @@ func TestCreate(t *testing.T) {
 		}
 		deleteService := NewDeleteService(repo)
 		id := ""
-		result, err := deleteService.Delete(uid, id)
+		err := deleteService.Delete(uid, id)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
-		require.Equal(t, int64(0), result)
+	})
+
+	t.Run("should error when there are no matches", func(t *testing.T) {
+		t.Parallel()
+
+		repo := &storage.MockRepo{
+			Plants: []plant.Plant{
+				{
+					ID:   "123",
+					Name: "test",
+				},
+			},
+		}
+		deleteService := NewDeleteService(repo)
+		id := "124"
+		err := deleteService.Delete(uid, id)
+
+		require.EqualError(t, err, plant.ErrNotFound.Error())
 	})
 
 	t.Run("should delete a plant with no error", func(t *testing.T) {
@@ -44,9 +61,8 @@ func TestCreate(t *testing.T) {
 		}
 		deleteService := NewDeleteService(repo)
 		id := "123"
-		result, err := deleteService.Delete(uid, id)
+		err := deleteService.Delete(uid, id)
 
 		require.NoError(t, err)
-		require.Equal(t, int64(1), result)
 	})
 }

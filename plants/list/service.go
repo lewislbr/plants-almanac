@@ -1,12 +1,20 @@
 package list
 
-import "plants/plant"
+import (
+	"plants/plant"
+	"plants/storage"
+)
 
-type listService struct {
-	r plant.Repository
+type ListService interface {
+	ListAll(string) ([]plant.Plant, error)
+	ListOne(string, string) (plant.Plant, error)
 }
 
-func NewListService(r plant.Repository) *listService {
+type listService struct {
+	r storage.Repository
+}
+
+func NewListService(r storage.Repository) *listService {
 	return &listService{r}
 }
 

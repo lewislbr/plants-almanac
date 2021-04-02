@@ -7,7 +7,10 @@ import (
 	"os"
 	"time"
 
-	"plants/plant"
+	"plants/add"
+	"plants/delete"
+	"plants/edit"
+	"plants/list"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -42,7 +45,7 @@ func setUpRouter(h *handler) *chi.Mux {
 	return r
 }
 
-func Start(as plant.AddService, ls plant.ListService, es plant.EditService, ds plant.DeleteService) error {
+func Start(as add.AddService, ls list.ListService, es edit.EditService, ds delete.DeleteService) error {
 	handler := NewHandler(as, ls, es, ds)
 	router := setUpRouter(handler)
 	port := os.Getenv("PLANTS_PORT")

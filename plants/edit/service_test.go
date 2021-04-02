@@ -30,10 +30,9 @@ func TestCreate(t *testing.T) {
 		newPlant := plant.Plant{
 			Name: "",
 		}
-		result, err := editService.Edit(uid, id, newPlant)
+		err := editService.Edit(uid, id, newPlant)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
-		require.Equal(t, int64(0), result)
 	})
 
 	t.Run("should error when the plant is not found", func(t *testing.T) {
@@ -53,10 +52,9 @@ func TestCreate(t *testing.T) {
 		newPlant := plant.Plant{
 			Name: "test",
 		}
-		result, err := editService.Edit(uid, id, newPlant)
+		err := editService.Edit(uid, id, newPlant)
 
 		require.EqualError(t, err, plant.ErrNotFound.Error())
-		require.Equal(t, int64(0), result)
 	})
 
 	t.Run("should edit a plant with no error", func(t *testing.T) {
@@ -76,9 +74,8 @@ func TestCreate(t *testing.T) {
 		newPlant := plant.Plant{
 			Name: "test2",
 		}
-		result, err := editService.Edit(uid, id, newPlant)
+		err := editService.Edit(uid, id, newPlant)
 
 		require.NoError(t, err)
-		require.Equal(t, int64(1), result)
 	})
 }

@@ -5,6 +5,10 @@ import (
 	"log"
 	"net/http"
 
+	"plants/add"
+	"plants/delete"
+	"plants/edit"
+	"plants/list"
 	"plants/plant"
 
 	"github.com/go-chi/chi"
@@ -12,13 +16,13 @@ import (
 )
 
 type handler struct {
-	as plant.AddService
-	ls plant.ListService
-	es plant.EditService
-	ds plant.DeleteService
+	as add.AddService
+	ls list.ListService
+	es edit.EditService
+	ds delete.DeleteService
 }
 
-func NewHandler(as plant.AddService, ls plant.ListService, es plant.EditService, ds plant.DeleteService) *handler {
+func NewHandler(as add.AddService, ls list.ListService, es edit.EditService, ds delete.DeleteService) *handler {
 	return &handler{as, ls, es, ds}
 }
 
@@ -34,7 +38,7 @@ func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uid := r.Context().Value(contextId).(string)
-	_, err = h.as.Add(uid, new)
+	err = h.as.Add(uid, new)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):
@@ -124,7 +128,7 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 
 	uid := r.Context().Value(contextId).(string)
 	id := chi.URLParam(r, "id")
-	_, err = h.es.Edit(uid, id, update)
+	err = h.es.Edit(uid, id, update)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):
@@ -150,7 +154,7 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 	uid := r.Context().Value(contextId).(string)
 	id := chi.URLParam(r, "id")
-	_, err := h.ds.Delete(uid, id)
+	err := h.ds.Delete(uid, id)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):

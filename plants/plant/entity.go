@@ -19,28 +19,3 @@ type Plant struct {
 	PruneSeason   string    `json:"prune_season" bson:"prune_season"`
 	Tips          string    `json:"tips" bson:"tips"`
 }
-
-type AddService interface {
-	Add(string, Plant) (interface{}, error)
-}
-
-type ListService interface {
-	ListAll(string) ([]Plant, error)
-	ListOne(string, string) (Plant, error)
-}
-
-type EditService interface {
-	Edit(string, string, Plant) (int64, error)
-}
-
-type DeleteService interface {
-	Delete(string, string) (int64, error)
-}
-
-type Repository interface {
-	InsertOne(string, Plant) (interface{}, error)
-	FindAll(string) ([]Plant, error)
-	FindOne(string, string) (Plant, error)
-	UpdateOne(string, string, Plant) (int64, error)
-	DeleteOne(string, string) (int64, error)
-}

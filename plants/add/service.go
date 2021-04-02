@@ -4,31 +4,36 @@ import (
 	"time"
 
 	"plants/plant"
+	"plants/storage"
 
 	"github.com/google/uuid"
 )
 
-type addService struct {
-	r plant.Repository
+type AddService interface {
+	Add(string, plant.Plant) error
 }
 
-func NewAddService(r plant.Repository) *addService {
+type addService struct {
+	r storage.Repository
+}
+
+func NewAddService(r storage.Repository) *addService {
 	return &addService{r}
 }
 
-func (as *addService) Add(uid string, new plant.Plant) (interface{}, error) {
+func (as *addService) Add(uid string, new plant.Plant) error {
 	if new.Name == "" {
-		return nil, plant.ErrMissingData
+		return plant.ErrMissingData
 	}
 
 	new.ID = uuid.New().String()
 	new.CreatedAt = time.Now().UTC()
 	new.EditedAt = time.Now().UTC()
 
-	result, err := as.r.InsertOne(uid, new)
+	_, err := as.r.InsertOne(uid, new)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return result, nil
+	return nil
 }

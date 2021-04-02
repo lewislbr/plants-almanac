@@ -22,10 +22,9 @@ func TestCreate(t *testing.T) {
 		newPlant := plant.Plant{
 			Name: "",
 		}
-		result, err := addService.Add(uid, newPlant)
+		err := addService.Add(uid, newPlant)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
-		require.Nil(t, result)
 	})
 
 	t.Run("should create a plant with no error", func(t *testing.T) {
@@ -38,9 +37,8 @@ func TestCreate(t *testing.T) {
 		newPlant := plant.Plant{
 			Name: "test",
 		}
-		result, err := addService.Add(uid, newPlant)
+		err := addService.Add(uid, newPlant)
 
 		require.NoError(t, err)
-		require.NotNil(t, result)
 	})
 }
