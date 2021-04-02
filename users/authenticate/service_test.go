@@ -18,7 +18,7 @@ func TestAuthenticate(t *testing.T) {
 		repo := &storage.MockRepo{
 			Users: []user.User{},
 		}
-		generateService := generate.NewGenerateService()
+		generateService := generate.NewGenerateService("test")
 		authenticateService := NewAuthenticateService(generateService, repo)
 		creds := user.Credentials{
 			Email: "test@test.com",
@@ -35,7 +35,7 @@ func TestAuthenticate(t *testing.T) {
 		repo := &storage.MockRepo{
 			Users: []user.User{},
 		}
-		generateService := generate.NewGenerateService()
+		generateService := generate.NewGenerateService("test")
 		authenticateService := NewAuthenticateService(generateService, repo)
 		creds := user.Credentials{
 			Email:    "test@test.com",
@@ -61,7 +61,7 @@ func TestAuthenticate(t *testing.T) {
 				},
 			},
 		}
-		generateService := generate.NewGenerateService()
+		generateService := generate.NewGenerateService("test")
 		authenticateService := NewAuthenticateService(generateService, repo)
 		creds := user.Credentials{
 			Email:    "test@test.com",
@@ -88,7 +88,7 @@ func TestAuthenticate(t *testing.T) {
 				},
 			},
 		}
-		generateService := generate.NewGenerateService()
+		generateService := generate.NewGenerateService("test")
 		authenticateService := NewAuthenticateService(generateService, repo)
 		creds := user.Credentials{
 			Email:    "test@test.com",

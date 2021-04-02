@@ -1,7 +1,6 @@
 package generate
 
 import (
-	"os"
 	"time"
 
 	"users/user"
@@ -13,10 +12,14 @@ type GenerateService interface {
 	GenerateJWT(string) (string, error)
 }
 
-type generateService struct{}
+type generateService struct {
+	secret string
+}
 
-func NewGenerateService() *generateService {
-	return &generateService{}
+func NewGenerateService(secret string) *generateService {
+	return &generateService{
+		secret: secret,
+	}
 }
 
 func (gs *generateService) GenerateJWT(uid string) (string, error) {
@@ -29,8 +32,7 @@ func (gs *generateService) GenerateJWT(uid string) (string, error) {
 		"iss": "users",
 		"uid": uid,
 	})
-	secret := os.Getenv("USERS_JWT_SECRET")
-	jwtString, err := jwt.SignedString([]byte(secret))
+	jwtString, err := jwt.SignedString([]byte(gs.secret))
 	if err != nil {
 		return "", err
 	}

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"users/authenticate"
@@ -21,7 +20,7 @@ import (
 
 var server = &http.Server{}
 
-func setUpRouter(h *handler) *chi.Mux {
+func setUpRouter(h *handler, web string) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
@@ -31,7 +30,7 @@ func setUpRouter(h *handler) *chi.Mux {
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Origin"},
 		AllowedMethods:   []string{"GET", "OPTIONS", "POST"},
-		AllowedOrigins:   []string{os.Getenv("WEB_URL")},
+		AllowedOrigins:   []string{web},
 		MaxAge:           86400,
 	}))
 	r.Use(headersMiddleware)
@@ -44,10 +43,9 @@ func setUpRouter(h *handler) *chi.Mux {
 	return r
 }
 
-func Start(cs create.CreateService, ns authenticate.AuthenticateService, zs authorize.AuthorizeService, gs generate.GenerateService) error {
+func Start(cs create.CreateService, ns authenticate.AuthenticateService, zs authorize.AuthorizeService, gs generate.GenerateService, port, web string) error {
 	handler := NewHandler(cs, ns, zs, gs)
-	router := setUpRouter(handler)
-	port := os.Getenv("USERS_PORT")
+	router := setUpRouter(handler, web)
 
 	server.Addr = ":" + port
 	server.Handler = router

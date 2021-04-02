@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"plants/add"
@@ -21,7 +20,7 @@ import (
 
 var server = &http.Server{}
 
-func setUpRouter(h *handler) *chi.Mux {
+func setUpRouter(h *handler, auth, web string) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
@@ -31,10 +30,10 @@ func setUpRouter(h *handler) *chi.Mux {
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Origin"},
 		AllowedMethods:   []string{"DELETE", "GET", "OPTIONS", "PUT", "POST"},
-		AllowedOrigins:   []string{os.Getenv("WEB_URL")},
+		AllowedOrigins:   []string{web},
 		MaxAge:           86400,
 	}))
-	r.Use(headersMiddleware, authorizationMiddleware)
+	r.Use(headersMiddleware, authorizationMiddleware(auth))
 
 	r.Post("/add", h.Add)
 	r.Get("/list", h.ListAll)
@@ -45,10 +44,9 @@ func setUpRouter(h *handler) *chi.Mux {
 	return r
 }
 
-func Start(as add.AddService, ls list.ListService, es edit.EditService, ds delete.DeleteService) error {
+func Start(as add.AddService, ls list.ListService, es edit.EditService, ds delete.DeleteService, port, auth, web string) error {
 	handler := NewHandler(as, ls, es, ds)
-	router := setUpRouter(handler)
-	port := os.Getenv("PLANTS_PORT")
+	router := setUpRouter(handler, auth, web)
 
 	server.Addr = ":" + port
 	server.Handler = router

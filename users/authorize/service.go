@@ -1,8 +1,6 @@
 package authorize
 
 import (
-	"os"
-
 	"users/user"
 
 	jwtgo "github.com/dgrijalva/jwt-go"
@@ -12,10 +10,14 @@ type AuthorizeService interface {
 	Authorize(string) (string, error)
 }
 
-type authorizeService struct{}
+type authorizeService struct {
+	secret string
+}
 
-func NewAuthorizeService() *authorizeService {
-	return &authorizeService{}
+func NewAuthorizeService(secret string) *authorizeService {
+	return &authorizeService{
+		secret: secret,
+	}
 }
 
 func (zs *authorizeService) Authorize(jwt string) (string, error) {
@@ -24,7 +26,7 @@ func (zs *authorizeService) Authorize(jwt string) (string, error) {
 	}
 
 	token, err := jwtgo.Parse(jwt, func(token *jwtgo.Token) (interface{}, error) {
-		return []byte(os.Getenv("USERS_JWT_SECRET")), nil
+		return []byte(zs.secret), nil
 	})
 	if !token.Valid {
 		return "", user.ErrInvalidToken

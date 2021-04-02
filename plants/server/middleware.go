@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 )
 
 type uid string
@@ -20,52 +19,54 @@ func headersMiddleware(h http.Handler) http.Handler {
 	})
 }
 
-func authorizationMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		req, err := http.NewRequest("GET", os.Getenv("USERS_URL")+"/authorization", nil)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			req, err := http.NewRequest("GET", url+"/authorization", nil)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+				log.Printf("%+v\n", err)
 
-			return
-		}
-
-		for _, cookie := range r.Cookies() {
-			if cookie.Name == "st" {
-				req.Header.Add("Authorization", "Bearer "+cookie.Value)
+				return
 			}
-		}
 
-		client := &http.Client{}
-		res, err := client.Do(req)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			for _, cookie := range r.Cookies() {
+				if cookie.Name == "st" {
+					req.Header.Add("Authorization", "Bearer "+cookie.Value)
+				}
+			}
 
-			log.Printf("%+v\n", err)
+			client := &http.Client{}
+			res, err := client.Do(req)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
 
-			return
-		}
-		if res.StatusCode != http.StatusOK {
-			w.WriteHeader(res.StatusCode)
+				log.Printf("%+v\n", err)
 
-			return
-		}
+				return
+			}
+			if res.StatusCode != http.StatusOK {
+				w.WriteHeader(res.StatusCode)
 
-		defer res.Body.Close()
+				return
+			}
 
-		body, err := io.ReadAll(res.Body)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			defer res.Body.Close()
 
-			log.Printf("%+v\n", err)
+			body, err := io.ReadAll(res.Body)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
 
-			return
-		}
+				log.Printf("%+v\n", err)
 
-		uid := string(body)
-		ctx := context.WithValue(r.Context(), contextId, uid)
+				return
+			}
 
-		h.ServeHTTP(w, r.WithContext(ctx))
-	})
+			uid := string(body)
+			ctx := context.WithValue(r.Context(), contextId, uid)
+
+			h.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
 }

@@ -18,7 +18,18 @@ import (
 	"plants/storage"
 )
 
-var db, err = storage.ConnectDatabase()
+type envVars struct {
+	AuthURL  string
+	Database string
+	MongoURI string
+	Port     string
+	WebURL   string
+}
+
+var (
+	env     = getEnvVars()
+	db, err = storage.ConnectDatabase(env.MongoURI, env.Database)
+)
 
 func main() {
 	defer func() {
@@ -42,9 +53,28 @@ func main() {
 
 	go gracefulShutdown()
 
-	err := server.Start(ad, ls, ed, dl)
+	err := server.Start(ad, ls, ed, dl, env.Port, env.AuthURL, env.WebURL)
 	if err != nil {
 		log.Panic(err)
+	}
+}
+
+func getEnvVars() *envVars {
+	get := func(k string) string {
+		v, set := os.LookupEnv(k)
+		if !set || v == "" {
+			log.Fatalf("%q environment variable not set.\n", k)
+		}
+
+		return v
+	}
+
+	return &envVars{
+		AuthURL:  get("USERS_URL"),
+		Database: get("PLANTS_DATABASE_NAME"),
+		MongoURI: get("PLANTS_MONGODB_URI"),
+		Port:     get("PLANTS_PORT"),
+		WebURL:   get("WEB_URL"),
 	}
 }
 

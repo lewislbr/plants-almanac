@@ -18,7 +18,19 @@ import (
 	"users/storage"
 )
 
-var db, err = storage.ConnectDatabase()
+type envVars struct {
+	Collection string
+	Database   string
+	MongoURI   string
+	Port       string
+	Secret     string
+	WebURL     string
+}
+
+var (
+	env     = getEnvVars()
+	db, err = storage.ConnectDatabase(env.MongoURI, env.Database, env.Collection)
+)
 
 func main() {
 	defer func() {
@@ -36,15 +48,35 @@ func main() {
 
 	r := storage.NewRepository(db)
 	cs := create.NewCreateService(r)
-	gs := generate.NewGenerateService()
+	gs := generate.NewGenerateService(env.Secret)
 	ns := authenticate.NewAuthenticateService(gs, r)
-	zs := authorize.NewAuthorizeService()
+	zs := authorize.NewAuthorizeService(env.Secret)
 
 	go gracefulShutdown()
 
-	err := server.Start(cs, ns, zs, gs)
+	err := server.Start(cs, ns, zs, gs, env.Port, env.WebURL)
 	if err != nil {
 		log.Panic(err)
+	}
+}
+
+func getEnvVars() *envVars {
+	get := func(k string) string {
+		v, set := os.LookupEnv(k)
+		if !set || v == "" {
+			log.Fatalf("%q environment variable not set.\n", k)
+		}
+
+		return v
+	}
+
+	return &envVars{
+		Collection: get("USERS_COLLECTION_NAME"),
+		Database:   get("USERS_DATABASE_NAME"),
+		MongoURI:   get("USERS_MONGODB_URI"),
+		Port:       get("USERS_PORT"),
+		Secret:     get("USERS_JWT_SECRET"),
+		WebURL:     get("WEB_URL"),
 	}
 }
 

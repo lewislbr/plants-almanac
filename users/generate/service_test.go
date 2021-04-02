@@ -12,7 +12,7 @@ func TestGenerate(t *testing.T) {
 	t.Run("should error when uid is empty", func(t *testing.T) {
 		t.Parallel()
 
-		generateService := NewGenerateService()
+		generateService := NewGenerateService("test")
 		uid := ""
 		id, err := generateService.GenerateJWT(uid)
 
@@ -23,7 +23,7 @@ func TestGenerate(t *testing.T) {
 	t.Run("should generate a JWT given a uid", func(t *testing.T) {
 		t.Parallel()
 
-		generateService := NewGenerateService()
+		generateService := NewGenerateService("test")
 		uid := "1"
 		id, err := generateService.GenerateJWT(uid)
 

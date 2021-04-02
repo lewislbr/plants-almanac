@@ -3,16 +3,14 @@ package storage
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectDatabase() (*mongo.Collection, error) {
+func ConnectDatabase(uri, db, cl string) (*mongo.Collection, error) {
 	ctx := context.Background()
-	mongodbURI := os.Getenv("USERS_MONGODB_URI")
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongodbURI))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
 		return nil, err
 	}
@@ -24,10 +22,7 @@ func ConnectDatabase() (*mongo.Collection, error) {
 
 	fmt.Println("Users database ready ✅")
 
-	databaseName := os.Getenv("USERS_DATABASE_NAME")
-	collectionName := os.Getenv("USERS_COLLECTION_NAME")
-
-	return client.Database(databaseName).Collection(collectionName), nil
+	return client.Database(db).Collection(cl), nil
 }
 
 func DisconnectDatabase(ctx context.Context, db *mongo.Collection) error {
