@@ -18,6 +18,13 @@ repos:
         verbose: true
 
       - id: docker-go
+        name: plants-lint
+        language: docker_image
+        entry: plantdex/plants:ci sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && staticcheck ./..."
+        files: ^plants/
+        verbose: true
+
+      - id: docker-go
         name: plants-vet
         language: docker_image
         entry: plantdex/plants:ci sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
@@ -47,6 +54,13 @@ repos:
         verbose: true
 
       - id: docker-go
+        name: users-lint
+        language: docker_image
+        entry: plantdex/users:ci sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && staticcheck ./..."
+        files: ^users/
+        verbose: true
+
+      - id: docker-go
         name: users-vet
         language: docker_image
         entry: plantdex/users:ci sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
@@ -68,11 +82,10 @@ repos:
         files: ^web/
         verbose: true
 
-      - id: docker-typescript
-        name: web-typecheck
+      - id: docker-prettier
+        name: web-format
         language: docker_image
-        pass_filenames: false
-        entry: plantdex/web:ci sh -c "cd web && npm run ts"
+        entry: plantdex/web:ci sh -c "cd web && npm run format"
         files: ^web/
         verbose: true
 
@@ -84,9 +97,10 @@ repos:
         files: ^web/
         verbose: true
 
-      - id: docker-prettier
-        name: web-format
+      - id: docker-typescript
+        name: web-typecheck
         language: docker_image
-        entry: plantdex/web:ci sh -c "cd web && npm run format"
+        pass_filenames: false
+        entry: plantdex/web:ci sh -c "cd web && npm run ts"
         files: ^web/
         verbose: true
