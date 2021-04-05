@@ -1,12 +1,13 @@
 package edit
 
 import (
+	"errors"
 	"testing"
 
 	"plants/list"
 	"plants/plant"
-	"plants/storage"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -16,16 +17,14 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing required fields", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ls := list.NewService(repo)
-		es := NewService(ls, repo)
+		f := &list.MockFinder{}
+		u := &MockUpdater{}
+
+		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, nil)
+		u.On("UpdateOne", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(int64(1), nil)
+
+		ls := list.NewService(f)
+		es := NewService(ls, u)
 		id := "123"
 		newPlant := plant.Plant{
 			Name: "",
@@ -38,17 +37,15 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when the plant is not found", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ls := list.NewService(repo)
-		es := NewService(ls, repo)
-		id := "122"
+		f := &list.MockFinder{}
+		u := &MockUpdater{}
+
+		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("not found"))
+		u.On("UpdateOne", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(int64(0), nil)
+
+		ls := list.NewService(f)
+		es := NewService(ls, u)
+		id := "123"
 		newPlant := plant.Plant{
 			Name: "test",
 		}
@@ -60,19 +57,17 @@ func TestCreate(t *testing.T) {
 	t.Run("should edit a plant with no error", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ls := list.NewService(repo)
-		es := NewService(ls, repo)
+		f := &list.MockFinder{}
+		u := &MockUpdater{}
+
+		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, nil)
+		u.On("UpdateOne", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(int64(1), nil)
+
+		ls := list.NewService(f)
+		es := NewService(ls, u)
 		id := "123"
 		newPlant := plant.Plant{
-			Name: "test2",
+			Name: "test",
 		}
 		err := es.Edit(uid, id, newPlant)
 

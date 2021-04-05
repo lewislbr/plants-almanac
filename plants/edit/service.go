@@ -4,10 +4,13 @@ import (
 	"time"
 
 	"plants/plant"
-	"plants/storage"
 )
 
 type (
+	Updater interface {
+		UpdateOne(string, string, plant.Plant) (int64, error)
+	}
+
 	Lister interface {
 		ListAll(string) ([]plant.Plant, error)
 		ListOne(string, string) (plant.Plant, error)
@@ -15,11 +18,11 @@ type (
 
 	service struct {
 		ls Lister
-		r  storage.Repository
+		r  Updater
 	}
 )
 
-func NewService(ls Lister, r storage.Repository) *service {
+func NewService(ls Lister, r Updater) *service {
 	return &service{ls, r}
 }
 

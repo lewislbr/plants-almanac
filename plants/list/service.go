@@ -2,14 +2,20 @@ package list
 
 import (
 	"plants/plant"
-	"plants/storage"
 )
 
-type service struct {
-	r storage.Repository
-}
+type (
+	Finder interface {
+		FindAll(string) ([]plant.Plant, error)
+		FindOne(string, string) (plant.Plant, error)
+	}
 
-func NewService(r storage.Repository) *service {
+	service struct {
+		r Finder
+	}
+)
+
+func NewService(r Finder) *service {
 	return &service{r}
 }
 

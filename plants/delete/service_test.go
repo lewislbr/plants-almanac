@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"plants/plant"
-	"plants/storage"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,15 +15,11 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing required fields", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ds := NewService(repo)
+		d := &MockDeleter{}
+
+		d.On("DeleteOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(int64(1), nil)
+
+		ds := NewService(d)
 		id := ""
 		err := ds.Delete(uid, id)
 
@@ -33,15 +29,11 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when there are no matches", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ds := NewService(repo)
+		d := &MockDeleter{}
+
+		d.On("DeleteOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(int64(0), nil)
+
+		ds := NewService(d)
 		id := "124"
 		err := ds.Delete(uid, id)
 
@@ -51,15 +43,11 @@ func TestCreate(t *testing.T) {
 	t.Run("should delete a plant with no error", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ds := NewService(repo)
+		d := &MockDeleter{}
+
+		d.On("DeleteOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(int64(1), nil)
+
+		ds := NewService(d)
 		id := "123"
 		err := ds.Delete(uid, id)
 

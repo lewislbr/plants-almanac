@@ -9,19 +9,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type (
-	Repository interface {
-		InsertOne(string, plant.Plant) (interface{}, error)
-		FindAll(string) ([]plant.Plant, error)
-		FindOne(string, string) (plant.Plant, error)
-		UpdateOne(string, string, plant.Plant) (int64, error)
-		DeleteOne(string, string) (int64, error)
-	}
-
-	repository struct {
-		db *mongo.Database
-	}
-)
+type repository struct {
+	db *mongo.Database
+}
 
 func NewRepository(db *mongo.Database) *repository {
 	return &repository{db}

@@ -9,11 +9,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type Repository interface {
-	InsertOne(user.User) (interface{}, error)
-	FindOne(string) (user.User, error)
-}
-
 type repository struct {
 	db *mongo.Collection
 }

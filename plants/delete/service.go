@@ -2,14 +2,19 @@ package delete
 
 import (
 	"plants/plant"
-	"plants/storage"
 )
 
-type service struct {
-	r storage.Repository
-}
+type (
+	Deleter interface {
+		DeleteOne(string, string) (int64, error)
+	}
 
-func NewService(r storage.Repository) *service {
+	service struct {
+		r Deleter
+	}
+)
+
+func NewService(r Deleter) *service {
 	return &service{r}
 }
 

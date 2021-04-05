@@ -1,11 +1,12 @@
 package create
 
 import (
+	"errors"
 	"testing"
 
-	"users/storage"
 	"users/user"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -13,13 +14,15 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing fields", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Users: []user.User{},
-		}
-		cs := NewService(repo)
+		i := &MockInserterFinder{}
+
+		i.On("FindOne", mock.AnythingOfType("string")).Return(user.User{}, errors.New("user not found"))
+		i.On("InsertOne", mock.AnythingOfType("user.User")).Return("", nil)
+
+		cs := NewService(i)
 		new := user.User{
 			Email:    "test@test.com",
-			Password: "1234",
+			Password: "123",
 		}
 		err := cs.Create(new)
 
@@ -29,20 +32,16 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when the user already exists", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Users: []user.User{
-				{
-					Name:     "test",
-					Email:    "test@test.com",
-					Password: "1234",
-				},
-			},
-		}
-		cs := NewService(repo)
+		i := &MockInserterFinder{}
+
+		i.On("FindOne", mock.AnythingOfType("string")).Return(user.User{}, nil)
+		i.On("InsertOne", mock.AnythingOfType("user.User")).Return("", nil)
+
+		cs := NewService(i)
 		new := user.User{
 			Name:     "test",
 			Email:    "test@test.com",
-			Password: "1234",
+			Password: "123",
 		}
 		err := cs.Create(new)
 
@@ -52,14 +51,16 @@ func TestCreate(t *testing.T) {
 	t.Run("should create a user with no error", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Users: []user.User{},
-		}
-		cs := NewService(repo)
+		i := &MockInserterFinder{}
+
+		i.On("FindOne", mock.AnythingOfType("string")).Return(user.User{}, errors.New("user not found"))
+		i.On("InsertOne", mock.AnythingOfType("user.User")).Return("", nil)
+
+		cs := NewService(i)
 		new := user.User{
 			Name:     "test",
 			Email:    "test@test.com",
-			Password: "1234",
+			Password: "123",
 		}
 		err := cs.Create(new)
 

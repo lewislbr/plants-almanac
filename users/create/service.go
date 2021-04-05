@@ -3,18 +3,24 @@ package create
 import (
 	"time"
 
-	"users/storage"
 	"users/user"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type service struct {
-	r storage.Repository
-}
+type (
+	InserterFinder interface {
+		InsertOne(user.User) (interface{}, error)
+		FindOne(string) (user.User, error)
+	}
 
-func NewService(r storage.Repository) *service {
+	service struct {
+		r InserterFinder
+	}
+)
+
+func NewService(r InserterFinder) *service {
 	return &service{r}
 }
 

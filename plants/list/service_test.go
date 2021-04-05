@@ -1,11 +1,12 @@
 package list
 
 import (
+	"errors"
 	"testing"
 
 	"plants/plant"
-	"plants/storage"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,15 +16,11 @@ func TestCreate(t *testing.T) {
 	t.Run("should list all plants with no error", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ls := NewService(repo)
+		f := &MockFinder{}
+
+		f.On("FindAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
+
+		ls := NewService(f)
 		result, err := ls.ListAll(uid)
 
 		require.NoError(t, err)
@@ -33,15 +30,11 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing required fields", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ls := NewService(repo)
+		f := &MockFinder{}
+
+		f.On("FindAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
+
+		ls := NewService(f)
 		id := ""
 		result, err := ls.ListOne(uid, id)
 
@@ -52,16 +45,12 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when a plant is not found", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ls := NewService(repo)
-		id := "122"
+		f := &MockFinder{}
+
+		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("not found"))
+
+		ls := NewService(f)
+		id := "123"
 		result, err := ls.ListOne(uid, id)
 
 		require.EqualError(t, err, plant.ErrNotFound.Error())
@@ -71,15 +60,11 @@ func TestCreate(t *testing.T) {
 	t.Run("should list a plant with no error", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{
-				{
-					ID:   "123",
-					Name: "test",
-				},
-			},
-		}
-		ls := NewService(repo)
+		f := &MockFinder{}
+
+		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, nil)
+
+		ls := NewService(f)
 		id := "123"
 		result, err := ls.ListOne(uid, id)
 

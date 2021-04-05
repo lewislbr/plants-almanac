@@ -1,7 +1,6 @@
 package authenticate
 
 import (
-	"users/storage"
 	"users/user"
 
 	"golang.org/x/crypto/bcrypt"
@@ -12,13 +11,17 @@ type (
 		GenerateJWT(string) (string, error)
 	}
 
+	Finder interface {
+		FindOne(string) (user.User, error)
+	}
+
 	service struct {
 		gs Generater
-		r  storage.Repository
+		r  Finder
 	}
 )
 
-func NewService(gs Generater, r storage.Repository) *service {
+func NewService(gs Generater, r Finder) *service {
 	return &service{gs, r}
 }
 

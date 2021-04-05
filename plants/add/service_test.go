@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"plants/plant"
-	"plants/storage"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,10 +15,11 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing required fields", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{},
-		}
-		as := NewService(repo)
+		i := &MockInserter{}
+
+		i.On("InsertOne", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return("", nil)
+
+		as := NewService(i)
 		newPlant := plant.Plant{
 			Name: "",
 		}
@@ -30,10 +31,11 @@ func TestCreate(t *testing.T) {
 	t.Run("should create a plant with no error", func(t *testing.T) {
 		t.Parallel()
 
-		repo := &storage.MockRepo{
-			Plants: []plant.Plant{},
-		}
-		as := NewService(repo)
+		i := &MockInserter{}
+
+		i.On("InsertOne", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return("", nil)
+
+		as := NewService(i)
 		newPlant := plant.Plant{
 			Name: "test",
 		}

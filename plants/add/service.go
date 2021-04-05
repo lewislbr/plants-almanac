@@ -4,16 +4,21 @@ import (
 	"time"
 
 	"plants/plant"
-	"plants/storage"
 
 	"github.com/google/uuid"
 )
 
-type service struct {
-	r storage.Repository
-}
+type (
+	Inserter interface {
+		InsertOne(string, plant.Plant) (interface{}, error)
+	}
 
-func NewService(r storage.Repository) *service {
+	service struct {
+		r Inserter
+	}
+)
+
+func NewService(r Inserter) *service {
 	return &service{r}
 }
 
