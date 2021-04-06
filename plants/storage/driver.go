@@ -8,9 +8,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var database *mongo.Database
+type Storage struct {
+	database *mongo.Database
+}
 
-func Connect(uri, db string) (*mongo.Database, error) {
+func New() *Storage {
+	return &Storage{}
+}
+
+func (s *Storage) Connect(uri, db string) (*mongo.Database, error) {
 	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
@@ -24,17 +30,17 @@ func Connect(uri, db string) (*mongo.Database, error) {
 
 	fmt.Println("Plants database ready ✅")
 
-	database = client.Database(db)
+	s.database = client.Database(db)
 
-	return database, nil
+	return s.database, nil
 }
 
-func Disconnect(ctx context.Context) error {
-	if database == nil {
+func (s *Storage) Disconnect(ctx context.Context) error {
+	if s.database == nil {
 		return nil
 	}
 
 	fmt.Println("Disconnecting database...")
 
-	return database.Client().Disconnect(ctx)
+	return s.database.Client().Disconnect(ctx)
 }

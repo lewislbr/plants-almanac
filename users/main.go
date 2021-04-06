@@ -28,35 +28,35 @@ type envVars struct {
 }
 
 func main() {
+	env := getEnvVars()
+	str := storage.New()
+	db, err := str.Connect(env.MongoURI, env.Database, env.Collection)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	rep := storage.NewRepository(db)
+	crs := create.NewService(rep)
+	gns := generate.NewService(env.Secret)
+	ans := authenticate.NewService(gns, rep)
+	azs := authorize.NewService(env.Secret)
+	srv := server.New(crs, ans, azs, gns, env.Port, env.WebURL)
+
+	go gracefulShutdown(srv, str)
+
+	err = srv.Start()
+	if err != nil {
+		log.Panic(err)
+	}
+
 	defer func() {
 		r := recover()
 		if r != nil {
-			cleanUp()
+			cleanUp(srv, str)
 			debug.PrintStack()
 			os.Exit(1)
 		}
 	}()
-
-	env := getEnvVars()
-	db, err := storage.Connect(env.MongoURI, env.Database, env.Collection)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	r := storage.NewRepository(db)
-	cs := create.NewService(r)
-	gs := generate.NewService(env.Secret)
-	ns := authenticate.NewService(gs, r)
-	zs := authorize.NewService(env.Secret)
-
-	server.New(cs, ns, zs, gs, env.Port, env.WebURL)
-
-	go gracefulShutdown()
-
-	err = server.Start()
-	if err != nil {
-		log.Panic(err)
-	}
 }
 
 func getEnvVars() *envVars {
@@ -79,25 +79,25 @@ func getEnvVars() *envVars {
 	}
 }
 
-func gracefulShutdown() {
+func gracefulShutdown(srv *server.Server, str *storage.Storage) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	<-quit
 
-	cleanUp()
+	cleanUp(srv, str)
 }
 
-func cleanUp() {
+func cleanUp(srv *server.Server, str *storage.Storage) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err := storage.Disconnect(ctx)
+	err := str.Disconnect(ctx)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	err = server.Stop(ctx)
+	err = srv.Stop(ctx)
 	if err != nil {
 		fmt.Println(err)
 	}

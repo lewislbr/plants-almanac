@@ -13,9 +13,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-var server = &http.Server{}
+type Server struct {
+	srv *http.Server
+}
 
-func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, port, web string) *http.Server {
+func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, port, web string) *Server {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
@@ -37,20 +39,24 @@ func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, port, web st
 	r.Get("/authorization", h.Authorize)
 	r.Get("/refresh", h.Refresh)
 
-	server.Addr = ":" + port
-	server.Handler = r
-	server.IdleTimeout = 120 * time.Second
-	server.MaxHeaderBytes = 1 << 20 // 1 MB
-	server.ReadTimeout = 5 * time.Second
-	server.WriteTimeout = 10 * time.Second
+	s := &http.Server{}
 
-	return server
+	s.Addr = ":" + port
+	s.Handler = r
+	s.IdleTimeout = 120 * time.Second
+	s.MaxHeaderBytes = 1 << 20 // 1 MB
+	s.ReadTimeout = 5 * time.Second
+	s.WriteTimeout = 10 * time.Second
+
+	return &Server{
+		srv: s,
+	}
 }
 
-func Start() error {
+func (s *Server) Start() error {
 	fmt.Println("Users server ready ✅")
 
-	err := server.ListenAndServe()
+	err := s.srv.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
@@ -58,8 +64,8 @@ func Start() error {
 	return nil
 }
 
-func Stop(ctx context.Context) error {
+func (s *Server) Stop(ctx context.Context) error {
 	fmt.Println("Stopping server...")
 
-	return server.Shutdown(ctx)
+	return s.srv.Shutdown(ctx)
 }
