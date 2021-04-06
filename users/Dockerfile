@@ -10,6 +10,7 @@ CMD ["go", "run", "main.go"]
 
 FROM base as ci
 RUN apk add build-base
+RUN go get golang.org/x/tools/cmd/goimports
 RUN go get honnef.co/go/tools/cmd/staticcheck
 
 FROM base AS prod-build
