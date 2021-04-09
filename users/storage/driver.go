@@ -4,43 +4,38 @@ import (
 	"context"
 	"fmt"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type Storage struct {
-	database *mongo.Database
+	database *pgxpool.Pool
 }
 
 func New() *Storage {
 	return &Storage{}
 }
 
-func (s *Storage) Connect(uri, db, cl string) (*mongo.Collection, error) {
+func (s *Storage) Connect(uri string) (*pgxpool.Pool, error) {
 	ctx := context.Background()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+	dbpool, err := pgxpool.Connect(ctx, uri)
 	if err != nil {
 		return nil, err
 	}
 
-	err = client.Ping(ctx, nil)
+	err = dbpool.Ping(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	fmt.Println("Users database ready ✅")
 
-	s.database = client.Database(db)
+	s.database = dbpool
 
-	return s.database.Collection(cl), nil
+	return s.database, nil
 }
 
-func (s *Storage) Disconnect(ctx context.Context) error {
-	if s.database == nil {
-		return nil
-	}
-
+func (s *Storage) Disconnect() {
 	fmt.Println("Disconnecting database...")
 
-	return s.database.Client().Disconnect(ctx)
+	s.database.Close()
 }

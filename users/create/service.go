@@ -10,17 +10,17 @@ import (
 )
 
 type (
-	InserterFinder interface {
-		InsertOne(user.User) (interface{}, error)
-		FindOne(string) (user.User, error)
+	InserterChecker interface {
+		InsertOne(user.User) error
+		CheckExists(string) (bool, error)
 	}
 
 	service struct {
-		r InserterFinder
+		r InserterChecker
 	}
 )
 
-func NewService(r InserterFinder) *service {
+func NewService(r InserterChecker) *service {
 	return &service{r}
 }
 
@@ -29,8 +29,11 @@ func (s *service) Create(new user.User) error {
 		return user.ErrMissingData
 	}
 
-	_, err := s.r.FindOne(new.Email)
-	if err == nil {
+	exists, err := s.r.CheckExists(new.Email)
+	if err != nil {
+		return err
+	}
+	if exists {
 		return user.ErrUserExists
 	}
 
@@ -44,7 +47,7 @@ func (s *service) Create(new user.User) error {
 
 	new.Hash = string(hash)
 
-	_, err = s.r.InsertOne(new)
+	err = s.r.InsertOne(new)
 	if err != nil {
 		return err
 	}

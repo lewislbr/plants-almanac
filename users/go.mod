@@ -8,8 +8,8 @@ require (
 	github.com/go-chi/cors v1.2.0
 	github.com/go-chi/httprate v0.4.0
 	github.com/google/uuid v1.1.2
+	github.com/jackc/pgx/v4 v4.11.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.6.1
-	go.mongodb.org/mongo-driver v1.4.4
-	golang.org/x/crypto v0.0.0-20190530122614-20be4c3c3ed5
+	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 )

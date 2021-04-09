@@ -19,18 +19,16 @@ import (
 )
 
 type envVars struct {
-	Collection string
-	Database   string
-	MongoURI   string
-	Port       string
-	Secret     string
-	WebURL     string
+	DBURI  string
+	Port   string
+	Secret string
+	WebURL string
 }
 
 func main() {
 	env := getEnvVars()
 	str := storage.New()
-	db, err := str.Connect(env.MongoURI, env.Database, env.Collection)
+	db, err := str.Connect(env.DBURI)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -70,12 +68,10 @@ func getEnvVars() *envVars {
 	}
 
 	return &envVars{
-		Collection: get("USERS_COLLECTION_NAME"),
-		Database:   get("USERS_DATABASE_NAME"),
-		MongoURI:   get("USERS_MONGODB_URI"),
-		Port:       get("USERS_PORT"),
-		Secret:     get("USERS_JWT_SECRET"),
-		WebURL:     get("WEB_URL"),
+		DBURI:  get("USERS_DATABASE_URI"),
+		Port:   get("USERS_PORT"),
+		Secret: get("USERS_JWT_SECRET"),
+		WebURL: get("WEB_URL"),
 	}
 }
 
@@ -92,12 +88,9 @@ func cleanUp(srv *server.Server, str *storage.Storage) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err := str.Disconnect(ctx)
-	if err != nil {
-		fmt.Println(err)
-	}
+	str.Disconnect()
 
-	err = srv.Stop(ctx)
+	err := srv.Stop(ctx)
 	if err != nil {
 		fmt.Println(err)
 	}

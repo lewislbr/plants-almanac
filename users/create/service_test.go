@@ -1,7 +1,6 @@
 package create
 
 import (
-	"errors"
 	"testing"
 
 	"users/user"
@@ -14,10 +13,10 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing fields", func(t *testing.T) {
 		t.Parallel()
 
-		i := &MockInserterFinder{}
+		i := &MockInserterChecker{}
 
-		i.On("FindOne", mock.AnythingOfType("string")).Return(user.User{}, errors.New("user not found"))
-		i.On("InsertOne", mock.AnythingOfType("user.User")).Return("", nil)
+		i.On("CheckExists", mock.AnythingOfType("string")).Return(false, nil)
+		i.On("InsertOne", mock.AnythingOfType("user.User")).Return(nil)
 
 		cs := NewService(i)
 		new := user.User{
@@ -32,10 +31,10 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when the user already exists", func(t *testing.T) {
 		t.Parallel()
 
-		i := &MockInserterFinder{}
+		i := &MockInserterChecker{}
 
-		i.On("FindOne", mock.AnythingOfType("string")).Return(user.User{}, nil)
-		i.On("InsertOne", mock.AnythingOfType("user.User")).Return("", nil)
+		i.On("CheckExists", mock.AnythingOfType("string")).Return(true, nil)
+		i.On("InsertOne", mock.AnythingOfType("user.User")).Return(nil)
 
 		cs := NewService(i)
 		new := user.User{
@@ -51,10 +50,10 @@ func TestCreate(t *testing.T) {
 	t.Run("should create a user with no error", func(t *testing.T) {
 		t.Parallel()
 
-		i := &MockInserterFinder{}
+		i := &MockInserterChecker{}
 
-		i.On("FindOne", mock.AnythingOfType("string")).Return(user.User{}, errors.New("user not found"))
-		i.On("InsertOne", mock.AnythingOfType("user.User")).Return("", nil)
+		i.On("CheckExists", mock.AnythingOfType("string")).Return(false, nil)
+		i.On("InsertOne", mock.AnythingOfType("user.User")).Return(nil)
 
 		cs := NewService(i)
 		new := user.User{
