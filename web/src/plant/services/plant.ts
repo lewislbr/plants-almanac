@@ -22,7 +22,7 @@ export async function listAll(): Promise<Plant[]> {
     throw new Error(await response.text())
   }
 
-  return await response.json()
+  return (await response.json()) || []
 }
 
 export async function listOne(id: Plant["id"]): Promise<Plant> {
