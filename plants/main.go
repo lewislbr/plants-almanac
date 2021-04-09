@@ -21,7 +21,7 @@ import (
 type envVars struct {
 	AuthURL  string
 	Database string
-	MongoURI string
+	DBURI    string
 	Port     string
 	WebURL   string
 }
@@ -29,7 +29,7 @@ type envVars struct {
 func main() {
 	env := getEnvVars()
 	str := storage.New()
-	db, err := str.Connect(env.MongoURI, env.Database)
+	db, err := str.Connect(env.DBURI, env.Database)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -71,7 +71,7 @@ func getEnvVars() *envVars {
 	return &envVars{
 		AuthURL:  get("USERS_URL"),
 		Database: get("PLANTS_DATABASE_NAME"),
-		MongoURI: get("PLANTS_MONGODB_URI"),
+		DBURI:    get("PLANTS_DATABASE_URI"),
 		Port:     get("PLANTS_PORT"),
 		WebURL:   get("WEB_URL"),
 	}
