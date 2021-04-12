@@ -5,7 +5,8 @@ import (
 
 	"users/user"
 
-	jwtgo "github.com/dgrijalva/jwt-go"
+	"github.com/google/uuid"
+	"github.com/o1egl/paseto"
 )
 
 type service struct {
@@ -18,20 +19,24 @@ func NewService(secret string) *service {
 	}
 }
 
-func (s *service) GenerateJWT(uid string) (string, error) {
+func (s *service) GenerateToken(uid string) (string, error) {
 	if uid == "" {
 		return "", user.ErrMissingData
 	}
 
-	jwt := jwtgo.NewWithClaims(jwtgo.SigningMethodHS256, jwtgo.MapClaims{
-		"exp": time.Now().Add(time.Hour * 24 * 7).Unix(),
-		"iss": "users",
-		"uid": uid,
-	})
-	jwtString, err := jwt.SignedString([]byte(s.secret))
+	jsonToken := paseto.JSONToken{
+		Audience:   "plantdex",
+		Issuer:     "users",
+		Jti:        uuid.New().String(),
+		Subject:    uid,
+		IssuedAt:   time.Now(),
+		Expiration: time.Now().AddDate(0, 0, 7),
+		NotBefore:  time.Now(),
+	}
+	token, err := paseto.NewV2().Encrypt([]byte(s.secret), jsonToken, nil)
 	if err != nil {
 		return "", err
 	}
 
-	return jwtString, nil
+	return token, nil
 }

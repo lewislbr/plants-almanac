@@ -3,7 +3,7 @@ package authorize
 import (
 	"users/user"
 
-	jwtgo "github.com/dgrijalva/jwt-go"
+	"github.com/o1egl/paseto"
 )
 
 type service struct {
@@ -16,22 +16,19 @@ func NewService(secret string) *service {
 	}
 }
 
-func (s *service) Authorize(jwt string) (string, error) {
-	if jwt == "" {
+func (s *service) Authorize(token string) (string, error) {
+	if token == "" {
 		return "", user.ErrMissingData
 	}
 
-	token, err := jwtgo.Parse(jwt, func(token *jwtgo.Token) (interface{}, error) {
-		return []byte(s.secret), nil
-	})
-	if !token.Valid {
+	var data paseto.JSONToken
+
+	err := paseto.NewV2().Decrypt(token, []byte(s.secret), &data, nil)
+	if err != nil {
 		return "", user.ErrInvalidToken
 	}
-	if err != nil {
-		return "", err
-	}
 
-	userID := token.Claims.(jwtgo.MapClaims)["uid"]
+	userID := data.Subject
 
-	return userID.(string), nil
+	return userID, nil
 }

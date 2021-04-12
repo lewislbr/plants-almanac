@@ -25,7 +25,7 @@ type (
 		Authorize(string) (string, error)
 	}
 	Generater interface {
-		GenerateJWT(string) (string, error)
+		GenerateToken(string) (string, error)
 	}
 
 	handler struct {
@@ -73,7 +73,7 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 
 	json.NewDecoder(r.Body).Decode(&cred)
 
-	jwt, err := h.ns.Authenticate(cred)
+	token, err := h.ns.Authenticate(cred)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -98,12 +98,12 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isDevelopment {
-		w.Header().Add("Set-Cookie", "st="+jwt+"; HttpOnly; Max-Age=604800")
+		w.Header().Add("Set-Cookie", "st="+token+"; HttpOnly; Max-Age=604800")
 		w.Header().Add("Set-Cookie", "te=true; Max-Age=604800")
 
 		w.WriteHeader(http.StatusNoContent)
 	} else {
-		w.Header().Add("Set-Cookie", "st="+jwt+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; SameSite=Strict; Secure")
+		w.Header().Add("Set-Cookie", "st="+token+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; SameSite=Strict; Secure")
 		w.Header().Add("Set-Cookie", "te=true; Domain=plantdex.app; Max-Age=604800; SameSite=Strict; Secure")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -118,8 +118,8 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jwt := strings.Split(authHeader, " ")[1]
-	uid, err := h.zs.Authorize(jwt)
+	token := strings.Split(authHeader, " ")[1]
+	uid, err := h.zs.Authorize(token)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -143,15 +143,15 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
-	var jwt string
+	var token string
 
 	for _, cookie := range r.Cookies() {
 		if cookie.Name == "st" {
-			jwt = cookie.Value
+			token = cookie.Value
 		}
 	}
 
-	uid, err := h.zs.Authorize(jwt)
+	uid, err := h.zs.Authorize(token)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -171,7 +171,7 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	jwt, err = h.gs.GenerateJWT(uid)
+	token, err = h.gs.GenerateToken(uid)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -188,12 +188,12 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isDevelopment {
-		w.Header().Add("Set-Cookie", "st="+jwt+"; HttpOnly; Max-Age=604800")
+		w.Header().Add("Set-Cookie", "st="+token+"; HttpOnly; Max-Age=604800")
 		w.Header().Add("Set-Cookie", "te=true; Max-Age=604800")
 
 		w.WriteHeader(http.StatusNoContent)
 	} else {
-		w.Header().Add("Set-Cookie", "st="+jwt+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; SameSite=Strict; Secure")
+		w.Header().Add("Set-Cookie", "st="+token+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; SameSite=Strict; Secure")
 		w.Header().Add("Set-Cookie", "te=true; Domain=plantdex.app; Max-Age=604800; SameSite=Strict; Secure")
 
 		w.WriteHeader(http.StatusNoContent)

@@ -70,7 +70,7 @@ func getEnvVars() *envVars {
 	return &envVars{
 		DBURI:  get("USERS_DATABASE_URI"),
 		Port:   get("USERS_PORT"),
-		Secret: get("USERS_JWT_SECRET"),
+		Secret: get("USERS_SECRET"),
 		WebURL: get("WEB_URL"),
 	}
 }

@@ -56,4 +56,4 @@ jobs:
           --port="${{ secrets.USERS_PORT }}" \
           --quiet \
           --region=europe-west1 \
-          --set-env-vars=USERS_DATABASE_URI="${{ secrets.USERS_DATABASE_URI }}",USERS_JWT_SECRET="${{ secrets.USERS_JWT_SECRET }}",USERS_PORT="${{ secrets.USERS_PORT }}",WEB_URL="${{ secrets.WEB_URL }}"
+          --set-env-vars=USERS_DATABASE_URI="${{ secrets.USERS_DATABASE_URI }}",USERS_SECRET="${{ secrets.USERS_SECRET }}",USERS_PORT="${{ secrets.USERS_PORT }}",WEB_URL="${{ secrets.WEB_URL }}"

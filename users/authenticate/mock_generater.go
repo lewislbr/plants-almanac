@@ -9,8 +9,8 @@ type MockGenerater struct {
 	mock.Mock
 }
 
-// GenerateJWT provides a mock function with given fields: _a0
-func (_m *MockGenerater) GenerateJWT(_a0 string) (string, error) {
+// GenerateToken provides a mock function with given fields: _a0
+func (_m *MockGenerater) GenerateToken(_a0 string) (string, error) {
 	ret := _m.Called(_a0)
 
 	var r0 string

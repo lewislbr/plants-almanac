@@ -8,7 +8,7 @@ import (
 
 type (
 	Generater interface {
-		GenerateJWT(string) (string, error)
+		GenerateToken(string) (string, error)
 	}
 
 	Finder interface {
@@ -40,10 +40,10 @@ func (s *service) Authenticate(cred user.Credentials) (string, error) {
 		return "", user.ErrInvalidPassword
 	}
 
-	jwt, err := s.gs.GenerateJWT(existUser.ID)
+	token, err := s.gs.GenerateToken(existUser.ID)
 	if err != nil {
 		return "", err
 	}
 
-	return jwt, nil
+	return token, nil
 }

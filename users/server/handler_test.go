@@ -353,7 +353,7 @@ func TestHandler(t *testing.T) {
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
-		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
+		gsMock.On("GenerateToken", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
@@ -373,7 +373,7 @@ func TestHandler(t *testing.T) {
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrMissingData)
-		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
+		gsMock.On("GenerateToken", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
@@ -393,7 +393,7 @@ func TestHandler(t *testing.T) {
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrInvalidToken)
-		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
+		gsMock.On("GenerateToken", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
@@ -413,7 +413,7 @@ func TestHandler(t *testing.T) {
 		handler := NewHandler(csMock, nsMock, zsMock, gsMock)
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", errors.New("error"))
-		gsMock.On("GenerateJWT", mock.AnythingOfType("string")).Return("", nil)
+		gsMock.On("GenerateToken", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
