@@ -11,7 +11,7 @@ CMD ["go", "run", "main.go"]
 FROM base as ci
 RUN apk add build-base
 RUN go get golang.org/x/tools/cmd/goimports
-RUN go get honnef.co/go/tools/cmd/staticcheck
+RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
 
 FROM base AS prod-build
 ENV CGO_ENABLED=0 \

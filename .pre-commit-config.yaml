@@ -12,29 +12,29 @@ repos:
 
       - id: docker-go
         name: plants-format
-        language: docker_image
-        entry: plantdex/plants:ci sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && goimports -l -w ."
+        language: system
+        entry: sh -c "docker run --rm -v $(pwd)/plants:/app -w /app plantdex/plants:ci goimports -l -w ."
         files: ^plants/
         verbose: true
 
       - id: docker-go
         name: plants-lint
-        language: docker_image
-        entry: plantdex/plants:ci sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && staticcheck ./..."
+        language: system
+        entry: sh -c "docker run --rm -v $(pwd)/plants:/app -w /app plantdex/plants:ci golangci-lint run --timeout 100s"
         files: ^plants/
         verbose: true
 
       - id: docker-go
         name: plants-vet
-        language: docker_image
-        entry: plantdex/plants:ci sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
+        language: system
+        entry: sh -c "docker run --rm -v $(pwd)/plants:/app -w /app plantdex/plants:ci go vet ./..."
         files: ^plants/
         verbose: true
 
       - id: docker-go
         name: plants-test
-        language: docker_image
-        entry: plantdex/plants:ci sh -c "cd plants && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
+        language: system
+        entry: sh -c "docker run --rm -v $(pwd)/plants:/app -w /app plantdex/plants:ci go test ./..."
         files: ^plants/
         verbose: true
 
@@ -48,29 +48,29 @@ repos:
 
       - id: docker-go
         name: users-format
-        language: docker_image
-        entry: plantdex/users:ci sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && goimports -l -w ."
+        language: system
+        entry: sh -c "docker run --rm -v $(pwd)/users:/app -w /app plantdex/users:ci goimports -l -w ."
         files: ^users/
         verbose: true
 
       - id: docker-go
         name: users-lint
-        language: docker_image
-        entry: plantdex/users:ci sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && staticcheck ./..."
+        language: system
+        entry: sh -c "docker run --rm -v $(pwd)/users:/app -w /app plantdex/users:ci golangci-lint run --timeout 100s"
         files: ^users/
         verbose: true
 
       - id: docker-go
         name: users-vet
-        language: docker_image
-        entry: plantdex/users:ci sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go vet ./..."
+        language: system
+        entry: sh -c "docker run --rm -v $(pwd)/users:/app -w /app plantdex/users:ci go vet ./..."
         files: ^users/
         verbose: true
 
       - id: docker-go
         name: users-test
-        language: docker_image
-        entry: plantdex/users:ci sh -c "cd users && export XDG_CACHE_HOME="/tmp/.cache" && go test ./..."
+        language: system
+        entry: sh -c "docker run --rm -v $(pwd)/users:/app -w /app plantdex/users:ci go test ./..."
         files: ^users/
         verbose: true
 
