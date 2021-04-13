@@ -43,9 +43,16 @@ func NewHandler(cs Creater, ns Authenticater, zs Authorizer, gs Generater) *hand
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 	var new user.User
 
-	json.NewDecoder(r.Body).Decode(&new)
+	err := json.NewDecoder(r.Body).Decode(&new)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 
-	err := h.cs.Create(new)
+		log.Printf("%+v\n", err)
+
+		return
+	}
+
+	err = h.cs.Create(new)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -71,7 +78,14 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 	var cred user.Credentials
 
-	json.NewDecoder(r.Body).Decode(&cred)
+	err := json.NewDecoder(r.Body).Decode(&cred)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		log.Printf("%+v\n", err)
+
+		return
+	}
 
 	token, err := h.ns.Authenticate(cred)
 	if err != nil {
@@ -139,7 +153,14 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	io.WriteString(w, uid)
+	_, err = io.WriteString(w, uid)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+
+		log.Printf("%+v\n", err)
+
+		return
+	}
 }
 
 func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
