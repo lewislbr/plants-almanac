@@ -42,7 +42,7 @@ func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
 	new := plant.Plant{}
 	err := json.NewDecoder(r.Body).Decode(&new)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 		log.Printf("%+v\n", err)
 
@@ -58,7 +58,7 @@ func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 			log.Printf("%+v\n", err)
 
@@ -73,7 +73,7 @@ func (h *handler) ListAll(w http.ResponseWriter, r *http.Request) {
 	uid := r.Context().Value(contextId).(string)
 	result, err := h.ls.ListAll(uid)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 		log.Printf("%+v\n", err)
 
@@ -84,7 +84,7 @@ func (h *handler) ListAll(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(result)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 		log.Printf("%+v\n", err)
 
@@ -107,7 +107,7 @@ func (h *handler) ListOne(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 			log.Printf("%+v\n", err)
 
@@ -119,7 +119,7 @@ func (h *handler) ListOne(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(result)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 		log.Printf("%+v\n", err)
 
@@ -131,7 +131,7 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 	update := plant.Plant{}
 	err := json.NewDecoder(r.Body).Decode(&update)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 		log.Printf("%+v\n", err)
 
@@ -152,7 +152,7 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 			log.Printf("%+v\n", err)
 
@@ -174,7 +174,7 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 			log.Printf("%+v\n", err)
 

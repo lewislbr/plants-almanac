@@ -24,7 +24,7 @@ func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			req, err := http.NewRequest("GET", url+"/authorization", nil)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 				log.Printf("%+v\n", err)
 
@@ -40,7 +40,7 @@ func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
 			client := &http.Client{}
 			res, err := client.Do(req)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 				log.Printf("%+v\n", err)
 
@@ -56,7 +56,7 @@ func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
 
 			body, err := io.ReadAll(res.Body)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 				log.Printf("%+v\n", err)
 

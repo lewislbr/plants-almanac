@@ -45,7 +45,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&new)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 		log.Printf("%+v\n", err)
 
@@ -64,7 +64,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 			log.Printf("%+v\n", err)
 
@@ -80,7 +80,7 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&cred)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 		log.Printf("%+v\n", err)
 
@@ -103,7 +103,7 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 			log.Printf("%+v\n", err)
 
@@ -127,7 +127,7 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
-		w.WriteHeader(http.StatusBadRequest)
+		http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
 
 		return
 	}
@@ -141,11 +141,11 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 
 			return
 		case errors.Is(err, user.ErrInvalidToken):
-			w.WriteHeader(http.StatusUnauthorized)
+			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
 
 			return
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 			log.Printf("%+v\n", err)
 
@@ -155,7 +155,7 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 
 	_, err = io.WriteString(w, uid)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 		log.Printf("%+v\n", err)
 
@@ -180,11 +180,11 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 
 			return
 		case errors.Is(err, user.ErrInvalidToken):
-			w.WriteHeader(http.StatusUnauthorized)
+			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
 
 			return
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 			log.Printf("%+v\n", err)
 
@@ -200,7 +200,7 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			w.WriteHeader(http.StatusInternalServerError)
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
 
 			log.Printf("%+v\n", err)
 
