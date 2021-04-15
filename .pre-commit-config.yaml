@@ -8,6 +8,7 @@ repos:
         language: system
         entry: sh -c "docker build -t plantdex/plants:ci --target=ci plants"
         files: ^plants/
+        types_or: [go]
         verbose: true
 
       - id: docker-go
@@ -15,6 +16,7 @@ repos:
         language: system
         entry: sh -c "docker run --rm -v $(pwd)/plants:/app -w /app plantdex/plants:ci goimports -l -w ."
         files: ^plants/
+        types_or: [go]
         verbose: true
 
       - id: docker-go
@@ -22,6 +24,7 @@ repos:
         language: system
         entry: sh -c "docker run --rm -v $(pwd)/plants:/app -w /app plantdex/plants:ci golangci-lint run --timeout 100s"
         files: ^plants/
+        types_or: [go]
         verbose: true
 
       - id: docker-go
@@ -29,6 +32,7 @@ repos:
         language: system
         entry: sh -c "docker run --rm -v $(pwd)/plants:/app -w /app plantdex/plants:ci go vet ./..."
         files: ^plants/
+        types_or: [go]
         verbose: true
 
       - id: docker-go
@@ -36,6 +40,7 @@ repos:
         language: system
         entry: sh -c "docker run --rm -v $(pwd)/plants:/app -w /app plantdex/plants:ci go test ./..."
         files: ^plants/
+        types_or: [go]
         verbose: true
 
       # Users
@@ -44,6 +49,7 @@ repos:
         language: system
         entry: sh -c "docker build -t plantdex/users:ci --target=ci users"
         files: ^users/
+        types_or: [go]
         verbose: true
 
       - id: docker-go
@@ -51,6 +57,7 @@ repos:
         language: system
         entry: sh -c "docker run --rm -v $(pwd)/users:/app -w /app plantdex/users:ci goimports -l -w ."
         files: ^users/
+        types_or: [go]
         verbose: true
 
       - id: docker-go
@@ -58,6 +65,7 @@ repos:
         language: system
         entry: sh -c "docker run --rm -v $(pwd)/users:/app -w /app plantdex/users:ci golangci-lint run --timeout 100s"
         files: ^users/
+        types_or: [go]
         verbose: true
 
       - id: docker-go
@@ -65,6 +73,7 @@ repos:
         language: system
         entry: sh -c "docker run --rm -v $(pwd)/users:/app -w /app plantdex/users:ci go vet ./..."
         files: ^users/
+        types_or: [go]
         verbose: true
 
       - id: docker-go
@@ -72,6 +81,7 @@ repos:
         language: system
         entry: sh -c "docker run --rm -v $(pwd)/users:/app -w /app plantdex/users:ci go test ./..."
         files: ^users/
+        types_or: [go]
         verbose: true
 
       # Web
@@ -80,6 +90,7 @@ repos:
         language: system
         entry: sh -c "docker build -t plantdex/web:ci --target=ci web"
         files: ^web/
+        types_or: [html, css, ts, tsx, json]
         verbose: true
 
       - id: docker-prettier
@@ -87,6 +98,7 @@ repos:
         language: docker_image
         entry: plantdex/web:ci sh -c "cd web && npm run format"
         files: ^web/
+        types_or: [html, css, ts, tsx, json]
         verbose: true
 
       - id: docker-eslint
@@ -95,6 +107,7 @@ repos:
         entry: plantdex/web:ci sh -c "cd web && npm run lint"
         exclude_types: [css, html, json]
         files: ^web/
+        types_or: [ts, tsx]
         verbose: true
 
       - id: docker-typescript
@@ -103,4 +116,5 @@ repos:
         pass_filenames: false
         entry: plantdex/web:ci sh -c "cd web && npm run ts"
         files: ^web/
+        types_or: [ts, tsx]
         verbose: true
