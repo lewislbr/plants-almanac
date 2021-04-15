@@ -34,10 +34,12 @@ func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, port, web st
 
 	h := NewHandler(cs, ns, zs, gs)
 
-	r.Post("/signup", h.Create)
-	r.Post("/login", h.LogIn)
-	r.Get("/authorization", h.Authorize)
-	r.Get("/refresh", h.Refresh)
+	r.Route("/users", func(r chi.Router) {
+		r.Post("/registration", h.Create)
+		r.Post("/login", h.LogIn)
+		r.Get("/authorization", h.Authorize)
+		r.Get("/refresh", h.Refresh)
+	})
 
 	s := &http.Server{}
 

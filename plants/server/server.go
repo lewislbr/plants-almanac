@@ -34,11 +34,13 @@ func New(as Adder, ls Lister, es Editer, ds Deleter, port, auth, web string) *Se
 
 	h := NewHandler(as, ls, es, ds)
 
-	r.Post("/add", h.Add)
-	r.Get("/list", h.ListAll)
-	r.Get("/list/{id}", h.ListOne)
-	r.Put("/edit/{id}", h.Edit)
-	r.Delete("/delete/{id}", h.Delete)
+	r.Route("/plants", func(r chi.Router) {
+		r.Post("/", h.Add)
+		r.Get("/", h.ListAll)
+		r.Get("/{id}", h.ListOne)
+		r.Put("/{id}", h.Edit)
+		r.Delete("/{id}", h.Delete)
+	})
 
 	s := &http.Server{}
 

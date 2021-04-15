@@ -33,7 +33,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 
 		handler.Create(w, r)
 
@@ -58,7 +58,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 
 		handler.Create(w, r)
 
@@ -83,7 +83,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 
 		handler.Create(w, r)
 
@@ -108,7 +108,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 
 		handler.Create(w, r)
 
@@ -133,7 +133,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 
 		handler.LogIn(w, r)
 
@@ -158,7 +158,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 
 		handler.LogIn(w, r)
 
@@ -183,7 +183,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 
 		handler.LogIn(w, r)
 
@@ -208,7 +208,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 
 		handler.LogIn(w, r)
 
@@ -233,7 +233,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/login", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 
 		handler.LogIn(w, r)
 
@@ -252,7 +252,7 @@ func TestHandler(t *testing.T) {
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/authorization", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		r.Header.Add("Authorization", "Bearer test")
 
@@ -273,7 +273,7 @@ func TestHandler(t *testing.T) {
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/authorization", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		handler.Authorize(w, r)
 
@@ -292,7 +292,7 @@ func TestHandler(t *testing.T) {
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrMissingData)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/authorization", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		r.Header.Add("Authorization", "Bearer test")
 
@@ -313,7 +313,7 @@ func TestHandler(t *testing.T) {
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrInvalidToken)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/authorization", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		r.Header.Add("Authorization", "Bearer test")
 
@@ -334,7 +334,7 @@ func TestHandler(t *testing.T) {
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", errors.New("error"))
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/authorization", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		r.Header.Add("Authorization", "Bearer test")
 
@@ -356,7 +356,7 @@ func TestHandler(t *testing.T) {
 		gsMock.On("GenerateToken", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		handler.Refresh(w, r)
 
@@ -376,7 +376,7 @@ func TestHandler(t *testing.T) {
 		gsMock.On("GenerateToken", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		handler.Refresh(w, r)
 
@@ -396,7 +396,7 @@ func TestHandler(t *testing.T) {
 		gsMock.On("GenerateToken", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		handler.Refresh(w, r)
 
@@ -416,7 +416,7 @@ func TestHandler(t *testing.T) {
 		gsMock.On("GenerateToken", mock.AnythingOfType("string")).Return("", nil)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/refresh", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		handler.Refresh(w, r)
 

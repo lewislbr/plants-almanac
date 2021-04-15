@@ -10,7 +10,7 @@ services:
     env_file:
       - plants/.env
     ports:
-      - "127.0.0.1:4040:4040"
+      - "4040:4040"
     stdin_open: true
     tty: true
 
@@ -23,7 +23,7 @@ services:
     env_file:
       - users/.env
     ports:
-      - "127.0.0.1:4041:4041"
+      - "4041:4041"
     stdin_open: true
     tty: true
 
@@ -36,6 +36,6 @@ services:
     env_file:
       - web/.env
     ports:
-      - "127.0.0.1:3000:3000"
+      - "3000:3000"
     volumes:
       - ./web:/web

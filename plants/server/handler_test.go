@@ -34,7 +34,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/add", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Add(w, r.WithContext(ctx))
@@ -60,7 +60,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/add", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Add(w, r.WithContext(ctx))
@@ -86,7 +86,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPost, "/add", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPost, "/", bytes.NewBuffer(payload))
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Add(w, r.WithContext(ctx))
@@ -106,7 +106,7 @@ func TestHandler(t *testing.T) {
 		lsMock.On("ListAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/list", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.ListAll(w, r.WithContext(ctx))
@@ -126,7 +126,7 @@ func TestHandler(t *testing.T) {
 		lsMock.On("ListAll", mock.AnythingOfType("string")).Return(nil, errors.New("error"))
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/list", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.ListAll(w, r.WithContext(ctx))
@@ -146,7 +146,7 @@ func TestHandler(t *testing.T) {
 		lsMock.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{Name: "test"}, nil)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/list/123", nil)
+		r := httptest.NewRequest(http.MethodGet, "/123", nil)
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.ListOne(w, r.WithContext(ctx))
@@ -166,7 +166,7 @@ func TestHandler(t *testing.T) {
 		lsMock.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, plant.ErrMissingData)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/list", nil)
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.ListOne(w, r.WithContext(ctx))
@@ -186,7 +186,7 @@ func TestHandler(t *testing.T) {
 		lsMock.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, plant.ErrNotFound)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/list/123", nil)
+		r := httptest.NewRequest(http.MethodGet, "/123", nil)
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.ListOne(w, r.WithContext(ctx))
@@ -206,7 +206,7 @@ func TestHandler(t *testing.T) {
 		lsMock.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("error"))
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/list/123", nil)
+		r := httptest.NewRequest(http.MethodGet, "/123", nil)
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.ListOne(w, r.WithContext(ctx))
@@ -232,7 +232,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPut, "/edit/123", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPut, "/123", bytes.NewBuffer(payload))
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Edit(w, r.WithContext(ctx))
@@ -258,7 +258,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPut, "/edit", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPut, "/", bytes.NewBuffer(payload))
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Edit(w, r.WithContext(ctx))
@@ -284,7 +284,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPut, "/edit/123", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPut, "/123", bytes.NewBuffer(payload))
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Edit(w, r.WithContext(ctx))
@@ -310,7 +310,7 @@ func TestHandler(t *testing.T) {
 		}
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodPut, "/edit/123", bytes.NewBuffer(payload))
+		r := httptest.NewRequest(http.MethodPut, "/123", bytes.NewBuffer(payload))
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Edit(w, r.WithContext(ctx))
@@ -330,7 +330,7 @@ func TestHandler(t *testing.T) {
 		dsMock.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodDelete, "/delete/123", nil)
+		r := httptest.NewRequest(http.MethodDelete, "/123", nil)
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Delete(w, r.WithContext(ctx))
@@ -350,7 +350,7 @@ func TestHandler(t *testing.T) {
 		dsMock.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.ErrMissingData)
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodDelete, "/delete", nil)
+		r := httptest.NewRequest(http.MethodDelete, "/", nil)
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Delete(w, r.WithContext(ctx))
@@ -370,7 +370,7 @@ func TestHandler(t *testing.T) {
 		dsMock.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(errors.New("error"))
 
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodDelete, "/delete/123", nil)
+		r := httptest.NewRequest(http.MethodDelete, "/123", nil)
 		ctx := context.WithValue(r.Context(), contextId, "abc")
 
 		handler.Delete(w, r.WithContext(ctx))

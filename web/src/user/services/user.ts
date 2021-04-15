@@ -1,7 +1,7 @@
 import {Credentials, NewUser} from "../interfaces/user"
 
 export async function signUp(user: NewUser): Promise<void> {
-  const response = await fetch(`${process.env.USERS_URL as string}/signup`, {
+  const response = await fetch(`${process.env.USERS_URL as string}/registration`, {
     body: JSON.stringify(user),
     headers: {"Content-Type": "application/json"},
     method: "POST",

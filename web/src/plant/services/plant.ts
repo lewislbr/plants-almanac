@@ -1,7 +1,7 @@
 import {NewPlant, Plant} from "../interfaces/plant"
 
 export async function addOne(plant: NewPlant): Promise<void> {
-  const response = await fetch(`${process.env.PLANTS_URL as string}/add`, {
+  const response = await fetch(`${process.env.PLANTS_URL as string}`, {
     body: JSON.stringify(plant),
     credentials: "include",
     headers: {"Content-Type": "application/json"},
@@ -14,7 +14,7 @@ export async function addOne(plant: NewPlant): Promise<void> {
 }
 
 export async function listAll(): Promise<Plant[]> {
-  const response = await fetch(`${process.env.PLANTS_URL as string}/list`, {
+  const response = await fetch(`${process.env.PLANTS_URL as string}`, {
     credentials: "include",
   })
 
@@ -26,7 +26,7 @@ export async function listAll(): Promise<Plant[]> {
 }
 
 export async function listOne(id: Plant["id"]): Promise<Plant> {
-  const response = await fetch(`${process.env.PLANTS_URL as string}/list/${id}`, {
+  const response = await fetch(`${process.env.PLANTS_URL as string}/${id}`, {
     credentials: "include",
   })
 
@@ -38,7 +38,7 @@ export async function listOne(id: Plant["id"]): Promise<Plant> {
 }
 
 export async function editOne(id: Plant["id"], plant: NewPlant): Promise<void> {
-  const response = await fetch(`${process.env.PLANTS_URL as string}/edit/${id}`, {
+  const response = await fetch(`${process.env.PLANTS_URL as string}/${id}`, {
     body: JSON.stringify(plant),
     credentials: "include",
     headers: {"Content-Type": "application/json"},
@@ -51,7 +51,7 @@ export async function editOne(id: Plant["id"], plant: NewPlant): Promise<void> {
 }
 
 export async function deleteOne(id: Plant["id"]): Promise<void> {
-  const response = await fetch(`${process.env.PLANTS_URL as string}/delete/${id}`, {
+  const response = await fetch(`${process.env.PLANTS_URL as string}/${id}`, {
     credentials: "include",
     method: "DELETE",
   })

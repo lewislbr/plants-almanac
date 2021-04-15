@@ -112,12 +112,12 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isDevelopment {
-		w.Header().Add("Set-Cookie", "st="+token+"; HttpOnly; Max-Age=604800")
-		w.Header().Add("Set-Cookie", "te=true; Max-Age=604800")
+		w.Header().Add("Set-Cookie", "st="+token+"; HttpOnly; Path=/; SameSite=None; Secure")
+		w.Header().Add("Set-Cookie", "te=true; SameSite=None; Secure")
 
 		w.WriteHeader(http.StatusNoContent)
 	} else {
-		w.Header().Add("Set-Cookie", "st="+token+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; SameSite=Strict; Secure")
+		w.Header().Add("Set-Cookie", "st="+token+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 		w.Header().Add("Set-Cookie", "te=true; Domain=plantdex.app; Max-Age=604800; SameSite=Strict; Secure")
 
 		w.WriteHeader(http.StatusNoContent)
@@ -209,12 +209,12 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isDevelopment {
-		w.Header().Add("Set-Cookie", "st="+token+"; HttpOnly; Max-Age=604800")
-		w.Header().Add("Set-Cookie", "te=true; Max-Age=604800")
+		w.Header().Add("Set-Cookie", "st="+token+"; HttpOnly; Path=/; SameSite=None; Secure")
+		w.Header().Add("Set-Cookie", "te=true; SameSite=None; Secure")
 
 		w.WriteHeader(http.StatusNoContent)
 	} else {
-		w.Header().Add("Set-Cookie", "st="+token+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; SameSite=Strict; Secure")
+		w.Header().Add("Set-Cookie", "st="+token+"; Domain=plantdex.app; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 		w.Header().Add("Set-Cookie", "te=true; Domain=plantdex.app; Max-Age=604800; SameSite=Strict; Secure")
 
 		w.WriteHeader(http.StatusNoContent)
