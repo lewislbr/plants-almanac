@@ -11,14 +11,6 @@ type uid string
 
 const contextId uid = "uid"
 
-func headersMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
-
-		h.ServeHTTP(w, r)
-	})
-}
-
 func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

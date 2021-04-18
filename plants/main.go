@@ -23,7 +23,6 @@ type envVars struct {
 	Database string
 	DBURI    string
 	Port     string
-	WebURL   string
 }
 
 func main() {
@@ -39,7 +38,7 @@ func main() {
 	lss := list.NewService(rep)
 	eds := edit.NewService(lss, rep)
 	dls := delete.NewService(rep)
-	srv := server.New(ads, lss, eds, dls, env.Port, env.AuthURL, env.WebURL)
+	srv := server.New(ads, lss, eds, dls, env.Port, env.AuthURL)
 
 	go gracefulShutdown(srv, str)
 
@@ -73,7 +72,6 @@ func getEnvVars() *envVars {
 		Database: get("PLANTS_DATABASE_NAME"),
 		DBURI:    get("PLANTS_DATABASE_URI"),
 		Port:     get("PLANTS_PORT"),
-		WebURL:   get("WEB_URL"),
 	}
 }
 
