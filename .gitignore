@@ -1,3 +1,5 @@
+*-configmap.yaml
+*-secret.yaml
 .DS_Store
 .env
 coverage.txt

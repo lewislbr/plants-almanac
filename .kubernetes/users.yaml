@@ -1,0 +1,54 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: users-deployment
+  namespace: plantdex
+  labels:
+    app: users
+spec:
+  selector:
+    matchLabels:
+      app: users
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+        - name: users
+          image: plantdex/users:prod
+          imagePullPolicy: Never
+          resources:
+            requests:
+              memory: "250Mi"
+              cpu: "250m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 4041
+          envFrom:
+            - configMapRef:
+                name: users-configmap
+            - secretRef:
+                name: users-secret
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: users-service
+  namespace: plantdex
+spec:
+  selector:
+    app: users
+  ports:
+    - protocol: TCP
+      port: 4041
+      targetPort: 4041
