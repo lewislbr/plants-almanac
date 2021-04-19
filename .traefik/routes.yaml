@@ -1,0 +1,63 @@
+http:
+  routers:
+    plants:
+      rule: "PathPrefix(`/plants`)"
+      service: plants
+      middlewares:
+        - "base-headers"
+        - "plants-headers"
+    users:
+      rule: "PathPrefix(`/users`)"
+      service: users
+      middlewares:
+        - "base-headers"
+        - "users-headers"
+    web:
+      rule: "PathPrefix(`/`)"
+      service: web
+      middlewares:
+        - "base-headers"
+        - "web-headers"
+
+  services:
+    plants:
+      loadBalancer:
+        servers:
+          - url: "http://plants:4040"
+    users:
+      loadBalancer:
+        servers:
+          - url: "http://users:4041"
+    web:
+      loadBalancer:
+        servers:
+          - url: "http://web:3000"
+
+  middlewares:
+    base-headers:
+      headers:
+        customResponseHeaders:
+          Via: "Traefik"
+    plants-headers:
+      headers:
+        customResponseHeaders:
+          Allow-Credentials: true,
+          Access-Control-Allow-Headers: "Content-Type, Origin"
+          Access-Control-Allow-Methods: "POST"
+          Access-Control-Allow-Origin: "http://localhost:9898"
+          Access-Control-Max-Age: "86400"
+    users-headers:
+      headers:
+        customResponseHeaders:
+          Allow-Credentials: true,
+          Access-Control-Allow-Headers: "Content-Type, Origin"
+          Access-Control-Allow-Methods: "GET, POST, PATCH, DELETE"
+          Access-Control-Allow-Origin: "http://localhost:9898"
+          Access-Control-Max-Age: "86400"
+    web-headers:
+      headers:
+        customResponseHeaders:
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          X-Content-Type-Options: "nosniff"
+          X-Frame-Options: "SAMEORIGIN"
+          X-XSS-Protection: "1; mode=block"

@@ -1,0 +1,12 @@
+entryPoints:
+  local:
+    address: :9898
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  file:
+    filename: etc/traefik/routes.yaml
+    watch: true
