@@ -16,14 +16,14 @@ type Server struct {
 	srv *http.Server
 }
 
-func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, port string) *Server {
+func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, port, domain string) *Server {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(30 * time.Second))
 	r.Use(httprate.LimitByIP(100, 1*time.Minute))
 
-	h := NewHandler(cs, ns, zs, gs)
+	h := NewHandler(cs, ns, zs, gs, domain)
 
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/registration", h.Create)
