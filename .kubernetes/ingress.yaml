@@ -1,260 +1,62 @@
----
-kind: CustomResourceDefinition
-apiVersion: apiextensions.k8s.io/v1beta1
+apiVersion: getambassador.io/v2
+kind: Module
 metadata:
-  name: ingressroutes.traefik.containo.us
+  name: ambassador
+  namespace: ambassador
 spec:
-  group: traefik.containo.us
-  version: v1alpha1
-  names:
-    kind: IngressRoute
-    plural: ingressroutes
-    singular: ingressroute
-  scope: Namespaced
+  config:
+    defaults:
+      httpmapping:
+        add_response_headers:
+          via: "Ambassador"
 
 ---
-kind: CustomResourceDefinition
-apiVersion: apiextensions.k8s.io/v1beta1
-metadata:
-  name: middlewares.traefik.containo.us
-
-spec:
-  group: traefik.containo.us
-  version: v1alpha1
-  names:
-    kind: Middleware
-    plural: middlewares
-    singular: middleware
-  scope: Namespaced
-
----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  name: traefikservices.traefik.containo.us
-spec:
-  group: traefik.containo.us
-  version: v1alpha1
-  names:
-    kind: TraefikService
-    plural: traefikservices
-    singular: traefikservice
-  scope: Namespaced
-
----
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: traefik-ingress-controller
-  namespace: plantdex
-rules:
-  - apiGroups:
-      - ""
-    resources:
-      - services
-      - endpoints
-      - secrets
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - extensions
-      - networking.k8s.io
-    resources:
-      - ingresses
-      - ingressclasses
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - extensions
-    resources:
-      - ingresses/status
-    verbs:
-      - update
-  - apiGroups:
-      - traefik.containo.us
-    resources:
-      - ingressroutes
-      - middlewares
-      - traefikservices
-    verbs:
-      - get
-      - list
-      - watch
-
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: traefik-ingress-controller
-  namespace: plantdex
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: traefik-ingress-controller
-subjects:
-  - kind: ServiceAccount
-    name: traefik-ingress-controller
-    namespace: plantdex
-
----
-kind: ServiceAccount
-apiVersion: v1
-metadata:
-  name: traefik-ingress-controller
-  namespace: plantdex
-
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: traefik
-  namespace: plantdex
-  labels:
-    app: traefik
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: traefik
-  template:
-    metadata:
-      labels:
-        app: traefik
-    spec:
-      serviceAccountName: traefik-ingress-controller
-      containers:
-        - name: traefik
-          image: traefik:latest
-          imagePullPolicy: IfNotPresent
-          resources:
-            requests:
-              memory: "250Mi"
-              cpu: "250m"
-            limits:
-              memory: "500Mi"
-              cpu: "500m"
-          args:
-            - --api.dashboard=true
-            - --api.insecure=true
-            - --entrypoints.web.address=:9898
-            - --providers.kubernetescrd
-            - --providers.kubernetesingress
-          ports:
-            - name: web
-              containerPort: 9898
-            - name: admin
-              containerPort: 8080
-
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: traefik
-  namespace: plantdex
-spec:
-  type: LoadBalancer
-  selector:
-    app: traefik
-  ports:
-    - protocol: TCP
-      name: web
-      port: 9898
-      targetPort: 9898
-    - protocol: TCP
-      name: admin
-      port: 8080
-      targetPort: 8080
-
----
-kind: Middleware
-apiVersion: traefik.containo.us/v1alpha1
-metadata:
-  name: base-headers
-spec:
-  headers:
-    customResponseHeaders:
-      Via: Traefik
-
----
-kind: Middleware
-apiVersion: traefik.containo.us/v1alpha1
-metadata:
-  name: plants-headers
-spec:
-  headers:
-    customResponseHeaders:
-      Allow-Credentials: true,
-      Allowed-Headers: "Accept, Authorization, Content-Type, Origin"
-      Allowed-Methods: "DELETE, GET, OPTIONS, PUT, POST"
-      Allowed-Origins: "https://plantdex.app"
-      Max-Age: 86400,
-      Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
-
----
-kind: Middleware
-apiVersion: traefik.containo.us/v1alpha1
-metadata:
-  name: users-headers
-spec:
-  headers:
-    customResponseHeaders:
-      Allow-Credentials: true,
-      Allowed-Headers: "Accept, Authorization, Content-Type, Origin"
-      Allowed-Methods: "GET, OPTIONS, POST"
-      Allowed-Origins: "https://plantdex.app"
-      Max-Age: 86400,
-      Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
-
----
-kind: Middleware
-apiVersion: traefik.containo.us/v1alpha1
-metadata:
-  name: web-headers
-spec:
-  headers:
-    customResponseHeaders:
-      Content-Security-Policy: "default-src 'self' *.plantdex.app; style-src 'unsafe-inline'"
-      Referrer-Policy: "strict-origin-when-cross-origin"
-      Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
-      X-Content-Type-Options: "nosniff"
-      X-Frame-Options: "SAMEORIGIN"
-      X-XSS-Protection: "1; mode=block"
-
----
-kind: IngressRoute
-apiVersion: traefik.containo.us/v1alpha1
+kind: Mapping
+apiVersion: getambassador.io/v2
 metadata:
   name: plants
-  namespace: plantdex
+  namespace: ambassador
 spec:
-  entryPoints:
-    - web
-  routes:
-    - match: "Host(`plants.plantdex.app`) && PathPrefix(`/plants`)"
-      kind: Rule
-      services:
-        - name: plants-service
-          port: 4040
-      middlewares:
-        - name: base-headers
-        - name: plants-headers
-    - match: "Host(`users.plantdex.app`) && PathPrefix(`/users`)"
-      kind: Rule
-      services:
-        - name: users-service
-          port: 4041
-      middlewares:
-        - name: base-headers
-        - name: users-headers
-    - match: "Host(`plantdex.app`) && PathPrefix(`/`)"
-      kind: Rule
-      services:
-        - name: web-service
-          port: 3000
-      middlewares:
-        - name: base-headers
-        - name: web-headers
+  prefix: /plants/
+  service: plants-service.plantdex:4040
+  add_response_headers:
+    Access-Control-Allow-Credentials: true,
+    Access-Control-Allowed-Headers: "Accept, Authorization, Content-Type, Origin"
+    Access-Control-Allowed-Methods: "GET, OPTIONS, POST"
+    Access-Control-Allowed-Origins: "https://plantdex.app"
+    Access-Control-Max-Age: 86400,
+    Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
+
+---
+kind: Mapping
+apiVersion: getambassador.io/v2
+metadata:
+  name: users
+  namespace: ambassador
+spec:
+  prefix: /users/
+  service: users-service.plantdex:4041
+  add_response_headers:
+    Access-Control-Allow-Credentials: true,
+    Access-Control-Allowed-Headers: "Accept, Authorization, Content-Type, Origin"
+    Access-Control-Allowed-Methods: "GET, OPTIONS, POST"
+    Access-Control-Allowed-Origins: "https://plantdex.app"
+    Access-Control-Max-Age: 86400,
+    Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
+
+---
+kind: Mapping
+apiVersion: getambassador.io/v2
+metadata:
+  name: web
+  namespace: ambassador
+spec:
+  prefix: /
+  service: web-service.plantdex:3000
+  add_response_headers:
+    Content-Security-Policy: "default-src 'self' *.plantdex.app; style-src 'unsafe-inline'"
+    Referrer-Policy: "strict-origin-when-cross-origin"
+    Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options: "nosniff"
+    X-Frame-Options: "SAMEORIGIN"
+    X-XSS-Protection: "1; mode=block"

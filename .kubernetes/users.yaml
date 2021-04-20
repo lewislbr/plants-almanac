@@ -22,8 +22,8 @@ spec:
     spec:
       containers:
         - name: users
-          image: plantdex/users:prod
-          imagePullPolicy: Never
+          image: eu.gcr.io/plantdex-prod/users
+          imagePullPolicy: IfNotPresent
           resources:
             requests:
               memory: "250Mi"
