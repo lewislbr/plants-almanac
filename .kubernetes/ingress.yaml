@@ -8,6 +8,10 @@ spec:
     fqdn: plantdex.app
     tls:
       secretName: tls-secret
+    rateLimitPolicy:
+      local:
+        requests: 20
+        unit: minute
   routes:
     - conditions:
         - prefix: /api/plants

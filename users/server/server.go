@@ -8,7 +8,6 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/go-chi/httprate"
 	"github.com/pkg/errors"
 )
 
@@ -20,8 +19,6 @@ func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, port, domain
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.Timeout(30 * time.Second))
-	r.Use(httprate.LimitByIP(100, 1*time.Minute))
 
 	h := NewHandler(cs, ns, zs, gs, domain)
 
