@@ -110,7 +110,7 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Set-Cookie", "st="+token+"; Domain="+h.domain+"; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
-	w.Header().Add("Set-Cookie", "te=true; Domain="+h.domain+"; Max-Age=604800; SameSite=Strict; Secure")
+	w.Header().Add("Set-Cookie", "te=true; Domain="+h.domain+"; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 
 	w.WriteHeader(http.StatusNoContent)
 }
@@ -200,7 +200,7 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Set-Cookie", "st="+token+"; Domain="+h.domain+"; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
-	w.Header().Add("Set-Cookie", "te=true; Domain="+h.domain+"; Max-Age=604800; SameSite=Strict; Secure")
+	w.Header().Add("Set-Cookie", "te=true; Domain="+h.domain+"; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 
 	w.WriteHeader(http.StatusNoContent)
 }
