@@ -1,73 +1,7 @@
 kind: HTTPProxy
 apiVersion: projectcontour.io/v1
 metadata:
-  name: plants
-  namespace: plantdex
-spec:
-  virtualhost:
-    fqdn: plants.plantdex.app
-    corsPolicy:
-      allowCredentials: true
-      allowOrigin:
-        - https://plantdex.app
-      allowMethods:
-        - DELETE
-        - GET
-        - OPTIONS
-        - POST
-        - PUT
-      allowHeaders:
-        - accept
-        - authorization
-        - content-type
-        - origin
-      maxAge: "24h"
-    tls:
-      secretName: tls-secret
-  routes:
-    - conditions:
-        - prefix: /plants
-      services:
-        - name: plants-service
-          port: 4040
-
----
-kind: HTTPProxy
-apiVersion: projectcontour.io/v1
-metadata:
-  name: users
-  namespace: plantdex
-spec:
-  virtualhost:
-    fqdn: users.plantdex.app
-    corsPolicy:
-      allowCredentials: true
-      allowOrigin:
-        - https://plantdex.app
-      allowMethods:
-        - GET
-        - OPTIONS
-        - POST
-      allowHeaders:
-        - accept
-        - authorization
-        - content-type
-        - origin
-      maxAge: "24h"
-    tls:
-      secretName: tls-secret
-  routes:
-    - conditions:
-        - prefix: /users
-      services:
-        - name: users-service
-          port: 4041
-
----
-kind: HTTPProxy
-apiVersion: projectcontour.io/v1
-metadata:
-  name: web
+  name: plantdex
   namespace: plantdex
 spec:
   virtualhost:
@@ -75,6 +9,24 @@ spec:
     tls:
       secretName: tls-secret
   routes:
+    - conditions:
+        - prefix: /api/plants
+      services:
+        - name: plants-service
+          port: 4040
+      responseHeadersPolicy:
+        set:
+          - name: Strict-Transport-Security
+            value: "max-age=63072000; includeSubDomains; preload"
+    - conditions:
+        - prefix: /api/users
+      services:
+        - name: users-service
+          port: 4041
+      responseHeadersPolicy:
+        set:
+          - name: Strict-Transport-Security
+            value: "max-age=63072000; includeSubDomains; preload"
     - conditions:
         - prefix: /
       services:

@@ -22,9 +22,9 @@ static_resources:
                     - name: plantdex
                       domains: ["*"]
                       routes:
-                        - match: {prefix: "/plants"}
+                        - match: {prefix: "/api/plants"}
                           route: {cluster: plants}
-                        - match: {prefix: "/users"}
+                        - match: {prefix: "/api/users"}
                           route: {cluster: users}
                         - match: {prefix: "/"}
                           route: {cluster: web}

@@ -26,12 +26,14 @@ func New(as Adder, ls Lister, es Editer, ds Deleter, port, auth string) *Server 
 
 	h := NewHandler(as, ls, es, ds)
 
-	r.Route("/plants", func(r chi.Router) {
-		r.Post("/", h.Add)
-		r.Get("/", h.ListAll)
-		r.Get("/{id}", h.ListOne)
-		r.Put("/{id}", h.Edit)
-		r.Delete("/{id}", h.Delete)
+	r.Route("/api", func(r chi.Router) {
+		r.Route("/plants", func(r chi.Router) {
+			r.Post("/", h.Add)
+			r.Get("/", h.ListAll)
+			r.Get("/{id}", h.ListOne)
+			r.Put("/{id}", h.Edit)
+			r.Delete("/{id}", h.Delete)
+		})
 	})
 
 	s := &http.Server{}
