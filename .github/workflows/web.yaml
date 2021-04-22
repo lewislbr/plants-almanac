@@ -50,14 +50,3 @@ jobs:
 
       - name: Push image
         run: docker push "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$WEB_NAME":"$GIT_SHA"
-
-      - name: Deploy container
-        run: |
-          gcloud run deploy "$WEB_NAME" \
-          --allow-unauthenticated \
-          --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$WEB_NAME":"$GIT_SHA" \
-          --max-instances=4 \
-          --platform=managed \
-          --port="${{ secrets.WEB_PORT }}" \
-          --quiet \
-          --region=europe-west1

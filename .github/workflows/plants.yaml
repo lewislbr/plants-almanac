@@ -45,15 +45,3 @@ jobs:
 
       - name: Push image
         run: docker push "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA"
-
-      - name: Deploy container
-        run: |
-          gcloud run deploy "$PLANTS_NAME" \
-          --allow-unauthenticated \
-          --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$PLANTS_NAME":"$GIT_SHA" \
-          --max-instances=4 \
-          --platform=managed \
-          --port="${{ secrets.PLANTS_PORT }}" \
-          --quiet \
-          --region=europe-west1 \
-          --set-env-vars=PLANTS_DATABASE_NAME="${{ secrets.PLANTS_DATABASE_NAME }}",PLANTS_DATABASE_URI="${{ secrets.PLANTS_DATABASE_URI }}",PLANTS_PORT="${{ secrets.PLANTS_PORT }}",USERS_URL="${{ secrets.USERS_URL }}"

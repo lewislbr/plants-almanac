@@ -1,62 +1,96 @@
-apiVersion: getambassador.io/v2
-kind: Module
-metadata:
-  name: ambassador
-  namespace: ambassador
-spec:
-  config:
-    defaults:
-      httpmapping:
-        add_response_headers:
-          via: "Ambassador"
-
----
-kind: Mapping
-apiVersion: getambassador.io/v2
+kind: HTTPProxy
+apiVersion: projectcontour.io/v1
 metadata:
   name: plants
-  namespace: ambassador
+  namespace: plantdex
 spec:
-  prefix: /plants/
-  service: plants-service.plantdex:4040
-  add_response_headers:
-    Access-Control-Allow-Credentials: true,
-    Access-Control-Allowed-Headers: "Accept, Authorization, Content-Type, Origin"
-    Access-Control-Allowed-Methods: "GET, OPTIONS, POST"
-    Access-Control-Allowed-Origins: "https://plantdex.app"
-    Access-Control-Max-Age: 86400,
-    Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
+  virtualhost:
+    fqdn: plants.plantdex.app
+    corsPolicy:
+      allowCredentials: true
+      allowOrigin:
+        - https://plantdex.app
+      allowMethods:
+        - DELETE
+        - GET
+        - OPTIONS
+        - POST
+        - PUT
+      allowHeaders:
+        - accept
+        - authorization
+        - content-type
+        - origin
+      maxAge: "24h"
+    tls:
+      secretName: tls-secret
+  routes:
+    - conditions:
+        - prefix: /plants
+      services:
+        - name: plants-service
+          port: 4040
 
 ---
-kind: Mapping
-apiVersion: getambassador.io/v2
+kind: HTTPProxy
+apiVersion: projectcontour.io/v1
 metadata:
   name: users
-  namespace: ambassador
+  namespace: plantdex
 spec:
-  prefix: /users/
-  service: users-service.plantdex:4041
-  add_response_headers:
-    Access-Control-Allow-Credentials: true,
-    Access-Control-Allowed-Headers: "Accept, Authorization, Content-Type, Origin"
-    Access-Control-Allowed-Methods: "GET, OPTIONS, POST"
-    Access-Control-Allowed-Origins: "https://plantdex.app"
-    Access-Control-Max-Age: 86400,
-    Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
+  virtualhost:
+    fqdn: users.plantdex.app
+    corsPolicy:
+      allowCredentials: true
+      allowOrigin:
+        - https://plantdex.app
+      allowMethods:
+        - GET
+        - OPTIONS
+        - POST
+      allowHeaders:
+        - accept
+        - authorization
+        - content-type
+        - origin
+      maxAge: "24h"
+    tls:
+      secretName: tls-secret
+  routes:
+    - conditions:
+        - prefix: /users
+      services:
+        - name: users-service
+          port: 4041
 
 ---
-kind: Mapping
-apiVersion: getambassador.io/v2
+kind: HTTPProxy
+apiVersion: projectcontour.io/v1
 metadata:
   name: web
-  namespace: ambassador
+  namespace: plantdex
 spec:
-  prefix: /
-  service: web-service.plantdex:3000
-  add_response_headers:
-    Content-Security-Policy: "default-src 'self' *.plantdex.app; style-src 'unsafe-inline'"
-    Referrer-Policy: "strict-origin-when-cross-origin"
-    Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
-    X-Content-Type-Options: "nosniff"
-    X-Frame-Options: "SAMEORIGIN"
-    X-XSS-Protection: "1; mode=block"
+  virtualhost:
+    fqdn: plantdex.app
+    tls:
+      secretName: tls-secret
+  routes:
+    - conditions:
+        - prefix: /
+      services:
+        - name: web-service
+          port: 3000
+      responseHeadersPolicy:
+        set:
+          - name: Content-Security-Policy
+            value: "default-src 'self' *.plantdex.app; style-src 'unsafe-inline'"
+          - name: Referrer-Policy
+            value: "strict-origin-when-cross-origin"
+          - name: Strict-Transport-Security
+            value: "max-age=63072000; includeSubDomains; preload"
+          - name: X-Content-Type-Options
+            value: "nosniff"
+          - name: X-Frame-Options
+            value: "SAMEORIGIN"
+          - name: X-XSS-Protection
+            value: "1; mode=block"

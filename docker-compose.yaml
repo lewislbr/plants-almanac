@@ -1,6 +1,18 @@
 version: "3"
 
 services:
+  envoy:
+    image: envoyproxy/envoy-alpine:v1.18-latest
+    container_name: envoy
+    environment:
+      - ENVOY_UID=777
+      - ENVOY_GID=777
+    ports:
+      - "9901:9901"
+      - "10000:10000"
+    volumes:
+      - ./.envoy:/etc/envoy
+
   plants:
     build:
       context: plants
@@ -13,15 +25,6 @@ services:
       - "4040:4040"
     stdin_open: true
     tty: true
-
-  traefik:
-    image: traefik:latest
-    container_name: traefik
-    ports:
-      - "8080:8080"
-      - "9898:9898"
-    volumes:
-      - ./.traefik:/etc/traefik
 
   users:
     build:

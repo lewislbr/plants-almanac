@@ -23,14 +23,14 @@ spec:
       containers:
         - name: users
           image: eu.gcr.io/plantdex-prod/users
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           resources:
             requests:
-              memory: "250Mi"
-              cpu: "250m"
+              memory: "100Mi"
+              cpu: "50m"
             limits:
-              memory: "500Mi"
-              cpu: "500m"
+              memory: "200Mi"
+              cpu: "100m"
           ports:
             - containerPort: 4041
           envFrom:
