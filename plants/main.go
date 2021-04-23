@@ -77,7 +77,7 @@ func getEnvVars() *envVars {
 
 func gracefulShutdown(srv *server.Server, str *storage.Storage) {
 	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	<-quit
 
@@ -85,7 +85,7 @@ func gracefulShutdown(srv *server.Server, str *storage.Storage) {
 }
 
 func cleanUp(srv *server.Server, str *storage.Storage) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	err := str.Disconnect(ctx)

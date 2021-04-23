@@ -19,18 +19,25 @@ func New(as Adder, ls Lister, es Editer, ds Deleter, port, auth string) *Server 
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
-	r.Use(authorizationMiddleware(auth))
+	r.Group(func(r chi.Router) {
+		r.Use(authorizationMiddleware(auth))
+		r.Route("/api", func(r chi.Router) {
+			r.Route("/plants", func(r chi.Router) {
+				h := NewHandler(as, ls, es, ds)
 
-	h := NewHandler(as, ls, es, ds)
-
-	r.Route("/api", func(r chi.Router) {
-		r.Route("/plants", func(r chi.Router) {
-			r.Post("/", h.Add)
-			r.Get("/", h.ListAll)
-			r.Get("/{id}", h.ListOne)
-			r.Put("/{id}", h.Edit)
-			r.Delete("/{id}", h.Delete)
+				r.Post("/", h.Add)
+				r.Get("/", h.ListAll)
+				r.Get("/{id}", h.ListOne)
+				r.Put("/{id}", h.Edit)
+				r.Delete("/{id}", h.Delete)
+			})
 		})
+	})
+	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	r.Get("/readyz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
 	})
 
 	s := &http.Server{}

@@ -38,6 +38,14 @@ spec:
                 name: users-configmap
             - secretRef:
                 name: users-secret
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 4041
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 4041
 
 ---
 kind: Service

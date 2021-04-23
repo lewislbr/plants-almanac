@@ -38,6 +38,14 @@ spec:
                 name: plants-configmap
             - secretRef:
                 name: plants-secret
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 4040
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 4040
 
 ---
 kind: Service

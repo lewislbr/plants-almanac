@@ -19,16 +19,23 @@ func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, port, domain
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
+	r.Group(func(r chi.Router) {
+		r.Route("/api", func(r chi.Router) {
+			r.Route("/users", func(r chi.Router) {
+				h := NewHandler(cs, ns, zs, gs, domain)
 
-	h := NewHandler(cs, ns, zs, gs, domain)
-
-	r.Route("/api", func(r chi.Router) {
-		r.Route("/users", func(r chi.Router) {
-			r.Post("/registration", h.Create)
-			r.Post("/login", h.LogIn)
-			r.Get("/authorization", h.Authorize)
-			r.Get("/refresh", h.Refresh)
+				r.Post("/registration", h.Create)
+				r.Post("/login", h.LogIn)
+				r.Get("/authorization", h.Authorize)
+				r.Get("/refresh", h.Refresh)
+			})
 		})
+	})
+	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	r.Get("/readyz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
 	})
 
 	s := &http.Server{}
