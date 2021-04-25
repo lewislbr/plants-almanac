@@ -17,7 +17,7 @@ spec:
         - prefix: /api/plants
       services:
         - name: plants-service
-          port: 4040
+          port: 80
       responseHeadersPolicy:
         set:
           - name: Strict-Transport-Security
@@ -26,7 +26,7 @@ spec:
         - prefix: /api/users
       services:
         - name: users-service
-          port: 4041
+          port: 80
       responseHeadersPolicy:
         set:
           - name: Strict-Transport-Security
@@ -35,7 +35,7 @@ spec:
         - prefix: /
       services:
         - name: web-service
-          port: 3000
+          port: 80
       responseHeadersPolicy:
         set:
           - name: Content-Security-Policy
