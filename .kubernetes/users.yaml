@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: users
-          image: eu.gcr.io/plantdex-prod/users
+          image: eu.gcr.io/plantdex-prod/users:latest
           imagePullPolicy: Always
           resources:
             requests:

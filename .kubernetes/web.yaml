@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: eu.gcr.io/plantdex-prod/web
+          image: eu.gcr.io/plantdex-prod/web:latest
           imagePullPolicy: Always
           resources:
             requests:
