@@ -15,7 +15,7 @@ type Server struct {
 	srv *http.Server
 }
 
-func New(as Adder, ls Lister, es Editer, ds Deleter, port, auth string) *Server {
+func New(as Adder, ls Lister, es Editer, ds Deleter, auth string) *Server {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
@@ -42,7 +42,7 @@ func New(as Adder, ls Lister, es Editer, ds Deleter, port, auth string) *Server 
 
 	s := &http.Server{}
 
-	s.Addr = ":" + port
+	s.Addr = ":8080"
 	s.Handler = r
 	s.IdleTimeout = 120 * time.Second
 	s.MaxHeaderBytes = 1 << 20 // 1 MB

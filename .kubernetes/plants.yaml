@@ -24,7 +24,7 @@ spec:
               memory: "200Mi"
               cpu: "100m"
           ports:
-            - containerPort: 4040
+            - containerPort: 8080
           envFrom:
             - configMapRef:
                 name: plants-configmap
@@ -33,11 +33,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 4040
+              port: 8080
           readinessProbe:
             httpGet:
               path: /readyz
-              port: 4040
+              port: 8080
 
 ---
 kind: Service
@@ -50,4 +50,4 @@ spec:
     app: plants
   ports:
     - port: 80
-      targetPort: 4040
+      targetPort: 8080

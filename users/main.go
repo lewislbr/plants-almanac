@@ -21,7 +21,6 @@ import (
 type envVars struct {
 	DBURI  string
 	Domain string
-	Port   string
 	Secret string
 }
 
@@ -38,7 +37,7 @@ func main() {
 	gns := generate.NewService(env.Secret)
 	ans := authenticate.NewService(gns, rep)
 	azs := authorize.NewService(env.Secret)
-	srv := server.New(crs, ans, azs, gns, env.Port, env.Domain)
+	srv := server.New(crs, ans, azs, gns, env.Domain)
 
 	go gracefulShutdown(srv, str)
 
@@ -70,7 +69,6 @@ func getEnvVars() *envVars {
 	return &envVars{
 		DBURI:  get("USERS_DATABASE_URI"),
 		Domain: get("APP_DOMAIN"),
-		Port:   get("USERS_PORT"),
 		Secret: get("USERS_SECRET"),
 	}
 }

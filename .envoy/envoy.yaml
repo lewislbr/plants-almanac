@@ -35,33 +35,30 @@ static_resources:
     - name: plants
       connect_timeout: 15s
       type: logical_dns
-      dns_lookup_family: v4_only
       load_assignment:
         cluster_name: plants
         endpoints:
           - lb_endpoints:
               - endpoint:
                   address:
-                    socket_address: {address: plants, port_value: 4040}
+                    socket_address: {address: plants, port_value: 8080}
     - name: users
       connect_timeout: 15s
       type: logical_dns
-      dns_lookup_family: v4_only
       load_assignment:
         cluster_name: users
         endpoints:
           - lb_endpoints:
               - endpoint:
                   address:
-                    socket_address: {address: users, port_value: 4041}
+                    socket_address: {address: users, port_value: 8080}
     - name: web
       connect_timeout: 15s
       type: logical_dns
-      dns_lookup_family: v4_only
       load_assignment:
         cluster_name: web
         endpoints:
           - lb_endpoints:
               - endpoint:
                   address:
-                    socket_address: {address: web, port_value: 3000}
+                    socket_address: {address: web, port_value: 8080}

@@ -22,7 +22,7 @@ services:
     env_file:
       - plants/.env
     ports:
-      - "4040:4040"
+      - "8081:8080"
     stdin_open: true
     tty: true
 
@@ -35,7 +35,7 @@ services:
     env_file:
       - users/.env
     ports:
-      - "4041:4041"
+      - "8082:8080"
     stdin_open: true
     tty: true
 
@@ -48,6 +48,6 @@ services:
     env_file:
       - web/.env
     ports:
-      - "3000:3000"
+      - "8080:8080"
     volumes:
       - ./web:/web

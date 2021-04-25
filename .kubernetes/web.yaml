@@ -24,7 +24,7 @@ spec:
               memory: "200Mi"
               cpu: "100m"
           ports:
-            - containerPort: 3000
+            - containerPort: 8080
           envFrom:
             - configMapRef:
                 name: web-configmap
@@ -40,4 +40,4 @@ spec:
     app: web
   ports:
     - port: 80
-      targetPort: 3000
+      targetPort: 8080

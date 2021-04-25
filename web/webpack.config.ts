@@ -133,7 +133,6 @@ module.exports = (env: unknown, options: {mode: string | undefined}) => {
       historyApiFallback: true,
       host: "0.0.0.0",
       hot: true,
-      port: 3000,
     },
     watchOptions: {
       aggregateTimeout: 300,
