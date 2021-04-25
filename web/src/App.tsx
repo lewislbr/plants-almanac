@@ -2,7 +2,7 @@ import React, {StrictMode, useContext, useEffect} from "react"
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom"
 import {Container} from "@material-ui/core"
 import {AddPlant, PlantDetails, PlantList} from "./plant/views"
-import {CreateAccount, LogIn, Welcome} from "./user/views"
+import {Account, CreateAccount, LogIn, Welcome} from "./user/views"
 import {AuthContext} from "./user/contexts/auth"
 import {refreshToken} from "./user/services/user"
 
@@ -31,6 +31,7 @@ export function App(): JSX.Element {
               <Route exact path="/add-plant" component={AddPlant} />
               <Route exact path="/plants/:id" component={PlantDetails} />
               <Route exact path="/edit/:id" component={AddPlant} />
+              <Route exact path="/account" component={Account} />
               <Redirect from="/" to="/plants" />
             </Switch>
           </BrowserRouter>

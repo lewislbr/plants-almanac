@@ -6,14 +6,19 @@ import (
 	"github.com/o1egl/paseto"
 )
 
-type service struct {
-	secret string
-}
-
-func NewService(secret string) *service {
-	return &service{
-		secret: secret,
+type (
+	Checker interface {
+		CheckExists(string) error
 	}
+
+	service struct {
+		secret string
+		r      Checker
+	}
+)
+
+func NewService(secret string, r Checker) *service {
+	return &service{secret, r}
 }
 
 func (s *service) Authorize(token string) (string, error) {
@@ -25,6 +30,11 @@ func (s *service) Authorize(token string) (string, error) {
 
 	err := paseto.NewV2().Decrypt(token, []byte(s.secret), &data, nil)
 	if err != nil {
+		return "", user.ErrInvalidToken
+	}
+
+	err = s.r.CheckExists(data.Jti)
+	if err == nil {
 		return "", user.ErrInvalidToken
 	}
 

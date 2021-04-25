@@ -14,34 +14,46 @@ import (
 	"users/authorize"
 	"users/create"
 	"users/generate"
+	"users/revoke"
 	"users/server"
-	"users/storage"
+	"users/storage/postgres"
+	"users/storage/redis"
 )
 
 type envVars struct {
-	DBURI  string
-	Domain string
-	Secret string
+	DBURI     string
+	Domain    string
+	RedisPass string
+	RedisURL  string
+	Secret    string
 }
 
 func main() {
 	env := getEnvVars()
-	str := storage.New()
-	db, err := str.Connect(env.DBURI)
+	postgresDriver := postgres.New()
+	postgresDB, err := postgresDriver.Connect(env.DBURI)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	rep := storage.NewRepository(db)
-	crs := create.NewService(rep)
-	gns := generate.NewService(env.Secret)
-	ans := authenticate.NewService(gns, rep)
-	azs := authorize.NewService(env.Secret)
-	srv := server.New(crs, ans, azs, gns, env.Domain)
+	redisDriver := redis.New()
+	redisCache, err := redisDriver.Connect(env.RedisURL, env.RedisPass)
+	if err != nil {
+		log.Panic(err)
+	}
 
-	go gracefulShutdown(srv, str)
+	postgresRepo := postgres.NewRepository(postgresDB)
+	redisRepo := redis.NewRepository(redisCache)
+	createSvc := create.NewService(postgresRepo)
+	generateSvc := generate.NewService(env.Secret)
+	authenticateSvc := authenticate.NewService(generateSvc, postgresRepo)
+	authorizeSvc := authorize.NewService(env.Secret, redisRepo)
+	revokeSvc := revoke.NewService(env.Secret, redisRepo)
+	httpServer := server.New(createSvc, authenticateSvc, authorizeSvc, generateSvc, revokeSvc, env.Domain)
 
-	err = srv.Start()
+	go gracefulShutdown(httpServer, postgresDriver, redisDriver)
+
+	err = httpServer.Start()
 	if err != nil {
 		log.Panic(err)
 	}
@@ -49,7 +61,7 @@ func main() {
 	defer func() {
 		r := recover()
 		if r != nil {
-			cleanUp(srv, str)
+			cleanUp(httpServer, postgresDriver, redisDriver)
 			debug.PrintStack()
 			os.Exit(1)
 		}
@@ -67,28 +79,35 @@ func getEnvVars() *envVars {
 	}
 
 	return &envVars{
-		DBURI:  get("USERS_DATABASE_URI"),
-		Domain: get("APP_DOMAIN"),
-		Secret: get("USERS_SECRET"),
+		DBURI:     get("USERS_DATABASE_URI"),
+		Domain:    get("APP_DOMAIN"),
+		RedisPass: get("USERS_REDIS_PASSWORD"),
+		RedisURL:  get("USERS_REDIS_URL"),
+		Secret:    get("USERS_SECRET"),
 	}
 }
 
-func gracefulShutdown(srv *server.Server, str *storage.Storage) {
+func gracefulShutdown(http *server.Server, postgres *postgres.Driver, redis *redis.Driver) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	<-quit
 
-	cleanUp(srv, str)
+	cleanUp(http, postgres, redis)
 }
 
-func cleanUp(srv *server.Server, str *storage.Storage) {
+func cleanUp(http *server.Server, postgres *postgres.Driver, redis *redis.Driver) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	str.Disconnect()
+	postgres.Disconnect()
 
-	err := srv.Stop(ctx)
+	err := redis.Disconnect()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = http.Stop(ctx)
 	if err != nil {
 		fmt.Println(err)
 	}

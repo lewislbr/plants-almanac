@@ -1,0 +1,82 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: redis-volume
+spec:
+  storageClassName: do-block-storage
+  capacity:
+    storage: 10Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /tmp/users-redis
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: users-redis-claim
+  namespace: plantdex
+spec:
+  storageClassName: do-block-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: users-redis-statefulset
+  namespace: plantdex
+spec:
+  selector:
+    matchLabels:
+      app: users-redis
+  serviceName: users-redis-service
+  template:
+    metadata:
+      labels:
+        app: users-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:6-alpine
+          args:
+            - /etc/redis/redis.conf
+          ports:
+            - containerPort: 6379
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "50m"
+            limits:
+              memory: "200Mi"
+              cpu: "100m"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/redis
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: config
+          configMap:
+            name: users-redis-configmap
+        - name: data
+          persistentVolumeClaim:
+            claimName: users-redis-claim
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: users-redis-service
+  namespace: plantdex
+spec:
+  selector:
+    app: users-redis
+  ports:
+    - port: 80
+      targetPort: 6379

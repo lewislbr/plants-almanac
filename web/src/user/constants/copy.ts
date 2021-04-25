@@ -1,3 +1,5 @@
+export const ACCOUNT = "Account"
 export const CREATE_ACCOUNT = "Create account"
 export const LOG_IN = "Log in"
+export const LOG_OUT = "Log out"
 export const WELCOME = "Welcome"

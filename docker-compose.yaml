@@ -39,6 +39,13 @@ services:
     stdin_open: true
     tty: true
 
+  users-redis:
+    image: redis:6-alpine
+    container_name: users-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass 1234
+
   web:
     build:
       context: web

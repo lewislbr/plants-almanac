@@ -17,6 +17,7 @@ export function NavBar(): JSX.Element {
     >
       <BottomNavigationAction component={Link} icon={"🌱"} label="Plants" to="/" />
       <BottomNavigationAction component={Link} icon={"➕"} label="Add plant" to="/add-plant" />
+      <BottomNavigationAction component={Link} icon={"👤"} label="Account" to="/account" />
     </BottomNavigation>
   )
 }

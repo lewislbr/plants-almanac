@@ -23,18 +23,22 @@ type (
 	Generater interface {
 		GenerateToken(string) (string, error)
 	}
+	Revoker interface {
+		RevokeToken(string) error
+	}
 
 	handler struct {
 		cs     Creater
 		ns     Authenticater
 		zs     Authorizer
 		gs     Generater
+		rs     Revoker
 		domain string
 	}
 )
 
-func NewHandler(cs Creater, ns Authenticater, zs Authorizer, gs Generater, domain string) *handler {
-	return &handler{cs, ns, zs, gs, domain}
+func NewHandler(cs Creater, ns Authenticater, zs Authorizer, gs Generater, rs Revoker, domain string) *handler {
+	return &handler{cs, ns, zs, gs, rs, domain}
 }
 
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
@@ -184,6 +188,26 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	err = h.rs.RevokeToken(token)
+	if err != nil {
+		switch {
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+
+			return
+		case errors.Is(err, user.ErrInvalidToken):
+			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
+
+			return
+		default:
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
+		}
+	}
+
 	token, err = h.gs.GenerateToken(uid)
 	if err != nil {
 		switch {
@@ -202,6 +226,41 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Set-Cookie", "st="+token+"; Domain="+h.domain+"; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 	w.Header().Add("Set-Cookie", "te=1; Domain="+h.domain+"; Max-Age=604800; Path=/; SameSite=Strict; Secure")
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *handler) LogOut(w http.ResponseWriter, r *http.Request) {
+	var token string
+
+	for _, cookie := range r.Cookies() {
+		if cookie.Name == "st" {
+			token = cookie.Value
+		}
+	}
+
+	err := h.rs.RevokeToken(token)
+	if err != nil {
+		switch {
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+
+			return
+		case errors.Is(err, user.ErrInvalidToken):
+			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
+
+			return
+		default:
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
+		}
+	}
+
+	w.Header().Add("Set-Cookie", "st=''; Domain="+h.domain+"; HttpOnly; Max-Age=0; Path=/; SameSite=Strict; Secure")
+	w.Header().Add("Set-Cookie", "te=false; Domain="+h.domain+"; Max-Age=0; Path=/; SameSite=Strict; Secure")
 
 	w.WriteHeader(http.StatusNoContent)
 }

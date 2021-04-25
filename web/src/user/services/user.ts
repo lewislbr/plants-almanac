@@ -38,3 +38,13 @@ export async function refreshToken(): Promise<void> {
 export function isAuthenticated(): boolean {
   return document.cookie.split("; ").includes("te=1")
 }
+
+export async function logOut(): Promise<void> {
+  const response = await fetch(`${process.env.USERS_URL as string}/logout`, {
+    credentials: "include",
+  })
+
+  if (!response.ok) {
+    throw new Error(await response.text())
+  }
+}
