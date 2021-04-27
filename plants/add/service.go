@@ -14,12 +14,12 @@ type (
 	}
 
 	service struct {
-		r Inserter
+		repo Inserter
 	}
 )
 
-func NewService(r Inserter) *service {
-	return &service{r}
+func NewService(repo Inserter) *service {
+	return &service{repo}
 }
 
 func (s *service) Add(uid string, new plant.Plant) error {
@@ -31,10 +31,7 @@ func (s *service) Add(uid string, new plant.Plant) error {
 	new.CreatedAt = time.Now().UTC()
 	new.EditedAt = time.Now().UTC()
 
-	_, err := s.r.InsertOne(uid, new)
-	if err != nil {
-		return err
-	}
+	_, err := s.repo.InsertOne(uid, new)
 
-	return nil
+	return err
 }

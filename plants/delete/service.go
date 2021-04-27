@@ -10,12 +10,12 @@ type (
 	}
 
 	service struct {
-		r Deleter
+		repo Deleter
 	}
 )
 
-func NewService(r Deleter) *service {
-	return &service{r}
+func NewService(repo Deleter) *service {
+	return &service{repo}
 }
 
 func (s *service) Delete(uid, id string) error {
@@ -23,7 +23,7 @@ func (s *service) Delete(uid, id string) error {
 		return plant.ErrMissingData
 	}
 
-	result, err := s.r.DeleteOne(uid, id)
+	result, err := s.repo.DeleteOne(uid, id)
 	if err != nil {
 		return err
 	}

@@ -16,6 +16,11 @@ spec:
         - name: web
           image: eu.gcr.io/plantdex-prod/web:latest
           imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: web-configmap
           resources:
             requests:
               memory: "100Mi"
@@ -23,11 +28,6 @@ spec:
             limits:
               memory: "200Mi"
               cpu: "100m"
-          ports:
-            - containerPort: 8080
-          envFrom:
-            - configMapRef:
-                name: web-configmap
 
 ---
 kind: Service

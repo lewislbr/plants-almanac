@@ -21,17 +21,17 @@ import (
 )
 
 type envVars struct {
-	DBURI     string
-	Domain    string
-	RedisPass string
-	RedisURL  string
-	Secret    string
+	PostgresURI string
+	AppDomain   string
+	RedisPass   string
+	RedisURL    string
+	TokenSecret string
 }
 
 func main() {
 	env := getEnvVars()
 	postgresDriver := postgres.New()
-	postgresDB, err := postgresDriver.Connect(env.DBURI)
+	postgresDB, err := postgresDriver.Connect(env.PostgresURI)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -45,11 +45,11 @@ func main() {
 	postgresRepo := postgres.NewRepository(postgresDB)
 	redisRepo := redis.NewRepository(redisCache)
 	createSvc := create.NewService(postgresRepo)
-	generateSvc := generate.NewService(env.Secret)
+	generateSvc := generate.NewService(env.TokenSecret)
 	authenticateSvc := authenticate.NewService(generateSvc, postgresRepo)
-	authorizeSvc := authorize.NewService(env.Secret, redisRepo)
-	revokeSvc := revoke.NewService(env.Secret, redisRepo)
-	httpServer := server.New(createSvc, authenticateSvc, authorizeSvc, generateSvc, revokeSvc, env.Domain)
+	authorizeSvc := authorize.NewService(env.TokenSecret, redisRepo)
+	revokeSvc := revoke.NewService(env.TokenSecret, redisRepo)
+	httpServer := server.New(createSvc, authenticateSvc, authorizeSvc, generateSvc, revokeSvc, env.AppDomain)
 
 	go gracefulShutdown(httpServer, postgresDriver, redisDriver)
 
@@ -79,11 +79,11 @@ func getEnvVars() *envVars {
 	}
 
 	return &envVars{
-		DBURI:     get("USERS_DATABASE_URI"),
-		Domain:    get("APP_DOMAIN"),
-		RedisPass: get("USERS_REDIS_PASSWORD"),
-		RedisURL:  get("USERS_REDIS_URL"),
-		Secret:    get("USERS_SECRET"),
+		PostgresURI: get("USERS_DATABASE_URI"),
+		AppDomain:   get("APP_DOMAIN"),
+		RedisPass:   get("USERS_REDIS_PASSWORD"),
+		RedisURL:    get("USERS_REDIS_URL"),
+		TokenSecret: get("USERS_SECRET"),
 	}
 }
 

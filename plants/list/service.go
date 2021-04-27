@@ -11,16 +11,16 @@ type (
 	}
 
 	service struct {
-		r Finder
+		repo Finder
 	}
 )
 
-func NewService(r Finder) *service {
-	return &service{r}
+func NewService(repo Finder) *service {
+	return &service{repo}
 }
 
 func (s *service) ListAll(uid string) ([]plant.Plant, error) {
-	result, err := s.r.FindAll(uid)
+	result, err := s.repo.FindAll(uid)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (s *service) ListOne(uid, id string) (plant.Plant, error) {
 		return plant.Plant{}, plant.ErrMissingData
 	}
 
-	result, err := s.r.FindOne(uid, id)
+	result, err := s.repo.FindOne(uid, id)
 	if err != nil {
 		return plant.Plant{}, plant.ErrNotFound
 	}

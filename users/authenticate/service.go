@@ -16,13 +16,13 @@ type (
 	}
 
 	service struct {
-		gs Generater
-		r  Finder
+		svc  Generater
+		repo Finder
 	}
 )
 
-func NewService(gs Generater, r Finder) *service {
-	return &service{gs, r}
+func NewService(svc Generater, repo Finder) *service {
+	return &service{svc, repo}
 }
 
 func (s *service) Authenticate(cred user.Credentials) (string, error) {
@@ -30,7 +30,7 @@ func (s *service) Authenticate(cred user.Credentials) (string, error) {
 		return "", user.ErrMissingData
 	}
 
-	existUser, err := s.r.FindOne(cred.Email)
+	existUser, err := s.repo.FindOne(cred.Email)
 	if err != nil {
 		return "", user.ErrNotFound
 	}
@@ -40,7 +40,7 @@ func (s *service) Authenticate(cred user.Credentials) (string, error) {
 		return "", user.ErrInvalidPassword
 	}
 
-	token, err := s.gs.GenerateToken(existUser.ID)
+	token, err := s.svc.GenerateToken(existUser.ID)
 	if err != nil {
 		return "", err
 	}

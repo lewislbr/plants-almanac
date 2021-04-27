@@ -13,12 +13,12 @@ type (
 
 	service struct {
 		secret string
-		r      Checker
+		repo   Checker
 	}
 )
 
-func NewService(secret string, r Checker) *service {
-	return &service{secret, r}
+func NewService(secret string, repo Checker) *service {
+	return &service{secret, repo}
 }
 
 func (s *service) Authorize(token string) (string, error) {
@@ -33,7 +33,7 @@ func (s *service) Authorize(token string) (string, error) {
 		return "", user.ErrInvalidToken
 	}
 
-	err = s.r.CheckExists(data.Jti)
+	err = s.repo.CheckExists(data.Jti)
 	if err == nil {
 		return "", user.ErrInvalidToken
 	}

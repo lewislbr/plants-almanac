@@ -1,4 +1,4 @@
-package storage
+package mongo
 
 import (
 	"context"
@@ -8,15 +8,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type Storage struct {
+type Driver struct {
 	database *mongo.Database
 }
 
-func New() *Storage {
-	return &Storage{}
+func New() *Driver {
+	return &Driver{}
 }
 
-func (s *Storage) Connect(uri, db string) (*mongo.Database, error) {
+func (s *Driver) Connect(uri, db string) (*mongo.Database, error) {
 	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
@@ -35,7 +35,7 @@ func (s *Storage) Connect(uri, db string) (*mongo.Database, error) {
 	return s.database, nil
 }
 
-func (s *Storage) Disconnect(ctx context.Context) error {
+func (s *Driver) Disconnect(ctx context.Context) error {
 	if s.database == nil {
 		return nil
 	}

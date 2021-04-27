@@ -17,13 +17,13 @@ type (
 	}
 
 	service struct {
-		ls Lister
-		r  Updater
+		svc  Lister
+		repo Updater
 	}
 )
 
-func NewService(ls Lister, r Updater) *service {
-	return &service{ls, r}
+func NewService(svc Lister, repo Updater) *service {
+	return &service{svc, repo}
 }
 
 func (s *service) Edit(uid, id string, update plant.Plant) error {
@@ -31,7 +31,7 @@ func (s *service) Edit(uid, id string, update plant.Plant) error {
 		return plant.ErrMissingData
 	}
 
-	exist, err := s.ls.ListOne(uid, id)
+	exist, err := s.svc.ListOne(uid, id)
 	if err != nil {
 		return plant.ErrNotFound
 	}
@@ -39,7 +39,7 @@ func (s *service) Edit(uid, id string, update plant.Plant) error {
 	update.CreatedAt = exist.CreatedAt
 	update.EditedAt = time.Now().UTC()
 
-	result, err := s.r.UpdateOne(uid, id, update)
+	result, err := s.repo.UpdateOne(uid, id, update)
 	if err != nil {
 		return err
 	}

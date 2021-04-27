@@ -1,4 +1,4 @@
-package storage
+package mongo
 
 import (
 	"context"

@@ -13,12 +13,12 @@ type (
 
 	service struct {
 		secret string
-		r      Adder
+		repo   Adder
 	}
 )
 
-func NewService(secret string, r Adder) *service {
-	return &service{secret, r}
+func NewService(secret string, repo Adder) *service {
+	return &service{secret, repo}
 }
 
 func (s *service) RevokeToken(token string) error {
@@ -33,5 +33,5 @@ func (s *service) RevokeToken(token string) error {
 		return user.ErrInvalidToken
 	}
 
-	return s.r.Add(data.Jti)
+	return s.repo.Add(data.Jti)
 }

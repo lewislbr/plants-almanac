@@ -14,9 +14,7 @@ type service struct {
 }
 
 func NewService(secret string) *service {
-	return &service{
-		secret: secret,
-	}
+	return &service{secret}
 }
 
 func (s *service) GenerateToken(uid string) (string, error) {

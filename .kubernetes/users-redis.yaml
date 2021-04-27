@@ -48,6 +48,11 @@ spec:
             - /etc/redis/redis.conf
           ports:
             - containerPort: 6379
+          volumeMounts:
+            - name: config
+              mountPath: /etc/redis
+            - name: data
+              mountPath: /data
           resources:
             requests:
               memory: "100Mi"
@@ -55,11 +60,6 @@ spec:
             limits:
               memory: "200Mi"
               cpu: "100m"
-          volumeMounts:
-            - name: config
-              mountPath: /etc/redis
-            - name: data
-              mountPath: /data
       volumes:
         - name: config
           configMap:

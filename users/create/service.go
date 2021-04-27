@@ -16,12 +16,12 @@ type (
 	}
 
 	service struct {
-		r InserterChecker
+		repo InserterChecker
 	}
 )
 
-func NewService(r InserterChecker) *service {
-	return &service{r}
+func NewService(repo InserterChecker) *service {
+	return &service{repo}
 }
 
 func (s *service) Create(new user.User) error {
@@ -29,7 +29,7 @@ func (s *service) Create(new user.User) error {
 		return user.ErrMissingData
 	}
 
-	exists, err := s.r.CheckExists(new.Email)
+	exists, err := s.repo.CheckExists(new.Email)
 	if err != nil {
 		return err
 	}
@@ -47,10 +47,5 @@ func (s *service) Create(new user.User) error {
 
 	new.Hash = string(hash)
 
-	err = s.r.InsertOne(new)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return s.repo.InsertOne(new)
 }

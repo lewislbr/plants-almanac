@@ -15,33 +15,33 @@ import (
 	"plants/edit"
 	"plants/list"
 	"plants/server"
-	"plants/storage"
+	"plants/storage/mongo"
 )
 
 type envVars struct {
 	AuthURL  string
 	Database string
-	DBURI    string
+	MongoURI string
 }
 
 func main() {
 	env := getEnvVars()
-	str := storage.New()
-	db, err := str.Connect(env.DBURI, env.Database)
+	mongoDriver := mongo.New()
+	mongoDB, err := mongoDriver.Connect(env.MongoURI, env.Database)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	rep := storage.NewRepository(db)
-	ads := add.NewService(rep)
-	lss := list.NewService(rep)
-	eds := edit.NewService(lss, rep)
-	dls := delete.NewService(rep)
-	srv := server.New(ads, lss, eds, dls, env.AuthURL)
+	mongoRepo := mongo.NewRepository(mongoDB)
+	addSvc := add.NewService(mongoRepo)
+	listSvc := list.NewService(mongoRepo)
+	editSvc := edit.NewService(listSvc, mongoRepo)
+	deleteSvc := delete.NewService(mongoRepo)
+	httpServer := server.New(addSvc, listSvc, editSvc, deleteSvc, env.AuthURL)
 
-	go gracefulShutdown(srv, str)
+	go gracefulShutdown(httpServer, mongoDriver)
 
-	err = srv.Start()
+	err = httpServer.Start()
 	if err != nil {
 		log.Panic(err)
 	}
@@ -49,7 +49,7 @@ func main() {
 	defer func() {
 		r := recover()
 		if r != nil {
-			cleanUp(srv, str)
+			cleanUp(httpServer, mongoDriver)
 			debug.PrintStack()
 			os.Exit(1)
 		}
@@ -69,29 +69,29 @@ func getEnvVars() *envVars {
 	return &envVars{
 		AuthURL:  get("USERS_URL"),
 		Database: get("PLANTS_DATABASE_NAME"),
-		DBURI:    get("PLANTS_DATABASE_URI"),
+		MongoURI: get("PLANTS_DATABASE_URI"),
 	}
 }
 
-func gracefulShutdown(srv *server.Server, str *storage.Storage) {
+func gracefulShutdown(http *server.Server, mongo *mongo.Driver) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	<-quit
 
-	cleanUp(srv, str)
+	cleanUp(http, mongo)
 }
 
-func cleanUp(srv *server.Server, str *storage.Storage) {
+func cleanUp(http *server.Server, mongo *mongo.Driver) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	err := str.Disconnect(ctx)
+	err := mongo.Disconnect(ctx)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	err = srv.Stop(ctx)
+	err = http.Stop(ctx)
 	if err != nil {
 		fmt.Println(err)
 	}
