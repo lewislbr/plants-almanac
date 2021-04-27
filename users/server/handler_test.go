@@ -261,26 +261,7 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusOK, w.Result().StatusCode)
 	})
 
-	t.Run("Authorize should return 400 if the Authorization header is missing", func(t *testing.T) {
-		t.Parallel()
-
-		csMock := &MockCreater{}
-		nsMock := &MockAuthenticater{}
-		zsMock := &MockAuthorizer{}
-		gsMock := &MockGenerater{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, "")
-
-		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
-
-		w := httptest.NewRecorder()
-		r := httptest.NewRequest(http.MethodGet, "/", nil)
-
-		handler.Authorize(w, r)
-
-		require.Equal(t, http.StatusBadRequest, w.Result().StatusCode)
-	})
-
-	t.Run("Authorize should return 400 if the Authorization header is empty", func(t *testing.T) {
+	t.Run("Authorize should return 400 if the token is empty", func(t *testing.T) {
 		t.Parallel()
 
 		csMock := &MockCreater{}
@@ -293,8 +274,6 @@ func TestHandler(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-
-		r.Header.Add("Authorization", "Bearer test")
 
 		handler.Authorize(w, r)
 
@@ -314,8 +293,6 @@ func TestHandler(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
-
-		r.Header.Add("Authorization", "Bearer test")
 
 		handler.Authorize(w, r)
 

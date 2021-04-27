@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strings"
 
 	"users/user"
 )
@@ -110,20 +109,22 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Set-Cookie", "st="+token+"; Domain="+h.domain+"; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
-	w.Header().Add("Set-Cookie", "te=true; Domain="+h.domain+"; Max-Age=604800; Path=/; SameSite=Strict; Secure")
+	w.Header().Add("Set-Cookie", "te=1; Domain="+h.domain+"; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 
 	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	if authHeader == "" {
-		http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
+
+		log.Printf("%+v\n", err)
 
 		return
 	}
 
-	token := strings.Split(authHeader, " ")[1]
+	token := string(body)
 	uid, err := h.zs.Authorize(token)
 	if err != nil {
 		switch {
@@ -200,7 +201,7 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Set-Cookie", "st="+token+"; Domain="+h.domain+"; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
-	w.Header().Add("Set-Cookie", "te=true; Domain="+h.domain+"; Max-Age=604800; Path=/; SameSite=Strict; Secure")
+	w.Header().Add("Set-Cookie", "te=1; Domain="+h.domain+"; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 
 	w.WriteHeader(http.StatusNoContent)
 }

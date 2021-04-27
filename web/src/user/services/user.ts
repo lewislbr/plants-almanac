@@ -36,5 +36,5 @@ export async function refreshToken(): Promise<void> {
 }
 
 export function isAuthenticated(): boolean {
-  return document.cookie.split("; ").includes("te=true")
+  return document.cookie.split("; ").includes("te=1")
 }

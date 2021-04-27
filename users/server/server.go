@@ -26,7 +26,7 @@ func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, domain strin
 
 				r.Post("/registration", h.Create)
 				r.Post("/login", h.LogIn)
-				r.Get("/authorization", h.Authorize)
+				r.Post("/authorization", h.Authorize)
 				r.Get("/refresh", h.Refresh)
 			})
 		})
