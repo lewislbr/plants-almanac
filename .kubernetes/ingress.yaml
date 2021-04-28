@@ -8,16 +8,16 @@ spec:
     fqdn: plantdex.app
     tls:
       secretName: tls-secret
-    rateLimitPolicy:
-      local:
-        requests: 20
-        unit: minute
   routes:
     - conditions:
         - prefix: /api/plants
       services:
         - name: plants-service
           port: 80
+      rateLimitPolicy:
+        local:
+          requests: 100
+          unit: minute
       responseHeadersPolicy:
         set:
           - name: Strict-Transport-Security
@@ -27,6 +27,11 @@ spec:
       services:
         - name: users-service
           port: 80
+      rateLimitPolicy:
+        local:
+          requests: 100
+          unit: minute
+          burst: 20
       responseHeadersPolicy:
         set:
           - name: Strict-Transport-Security
@@ -36,6 +41,11 @@ spec:
       services:
         - name: web-service
           port: 80
+      rateLimitPolicy:
+        local:
+          requests: 100
+          unit: minute
+          burst: 40
       responseHeadersPolicy:
         set:
           - name: Content-Security-Policy
