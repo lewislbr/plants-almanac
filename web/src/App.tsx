@@ -10,16 +10,25 @@ export function App(): JSX.Element {
   const {authenticatedUser} = useContext(AuthContext)
 
   useEffect(() => {
-    if (authenticatedUser === true) {
-      ;(async (): Promise<void> => {
-        try {
-          await refreshToken()
-        } catch (err) {
-          console.error(err)
-        }
-      })()
+    function refresh(): void {
+      if (authenticatedUser === true) {
+        ;(async (): Promise<void> => {
+          try {
+            await refreshToken()
+          } catch (err) {
+            console.error(err)
+          }
+        })()
+      }
     }
-  }, [authenticatedUser])
+
+    window.addEventListener("beforeunload", refresh)
+
+    return (): void => {
+      window.removeEventListener("beforeunload", refresh)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <StrictMode>
