@@ -23,7 +23,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		csMock.On("Create", mock.AnythingOfType("user.User")).Return(nil)
 
@@ -49,7 +50,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		csMock.On("Create", mock.AnythingOfType("user.User")).Return(user.ErrMissingData)
 
@@ -75,7 +77,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		csMock.On("Create", mock.AnythingOfType("user.User")).Return(user.ErrUserExists)
 
@@ -101,7 +104,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		csMock.On("Create", mock.AnythingOfType("user.User")).Return(errors.New("error"))
 
@@ -127,7 +131,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", nil)
 
@@ -153,7 +158,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", user.ErrMissingData)
 
@@ -179,7 +185,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", user.ErrNotFound)
 
@@ -205,7 +212,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", user.ErrInvalidPassword)
 
@@ -231,7 +239,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		nsMock.On("Authenticate", mock.AnythingOfType("user.Credentials")).Return("", errors.New("error"))
 
@@ -257,7 +266,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 
@@ -277,7 +287,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrMissingData)
 
@@ -297,7 +308,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrInvalidToken)
 
@@ -317,7 +329,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", errors.New("error"))
 
@@ -339,7 +352,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
 		rsMock.On("RevokeToken", mock.AnythingOfType("string")).Return(nil)
@@ -361,7 +375,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrMissingData)
 		rsMock.On("RevokeToken", mock.AnythingOfType("string")).Return(user.ErrMissingData)
@@ -383,7 +398,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrInvalidToken)
 		rsMock.On("RevokeToken", mock.AnythingOfType("string")).Return(user.ErrInvalidToken)
@@ -405,7 +421,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", errors.New("error"))
 		rsMock.On("RevokeToken", mock.AnythingOfType("string")).Return(errors.New("error"))
@@ -427,7 +444,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		rsMock.On("RevokeToken", mock.AnythingOfType("string")).Return(nil)
 
@@ -447,7 +465,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		rsMock.On("RevokeToken", mock.AnythingOfType("string")).Return(user.ErrMissingData)
 
@@ -467,7 +486,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		rsMock.On("RevokeToken", mock.AnythingOfType("string")).Return(user.ErrInvalidToken)
 
@@ -487,7 +507,8 @@ func TestHandler(t *testing.T) {
 		zsMock := &MockAuthorizer{}
 		gsMock := &MockGenerater{}
 		rsMock := &MockRevoker{}
-		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, "")
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
 
 		rsMock.On("RevokeToken", mock.AnythingOfType("string")).Return(errors.New("error"))
 
@@ -495,6 +516,116 @@ func TestHandler(t *testing.T) {
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 
 		handler.LogOut(w, r)
+
+		require.Equal(t, http.StatusInternalServerError, w.Result().StatusCode)
+	})
+
+	t.Run("Info should return 200 if the request is successful", func(t *testing.T) {
+		t.Parallel()
+
+		csMock := &MockCreater{}
+		nsMock := &MockAuthenticater{}
+		zsMock := &MockAuthorizer{}
+		gsMock := &MockGenerater{}
+		rsMock := &MockRevoker{}
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
+
+		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
+		isMock.On("UserInfo", mock.AnythingOfType("string")).Return(user.Info{}, nil)
+
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+
+		handler.Info(w, r)
+
+		require.Equal(t, http.StatusOK, w.Result().StatusCode)
+	})
+
+	t.Run("Info should return 400 if the id is missing", func(t *testing.T) {
+		t.Parallel()
+
+		csMock := &MockCreater{}
+		nsMock := &MockAuthenticater{}
+		zsMock := &MockAuthorizer{}
+		gsMock := &MockGenerater{}
+		rsMock := &MockRevoker{}
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
+
+		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrMissingData)
+		isMock.On("UserInfo", mock.AnythingOfType("string")).Return(user.Info{}, user.ErrMissingData)
+
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+
+		handler.Info(w, r)
+
+		require.Equal(t, http.StatusBadRequest, w.Result().StatusCode)
+	})
+
+	t.Run("Info should return 401 if the token is invalid", func(t *testing.T) {
+		t.Parallel()
+
+		csMock := &MockCreater{}
+		nsMock := &MockAuthenticater{}
+		zsMock := &MockAuthorizer{}
+		gsMock := &MockGenerater{}
+		rsMock := &MockRevoker{}
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
+
+		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", user.ErrInvalidToken)
+		isMock.On("UserInfo", mock.AnythingOfType("string")).Return(user.Info{}, nil)
+
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+
+		handler.Info(w, r)
+
+		require.Equal(t, http.StatusUnauthorized, w.Result().StatusCode)
+	})
+
+	t.Run("Info should return 404 if the user is not found", func(t *testing.T) {
+		t.Parallel()
+
+		csMock := &MockCreater{}
+		nsMock := &MockAuthenticater{}
+		zsMock := &MockAuthorizer{}
+		gsMock := &MockGenerater{}
+		rsMock := &MockRevoker{}
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
+
+		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", nil)
+		isMock.On("UserInfo", mock.AnythingOfType("string")).Return(user.Info{}, user.ErrNotFound)
+
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+
+		handler.Info(w, r)
+
+		require.Equal(t, http.StatusNotFound, w.Result().StatusCode)
+	})
+
+	t.Run("Info should return 500 if an unexpected error happens", func(t *testing.T) {
+		t.Parallel()
+
+		csMock := &MockCreater{}
+		nsMock := &MockAuthenticater{}
+		zsMock := &MockAuthorizer{}
+		gsMock := &MockGenerater{}
+		rsMock := &MockRevoker{}
+		isMock := &MockInfoer{}
+		handler := NewHandler(csMock, nsMock, zsMock, gsMock, rsMock, isMock, "")
+
+		zsMock.On("Authorize", mock.AnythingOfType("string")).Return("", errors.New("error"))
+		isMock.On("UserInfo", mock.AnythingOfType("string")).Return(user.Info{}, errors.New("error"))
+
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest(http.MethodGet, "/", nil)
+
+		handler.Info(w, r)
 
 		require.Equal(t, http.StatusInternalServerError, w.Result().StatusCode)
 	})

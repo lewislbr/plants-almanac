@@ -26,6 +26,9 @@ type (
 	Revoker interface {
 		RevokeToken(string) error
 	}
+	Infoer interface {
+		UserInfo(string) (user.Info, error)
+	}
 
 	handler struct {
 		cs     Creater
@@ -33,12 +36,13 @@ type (
 		zs     Authorizer
 		gs     Generater
 		rs     Revoker
+		is     Infoer
 		domain string
 	}
 )
 
-func NewHandler(cs Creater, ns Authenticater, zs Authorizer, gs Generater, rs Revoker, domain string) *handler {
-	return &handler{cs, ns, zs, gs, rs, domain}
+func NewHandler(cs Creater, ns Authenticater, zs Authorizer, gs Generater, rs Revoker, is Infoer, domain string) *handler {
+	return &handler{cs, ns, zs, gs, rs, is, domain}
 }
 
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
@@ -263,4 +267,65 @@ func (h *handler) LogOut(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Set-Cookie", "te=false; Domain="+h.domain+"; Max-Age=0; Path=/; SameSite=Strict; Secure")
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *handler) Info(w http.ResponseWriter, r *http.Request) {
+	var token string
+
+	for _, cookie := range r.Cookies() {
+		if cookie.Name == "st" {
+			token = cookie.Value
+		}
+	}
+
+	uid, err := h.zs.Authorize(token)
+	if err != nil {
+		switch {
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+
+			return
+		case errors.Is(err, user.ErrInvalidToken):
+			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
+
+			return
+		default:
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
+		}
+	}
+
+	data, err := h.is.UserInfo(uid)
+	if err != nil {
+		switch {
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+
+			return
+		case errors.Is(err, user.ErrNotFound):
+			http.Error(w, user.ErrNotFound.Error(), http.StatusNotFound)
+
+			return
+		default:
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
+		}
+	}
+
+	w.Header().Set("content-type", "application/json")
+
+	err = json.NewEncoder(w).Encode(data)
+	if err != nil {
+		http.Error(w, "something went wrong", http.StatusInternalServerError)
+
+		log.Printf("%+v\n", err)
+
+		return
+	}
 }

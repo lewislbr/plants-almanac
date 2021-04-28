@@ -14,6 +14,7 @@ import (
 	"users/authorize"
 	"users/create"
 	"users/generate"
+	"users/info"
 	"users/revoke"
 	"users/server"
 	"users/storage/postgres"
@@ -49,7 +50,8 @@ func main() {
 	authenticateSvc := authenticate.NewService(generateSvc, postgresRepo)
 	authorizeSvc := authorize.NewService(env.TokenSecret, redisRepo)
 	revokeSvc := revoke.NewService(env.TokenSecret, redisRepo)
-	httpServer := server.New(createSvc, authenticateSvc, authorizeSvc, generateSvc, revokeSvc, env.AppDomain)
+	infoSvc := info.NewService(postgresRepo)
+	httpServer := server.New(createSvc, authenticateSvc, authorizeSvc, generateSvc, revokeSvc, infoSvc, env.AppDomain)
 
 	go gracefulShutdown(httpServer, postgresDriver, redisDriver)
 

@@ -1,4 +1,4 @@
-import {Credentials, NewUser} from "../interfaces/user"
+import {Credentials, NewUser, UserInfo} from "../interfaces/user"
 
 export async function signUp(user: NewUser): Promise<void> {
   const response = await fetch(`${process.env.USERS_URL as string}/registration`, {
@@ -47,4 +47,16 @@ export async function logOut(): Promise<void> {
   if (!response.ok) {
     throw new Error(await response.text())
   }
+}
+
+export async function getInfo(): Promise<UserInfo> {
+  const response = await fetch(`${process.env.USERS_URL as string}/info`, {
+    credentials: "include",
+  })
+
+  if (!response.ok) {
+    throw new Error(await response.text())
+  }
+
+  return await response.json()
 }

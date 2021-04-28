@@ -53,3 +53,15 @@ func (r *repository) CheckExists(email string) (bool, error) {
 
 	return result, nil
 }
+
+func (r *repository) GetUserInfo(id string) (user.Info, error) {
+	var result user.Info
+
+	row := r.db.QueryRow(context.Background(), `SELECT name, email, created_at FROM user_ WHERE id = $1 LIMIT 1;`, id)
+	err := row.Scan(&result.Name, &result.Email, &result.CreatedAt)
+	if err != nil {
+		return user.Info{}, err
+	}
+
+	return result, nil
+}

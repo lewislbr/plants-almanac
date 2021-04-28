@@ -15,20 +15,21 @@ type Server struct {
 	srv *http.Server
 }
 
-func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, rs Revoker, domain string) *Server {
+func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, rs Revoker, is Infoer, domain string) *Server {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
 	r.Group(func(r chi.Router) {
 		r.Route("/api", func(r chi.Router) {
 			r.Route("/users", func(r chi.Router) {
-				h := NewHandler(cs, ns, zs, gs, rs, domain)
+				h := NewHandler(cs, ns, zs, gs, rs, is, domain)
 
 				r.Post("/registration", h.Create)
 				r.Post("/login", h.LogIn)
 				r.Post("/authorization", h.Authorize)
 				r.Get("/refresh", h.Refresh)
 				r.Get("/logout", h.LogOut)
+				r.Get("/info", h.Info)
 			})
 		})
 	})

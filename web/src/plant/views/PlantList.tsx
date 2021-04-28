@@ -4,7 +4,7 @@ import {FormControl, Link, MenuItem, Select, Typography} from "@material-ui/core
 import {PlantCard} from "../components"
 import {Error, Loading, NavBar} from "../../shared/components"
 import {listAll} from "../services/plant"
-import {asc, desc} from "../services/sort"
+import {asc, desc} from "../utils/sort"
 import {PLANTS} from "../constants/copy"
 import {HTTPStatus} from "../../shared/constants/http"
 import {Options, SORT_METHOD} from "../constants/sort"
