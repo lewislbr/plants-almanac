@@ -5,25 +5,25 @@ import (
 )
 
 type (
-	Deleter interface {
+	repository interface {
 		DeleteOne(string, string) (int64, error)
 	}
 
 	service struct {
-		repo Deleter
+		repo repository
 	}
 )
 
-func NewService(repo Deleter) *service {
+func NewService(repo repository) *service {
 	return &service{repo}
 }
 
-func (s *service) Delete(uid, id string) error {
-	if id == "" {
+func (s *service) Delete(userID, plantID string) error {
+	if plantID == "" {
 		return plant.ErrMissingData
 	}
 
-	result, err := s.repo.DeleteOne(uid, id)
+	result, err := s.repo.DeleteOne(userID, plantID)
 	if err != nil {
 		return err
 	}

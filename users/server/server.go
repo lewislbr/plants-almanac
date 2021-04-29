@@ -12,17 +12,25 @@ import (
 )
 
 type Server struct {
-	srv *http.Server
+	svr *http.Server
 }
 
-func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, rs Revoker, is Infoer, domain string) *Server {
+func New(
+	createSvc creater,
+	authenticateSvc authenticater,
+	authorizeSvc authorizer,
+	generateSvc generater,
+	revokeSvc revoker,
+	infoSvc infoer,
+	domain string,
+) *Server {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
 	r.Group(func(r chi.Router) {
 		r.Route("/api", func(r chi.Router) {
 			r.Route("/users", func(r chi.Router) {
-				h := NewHandler(cs, ns, zs, gs, rs, is, domain)
+				h := NewHandler(createSvc, authenticateSvc, authorizeSvc, generateSvc, revokeSvc, infoSvc, domain)
 
 				r.Post("/registration", h.Create)
 				r.Post("/login", h.LogIn)
@@ -50,14 +58,14 @@ func New(cs Creater, ns Authenticater, zs Authorizer, gs Generater, rs Revoker, 
 	s.WriteTimeout = 10 * time.Second
 
 	return &Server{
-		srv: s,
+		svr: s,
 	}
 }
 
 func (s *Server) Start() error {
 	fmt.Println("Users server ready ✅")
 
-	err := s.srv.ListenAndServe()
+	err := s.svr.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
@@ -68,5 +76,5 @@ func (s *Server) Start() error {
 func (s *Server) Stop(ctx context.Context) error {
 	fmt.Println("Stopping server...")
 
-	return s.srv.Shutdown(ctx)
+	return s.svr.Shutdown(ctx)
 }

@@ -9,19 +9,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const uid = "123"
+const userID = "123"
 
 func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing required fields", func(t *testing.T) {
 		t.Parallel()
 
-		d := &MockDeleter{}
+		repo := &mockRepository{}
 
-		d.On("DeleteOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(int64(1), nil)
+		repo.On("DeleteOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(int64(1), nil)
 
-		ds := NewService(d)
-		id := ""
-		err := ds.Delete(uid, id)
+		deleteSvc := NewService(repo)
+		plantID := ""
+		err := deleteSvc.Delete(userID, plantID)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
 	})
@@ -29,13 +29,13 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when there are no matches", func(t *testing.T) {
 		t.Parallel()
 
-		d := &MockDeleter{}
+		repo := &mockRepository{}
 
-		d.On("DeleteOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(int64(0), nil)
+		repo.On("DeleteOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(int64(0), nil)
 
-		ds := NewService(d)
-		id := "124"
-		err := ds.Delete(uid, id)
+		deleteSvc := NewService(repo)
+		plantID := "124"
+		err := deleteSvc.Delete(userID, plantID)
 
 		require.EqualError(t, err, plant.ErrNotFound.Error())
 	})
@@ -43,13 +43,13 @@ func TestCreate(t *testing.T) {
 	t.Run("should delete a plant with no error", func(t *testing.T) {
 		t.Parallel()
 
-		d := &MockDeleter{}
+		repo := &mockRepository{}
 
-		d.On("DeleteOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(int64(1), nil)
+		repo.On("DeleteOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(int64(1), nil)
 
-		ds := NewService(d)
-		id := "123"
-		err := ds.Delete(uid, id)
+		deleteSvc := NewService(repo)
+		plantID := "123"
+		err := deleteSvc.Delete(userID, plantID)
 
 		require.NoError(t, err)
 	})

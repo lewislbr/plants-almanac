@@ -10,18 +10,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const uid = "123"
+const userID = "123"
 
 func TestCreate(t *testing.T) {
 	t.Run("should list all plants with no error", func(t *testing.T) {
 		t.Parallel()
 
-		f := &MockFinder{}
+		repo := &mockRepository{}
 
-		f.On("FindAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
+		repo.On("FindAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
 
-		ls := NewService(f)
-		result, err := ls.ListAll(uid)
+		listSvc := NewService(repo)
+		result, err := listSvc.ListAll(userID)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -30,13 +30,13 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing required fields", func(t *testing.T) {
 		t.Parallel()
 
-		f := &MockFinder{}
+		repo := &mockRepository{}
 
-		f.On("FindAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
+		repo.On("FindAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
 
-		ls := NewService(f)
-		id := ""
-		result, err := ls.ListOne(uid, id)
+		listSvc := NewService(repo)
+		plantID := ""
+		result, err := listSvc.ListOne(userID, plantID)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
 		require.Equal(t, plant.Plant{}, result)
@@ -45,13 +45,13 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when a plant is not found", func(t *testing.T) {
 		t.Parallel()
 
-		f := &MockFinder{}
+		repo := &mockRepository{}
 
-		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("not found"))
+		repo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("not found"))
 
-		ls := NewService(f)
-		id := "123"
-		result, err := ls.ListOne(uid, id)
+		listSvc := NewService(repo)
+		plantID := "123"
+		result, err := listSvc.ListOne(userID, plantID)
 
 		require.EqualError(t, err, plant.ErrNotFound.Error())
 		require.Equal(t, plant.Plant{}, result)
@@ -60,13 +60,13 @@ func TestCreate(t *testing.T) {
 	t.Run("should list a plant with no error", func(t *testing.T) {
 		t.Parallel()
 
-		f := &MockFinder{}
+		repo := &mockRepository{}
 
-		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, nil)
+		repo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, nil)
 
-		ls := NewService(f)
-		id := "123"
-		result, err := ls.ListOne(uid, id)
+		listSvc := NewService(repo)
+		plantID := "123"
+		result, err := listSvc.ListOne(userID, plantID)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)

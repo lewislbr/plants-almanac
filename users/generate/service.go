@@ -17,8 +17,8 @@ func NewService(secret string) *service {
 	return &service{secret}
 }
 
-func (s *service) GenerateToken(uid string) (string, error) {
-	if uid == "" {
+func (s *service) GenerateToken(userID string) (string, error) {
+	if userID == "" {
 		return "", user.ErrMissingData
 	}
 
@@ -26,7 +26,7 @@ func (s *service) GenerateToken(uid string) (string, error) {
 		Audience:   "plantdex",
 		Issuer:     "users",
 		Jti:        uuid.New().String(),
-		Subject:    uid,
+		Subject:    userID,
 		IssuedAt:   time.Now(),
 		Expiration: time.Now().AddDate(0, 0, 7),
 		NotBefore:  time.Now(),

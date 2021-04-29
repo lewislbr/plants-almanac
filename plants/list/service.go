@@ -5,22 +5,22 @@ import (
 )
 
 type (
-	Finder interface {
+	repository interface {
 		FindAll(string) ([]plant.Plant, error)
 		FindOne(string, string) (plant.Plant, error)
 	}
 
 	service struct {
-		repo Finder
+		repo repository
 	}
 )
 
-func NewService(repo Finder) *service {
+func NewService(repo repository) *service {
 	return &service{repo}
 }
 
-func (s *service) ListAll(uid string) ([]plant.Plant, error) {
-	result, err := s.repo.FindAll(uid)
+func (s *service) ListAll(userID string) ([]plant.Plant, error) {
+	result, err := s.repo.FindAll(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -28,12 +28,12 @@ func (s *service) ListAll(uid string) ([]plant.Plant, error) {
 	return result, nil
 }
 
-func (s *service) ListOne(uid, id string) (plant.Plant, error) {
-	if id == "" {
+func (s *service) ListOne(userID, plantID string) (plant.Plant, error) {
+	if plantID == "" {
 		return plant.Plant{}, plant.ErrMissingData
 	}
 
-	result, err := s.repo.FindOne(uid, id)
+	result, err := s.repo.FindOne(userID, plantID)
 	if err != nil {
 		return plant.Plant{}, plant.ErrNotFound
 	}

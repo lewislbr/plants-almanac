@@ -7,17 +7,17 @@ import (
 )
 
 type (
-	Adder interface {
+	repository interface {
 		Add(string) error
 	}
 
 	service struct {
 		secret string
-		repo   Adder
+		repo   repository
 	}
 )
 
-func NewService(secret string, repo Adder) *service {
+func NewService(secret string, repo repository) *service {
 	return &service{secret, repo}
 }
 

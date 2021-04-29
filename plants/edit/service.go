@@ -7,31 +7,26 @@ import (
 )
 
 type (
-	Updater interface {
+	repository interface {
+		FindOne(string, string) (plant.Plant, error)
 		UpdateOne(string, string, plant.Plant) (int64, error)
 	}
 
-	Lister interface {
-		ListAll(string) ([]plant.Plant, error)
-		ListOne(string, string) (plant.Plant, error)
-	}
-
 	service struct {
-		svc  Lister
-		repo Updater
+		repo repository
 	}
 )
 
-func NewService(svc Lister, repo Updater) *service {
-	return &service{svc, repo}
+func NewService(repo repository) *service {
+	return &service{repo}
 }
 
-func (s *service) Edit(uid, id string, update plant.Plant) error {
+func (s *service) Edit(userID, plantID string, update plant.Plant) error {
 	if update.Name == "" {
 		return plant.ErrMissingData
 	}
 
-	exist, err := s.svc.ListOne(uid, id)
+	exist, err := s.repo.FindOne(userID, plantID)
 	if err != nil {
 		return plant.ErrNotFound
 	}
@@ -39,7 +34,7 @@ func (s *service) Edit(uid, id string, update plant.Plant) error {
 	update.CreatedAt = exist.CreatedAt
 	update.EditedAt = time.Now().UTC()
 
-	result, err := s.repo.UpdateOne(uid, id, update)
+	result, err := s.repo.UpdateOne(userID, plantID, update)
 	if err != nil {
 		return err
 	}

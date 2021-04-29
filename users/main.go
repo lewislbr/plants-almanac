@@ -47,7 +47,7 @@ func main() {
 	redisRepo := redis.NewRepository(redisCache)
 	createSvc := create.NewService(postgresRepo)
 	generateSvc := generate.NewService(env.TokenSecret)
-	authenticateSvc := authenticate.NewService(generateSvc, postgresRepo)
+	authenticateSvc := authenticate.NewService(postgresRepo)
 	authorizeSvc := authorize.NewService(env.TokenSecret, redisRepo)
 	revokeSvc := revoke.NewService(env.TokenSecret, redisRepo)
 	infoSvc := info.NewService(postgresRepo)

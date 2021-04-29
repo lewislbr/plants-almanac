@@ -11,38 +11,46 @@ import (
 )
 
 type (
-	Creater interface {
+	creater interface {
 		Create(user.User) error
 	}
-	Authenticater interface {
+	authenticater interface {
 		Authenticate(cred user.Credentials) (string, error)
 	}
-	Authorizer interface {
+	authorizer interface {
 		Authorize(string) (string, error)
 	}
-	Generater interface {
+	generater interface {
 		GenerateToken(string) (string, error)
 	}
-	Revoker interface {
+	revoker interface {
 		RevokeToken(string) error
 	}
-	Infoer interface {
+	infoer interface {
 		UserInfo(string) (user.Info, error)
 	}
 
 	handler struct {
-		cs     Creater
-		ns     Authenticater
-		zs     Authorizer
-		gs     Generater
-		rs     Revoker
-		is     Infoer
-		domain string
+		createSvc       creater
+		authenticateSvc authenticater
+		authorizeSvc    authorizer
+		generateSvc     generater
+		revokeSvc       revoker
+		infoSvc         infoer
+		domain          string
 	}
 )
 
-func NewHandler(cs Creater, ns Authenticater, zs Authorizer, gs Generater, rs Revoker, is Infoer, domain string) *handler {
-	return &handler{cs, ns, zs, gs, rs, is, domain}
+func NewHandler(
+	createSvc creater,
+	authenticateSvc authenticater,
+	authorizeSvc authorizer,
+	generateSvc generater,
+	revokeSvc revoker,
+	infoSvc infoer,
+	domain string,
+) *handler {
+	return &handler{createSvc, authenticateSvc, authorizeSvc, generateSvc, revokeSvc, infoSvc, domain}
 }
 
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +65,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.cs.Create(new)
+	err = h.createSvc.Create(new)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -92,7 +100,7 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.ns.Authenticate(cred)
+	userID, err := h.authenticateSvc.Authenticate(cred)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -105,6 +113,22 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 			return
 		case errors.Is(err, user.ErrInvalidPassword):
 			http.Error(w, user.ErrInvalidPassword.Error(), http.StatusBadRequest)
+
+			return
+		default:
+			http.Error(w, "something went wrong", http.StatusInternalServerError)
+
+			log.Printf("%+v\n", err)
+
+			return
+		}
+	}
+
+	token, err := h.generateSvc.GenerateToken(userID)
+	if err != nil {
+		switch {
+		case errors.Is(err, user.ErrMissingData):
+			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
 		default:
@@ -133,7 +157,7 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := string(body)
-	uid, err := h.zs.Authorize(token)
+	userID, err := h.authorizeSvc.Authorize(token)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -153,7 +177,7 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	_, err = io.WriteString(w, uid)
+	_, err = io.WriteString(w, userID)
 	if err != nil {
 		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
@@ -172,7 +196,7 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	uid, err := h.zs.Authorize(token)
+	userID, err := h.authorizeSvc.Authorize(token)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -192,7 +216,7 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = h.rs.RevokeToken(token)
+	err = h.revokeSvc.RevokeToken(token)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -212,7 +236,7 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	token, err = h.gs.GenerateToken(uid)
+	token, err = h.generateSvc.GenerateToken(userID)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -243,7 +267,7 @@ func (h *handler) LogOut(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err := h.rs.RevokeToken(token)
+	err := h.revokeSvc.RevokeToken(token)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -278,7 +302,7 @@ func (h *handler) Info(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	uid, err := h.zs.Authorize(token)
+	userID, err := h.authorizeSvc.Authorize(token)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -298,7 +322,7 @@ func (h *handler) Info(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	data, err := h.is.UserInfo(uid)
+	data, err := h.infoSvc.UserInfo(userID)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):

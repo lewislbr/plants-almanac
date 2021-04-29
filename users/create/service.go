@@ -10,17 +10,17 @@ import (
 )
 
 type (
-	InserterChecker interface {
+	repository interface {
 		InsertOne(user.User) error
 		CheckExists(string) (bool, error)
 	}
 
 	service struct {
-		repo InserterChecker
+		repo repository
 	}
 )
 
-func NewService(repo InserterChecker) *service {
+func NewService(repo repository) *service {
 	return &service{repo}
 }
 

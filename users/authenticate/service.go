@@ -7,22 +7,17 @@ import (
 )
 
 type (
-	Generater interface {
-		GenerateToken(string) (string, error)
-	}
-
-	Finder interface {
+	repository interface {
 		FindOne(string) (user.User, error)
 	}
 
 	service struct {
-		svc  Generater
-		repo Finder
+		repo repository
 	}
 )
 
-func NewService(svc Generater, repo Finder) *service {
-	return &service{svc, repo}
+func NewService(repo repository) *service {
+	return &service{repo}
 }
 
 func (s *service) Authenticate(cred user.Credentials) (string, error) {
@@ -40,10 +35,5 @@ func (s *service) Authenticate(cred user.Credentials) (string, error) {
 		return "", user.ErrInvalidPassword
 	}
 
-	token, err := s.svc.GenerateToken(existUser.ID)
-	if err != nil {
-		return "", err
-	}
-
-	return token, nil
+	return existUser.ID, nil
 }

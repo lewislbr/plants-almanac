@@ -9,20 +9,20 @@ import (
 )
 
 type (
-	Inserter interface {
+	repository interface {
 		InsertOne(string, plant.Plant) (interface{}, error)
 	}
 
 	service struct {
-		repo Inserter
+		repo repository
 	}
 )
 
-func NewService(repo Inserter) *service {
+func NewService(repo repository) *service {
 	return &service{repo}
 }
 
-func (s *service) Add(uid string, new plant.Plant) error {
+func (s *service) Add(userID string, new plant.Plant) error {
 	if new.Name == "" {
 		return plant.ErrMissingData
 	}
@@ -31,7 +31,7 @@ func (s *service) Add(uid string, new plant.Plant) error {
 	new.CreatedAt = time.Now().UTC()
 	new.EditedAt = time.Now().UTC()
 
-	_, err := s.repo.InsertOne(uid, new)
+	_, err := s.repo.InsertOne(userID, new)
 
 	return err
 }

@@ -12,30 +12,30 @@ import (
 )
 
 type (
-	Adder interface {
+	adder interface {
 		Add(string, plant.Plant) error
 	}
-	Lister interface {
+	lister interface {
 		ListAll(string) ([]plant.Plant, error)
 		ListOne(string, string) (plant.Plant, error)
 	}
-	Editer interface {
+	editer interface {
 		Edit(string, string, plant.Plant) error
 	}
-	Deleter interface {
+	deleter interface {
 		Delete(string, string) error
 	}
 
 	handler struct {
-		as Adder
-		ls Lister
-		es Editer
-		ds Deleter
+		addSvc    adder
+		listSvc   lister
+		editSvc   editer
+		deleteSvc deleter
 	}
 )
 
-func NewHandler(as Adder, ls Lister, es Editer, ds Deleter) *handler {
-	return &handler{as, ls, es, ds}
+func NewHandler(addSvc adder, listSvc lister, editSvc editer, deleteSvc deleter) *handler {
+	return &handler{addSvc, listSvc, editSvc, deleteSvc}
 }
 
 func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
@@ -49,8 +49,8 @@ func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uid := r.Context().Value(contextId).(string)
-	err = h.as.Add(uid, new)
+	userID := r.Context().Value(contextId).(string)
+	err = h.addSvc.Add(userID, new)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):
@@ -70,8 +70,8 @@ func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) ListAll(w http.ResponseWriter, r *http.Request) {
-	uid := r.Context().Value(contextId).(string)
-	result, err := h.ls.ListAll(uid)
+	userID := r.Context().Value(contextId).(string)
+	result, err := h.listSvc.ListAll(userID)
 	if err != nil {
 		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
@@ -93,9 +93,9 @@ func (h *handler) ListAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) ListOne(w http.ResponseWriter, r *http.Request) {
-	uid := r.Context().Value(contextId).(string)
-	id := chi.URLParam(r, "id")
-	result, err := h.ls.ListOne(uid, id)
+	userID := r.Context().Value(contextId).(string)
+	plantID := chi.URLParam(r, "id")
+	result, err := h.listSvc.ListOne(userID, plantID)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):
@@ -138,9 +138,9 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uid := r.Context().Value(contextId).(string)
-	id := chi.URLParam(r, "id")
-	err = h.es.Edit(uid, id, update)
+	userID := r.Context().Value(contextId).(string)
+	plantID := chi.URLParam(r, "id")
+	err = h.editSvc.Edit(userID, plantID, update)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):
@@ -164,9 +164,9 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
-	uid := r.Context().Value(contextId).(string)
-	id := chi.URLParam(r, "id")
-	err := h.ds.Delete(uid, id)
+	userID := r.Context().Value(contextId).(string)
+	plantID := chi.URLParam(r, "id")
+	err := h.deleteSvc.Delete(userID, plantID)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):

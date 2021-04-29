@@ -8,9 +8,9 @@ import (
 	"net/http"
 )
 
-type uid string
+type userID string
 
-const contextId uid = "uid"
+const contextId userID = "userID"
 
 func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
@@ -57,8 +57,8 @@ func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
 				return
 			}
 
-			uid := string(body)
-			ctx := context.WithValue(r.Context(), contextId, uid)
+			userID := string(body)
+			ctx := context.WithValue(r.Context(), contextId, userID)
 
 			h.ServeHTTP(w, r.WithContext(ctx))
 		})

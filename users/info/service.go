@@ -5,25 +5,25 @@ import (
 )
 
 type (
-	Getter interface {
+	repository interface {
 		GetUserInfo(string) (user.Info, error)
 	}
 
 	service struct {
-		repo Getter
+		repo repository
 	}
 )
 
-func NewService(repo Getter) *service {
+func NewService(repo repository) *service {
 	return &service{repo}
 }
 
-func (s *service) UserInfo(id string) (user.Info, error) {
-	if id == "" {
+func (s *service) UserInfo(userID string) (user.Info, error) {
+	if userID == "" {
 		return user.Info{}, user.ErrMissingData
 	}
 
-	userInfo, err := s.repo.GetUserInfo(id)
+	userInfo, err := s.repo.GetUserInfo(userID)
 	if err != nil {
 		return user.Info{}, user.ErrNotFound
 	}

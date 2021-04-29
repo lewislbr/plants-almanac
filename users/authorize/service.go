@@ -7,17 +7,17 @@ import (
 )
 
 type (
-	Checker interface {
+	repository interface {
 		CheckExists(string) error
 	}
 
 	service struct {
 		secret string
-		repo   Checker
+		repo   repository
 	}
 )
 
-func NewService(secret string, repo Checker) *service {
+func NewService(secret string, repo repository) *service {
 	return &service{secret, repo}
 }
 

@@ -35,7 +35,7 @@ func main() {
 	mongoRepo := mongo.NewRepository(mongoDB)
 	addSvc := add.NewService(mongoRepo)
 	listSvc := list.NewService(mongoRepo)
-	editSvc := edit.NewService(listSvc, mongoRepo)
+	editSvc := edit.NewService(mongoRepo)
 	deleteSvc := delete.NewService(mongoRepo)
 	httpServer := server.New(addSvc, listSvc, editSvc, deleteSvc, env.AuthURL)
 

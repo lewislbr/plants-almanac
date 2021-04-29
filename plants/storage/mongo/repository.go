@@ -17,8 +17,8 @@ func NewRepository(db *mongo.Database) *repository {
 	return &repository{db}
 }
 
-func (r *repository) InsertOne(uid string, new plant.Plant) (interface{}, error) {
-	result, err := r.db.Collection(uid).InsertOne(context.Background(), new)
+func (r *repository) InsertOne(userID string, new plant.Plant) (interface{}, error) {
+	result, err := r.db.Collection(userID).InsertOne(context.Background(), new)
 	if err != nil {
 		return nil, err
 	}
@@ -26,8 +26,8 @@ func (r *repository) InsertOne(uid string, new plant.Plant) (interface{}, error)
 	return result.InsertedID, nil
 }
 
-func (r *repository) FindAll(uid string) ([]plant.Plant, error) {
-	cursor, err := r.db.Collection(uid).Find(context.Background(), bson.M{})
+func (r *repository) FindAll(userID string) ([]plant.Plant, error) {
+	cursor, err := r.db.Collection(userID).Find(context.Background(), bson.M{})
 	if err != nil {
 		return nil, err
 	}
@@ -42,12 +42,12 @@ func (r *repository) FindAll(uid string) ([]plant.Plant, error) {
 	return results, nil
 }
 
-func (r *repository) FindOne(uid, id string) (plant.Plant, error) {
-	filter := bson.M{"_id": id}
+func (r *repository) FindOne(userID, plantID string) (plant.Plant, error) {
+	filter := bson.M{"_id": plantID}
 
 	var result plant.Plant
 
-	err := r.db.Collection(uid).FindOne(context.Background(), filter).Decode(&result)
+	err := r.db.Collection(userID).FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
 		return plant.Plant{}, err
 	}
@@ -55,8 +55,8 @@ func (r *repository) FindOne(uid, id string) (plant.Plant, error) {
 	return result, nil
 }
 
-func (r *repository) UpdateOne(uid, id string, update plant.Plant) (int64, error) {
-	filter := bson.M{"_id": id}
+func (r *repository) UpdateOne(userID, plantID string, update plant.Plant) (int64, error) {
+	filter := bson.M{"_id": plantID}
 	updated := bson.M{
 		"$set": bson.M{
 			"created_at":     update.CreatedAt,
@@ -70,7 +70,7 @@ func (r *repository) UpdateOne(uid, id string, update plant.Plant) (int64, error
 			"tips":           update.Tips,
 		},
 	}
-	result, err := r.db.Collection(uid).UpdateOne(context.Background(), filter, updated)
+	result, err := r.db.Collection(userID).UpdateOne(context.Background(), filter, updated)
 	if err != nil {
 		return 0, err
 	}
@@ -78,9 +78,9 @@ func (r *repository) UpdateOne(uid, id string, update plant.Plant) (int64, error
 	return result.ModifiedCount, nil
 }
 
-func (r *repository) DeleteOne(uid, id string) (int64, error) {
-	filter := bson.M{"_id": id}
-	result, err := r.db.Collection(uid).DeleteOne(context.Background(), filter)
+func (r *repository) DeleteOne(userID, plantID string) (int64, error) {
+	filter := bson.M{"_id": plantID}
+	result, err := r.db.Collection(userID).DeleteOne(context.Background(), filter)
 	if err != nil {
 		return 0, err
 	}

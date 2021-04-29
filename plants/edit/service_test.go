@@ -4,32 +4,29 @@ import (
 	"errors"
 	"testing"
 
-	"plants/list"
 	"plants/plant"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
-const uid = "123"
+const userID = "123"
 
 func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing required fields", func(t *testing.T) {
 		t.Parallel()
 
-		f := &list.MockFinder{}
-		u := &MockUpdater{}
+		repo := &mockRepository{}
 
-		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, nil)
-		u.On("UpdateOne", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(int64(1), nil)
+		repo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, nil)
+		repo.On("UpdateOne", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(int64(1), nil)
 
-		ls := list.NewService(f)
-		es := NewService(ls, u)
-		id := "123"
+		editSvc := NewService(repo)
+		plantID := "123"
 		newPlant := plant.Plant{
 			Name: "",
 		}
-		err := es.Edit(uid, id, newPlant)
+		err := editSvc.Edit(userID, plantID, newPlant)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
 	})
@@ -37,19 +34,17 @@ func TestCreate(t *testing.T) {
 	t.Run("should error when the plant is not found", func(t *testing.T) {
 		t.Parallel()
 
-		f := &list.MockFinder{}
-		u := &MockUpdater{}
+		repo := &mockRepository{}
 
-		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("not found"))
-		u.On("UpdateOne", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(int64(0), nil)
+		repo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("not found"))
+		repo.On("UpdateOne", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(int64(0), nil)
 
-		ls := list.NewService(f)
-		es := NewService(ls, u)
-		id := "123"
+		editSvc := NewService(repo)
+		plantID := "123"
 		newPlant := plant.Plant{
 			Name: "test",
 		}
-		err := es.Edit(uid, id, newPlant)
+		err := editSvc.Edit(userID, plantID, newPlant)
 
 		require.EqualError(t, err, plant.ErrNotFound.Error())
 	})
@@ -57,19 +52,17 @@ func TestCreate(t *testing.T) {
 	t.Run("should edit a plant with no error", func(t *testing.T) {
 		t.Parallel()
 
-		f := &list.MockFinder{}
-		u := &MockUpdater{}
+		repo := &mockRepository{}
 
-		f.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, nil)
-		u.On("UpdateOne", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(int64(1), nil)
+		repo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, nil)
+		repo.On("UpdateOne", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(int64(1), nil)
 
-		ls := list.NewService(f)
-		es := NewService(ls, u)
-		id := "123"
+		editSvc := NewService(repo)
+		plantID := "123"
 		newPlant := plant.Plant{
 			Name: "test",
 		}
-		err := es.Edit(uid, id, newPlant)
+		err := editSvc.Edit(userID, plantID, newPlant)
 
 		require.NoError(t, err)
 	})

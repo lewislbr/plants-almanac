@@ -9,21 +9,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const uid = "123"
+const userID = "123"
 
 func TestCreate(t *testing.T) {
 	t.Run("should error when there are missing required fields", func(t *testing.T) {
 		t.Parallel()
 
-		i := &MockInserter{}
+		repo := &mockRepository{}
 
-		i.On("InsertOne", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return("", nil)
+		repo.On("InsertOne", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return("", nil)
 
-		as := NewService(i)
+		addSvc := NewService(repo)
 		newPlant := plant.Plant{
 			Name: "",
 		}
-		err := as.Add(uid, newPlant)
+		err := addSvc.Add(userID, newPlant)
 
 		require.EqualError(t, err, plant.ErrMissingData.Error())
 	})
@@ -31,15 +31,15 @@ func TestCreate(t *testing.T) {
 	t.Run("should create a plant with no error", func(t *testing.T) {
 		t.Parallel()
 
-		i := &MockInserter{}
+		repo := &mockRepository{}
 
-		i.On("InsertOne", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return("", nil)
+		repo.On("InsertOne", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return("", nil)
 
-		as := NewService(i)
+		addSvc := NewService(repo)
 		newPlant := plant.Plant{
 			Name: "test",
 		}
-		err := as.Add(uid, newPlant)
+		err := addSvc.Add(userID, newPlant)
 
 		require.NoError(t, err)
 	})
