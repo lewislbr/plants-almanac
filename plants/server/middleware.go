@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
 )
 
 type userID string
@@ -23,7 +24,10 @@ func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
 				}
 			}
 
-			res, err := http.Post(url+"/authorization", "text/plain", bytes.NewBuffer([]byte(token)))
+			client := &http.Client{
+				Timeout: time.Second * 10,
+			}
+			res, err := client.Post(url+"/authorization", "text/plain", bytes.NewBuffer([]byte(token)))
 			if err != nil {
 				http.Error(w, "something went wrong", http.StatusInternalServerError)
 
