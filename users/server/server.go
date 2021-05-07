@@ -53,7 +53,6 @@ func New(
 	s.Addr = ":8080"
 	s.Handler = r
 	s.IdleTimeout = 120 * time.Second
-	s.MaxHeaderBytes = 1 << 20 // 1 MB
 	s.ReadTimeout = 5 * time.Second
 	s.WriteTimeout = 10 * time.Second
 
