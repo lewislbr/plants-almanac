@@ -18,6 +18,11 @@ spec:
         local:
           requests: 100
           unit: minute
+      retryPolicy:
+        count: 3
+        perTryTimeout: 500ms
+        retryOn:
+          - 5xx
       responseHeadersPolicy:
         set:
           - name: Strict-Transport-Security
@@ -32,6 +37,11 @@ spec:
           requests: 100
           unit: minute
           burst: 20
+      retryPolicy:
+        count: 3
+        perTryTimeout: 1s
+        retryOn:
+          - 5xx
       responseHeadersPolicy:
         set:
           - name: Strict-Transport-Security
@@ -46,6 +56,11 @@ spec:
           requests: 100
           unit: minute
           burst: 40
+      retryPolicy:
+        count: 3
+        perTryTimeout: 500ms
+        retryOn:
+          - 5xx
       responseHeadersPolicy:
         set:
           - name: Content-Security-Policy
