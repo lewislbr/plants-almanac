@@ -1,9 +1,10 @@
 package redis
 
 import (
+	"context"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 )
 
 type repository struct {
@@ -15,9 +16,9 @@ func NewRepository(cache *redis.Client) *repository {
 }
 
 func (r *repository) Add(tokenId string) error {
-	return r.cache.Set(tokenId, 0, 7*24*time.Hour).Err()
+	return r.cache.Set(context.Background(), tokenId, 0, 7*24*time.Hour).Err()
 }
 
 func (r *repository) CheckExists(tokenId string) error {
-	return r.cache.Get(tokenId).Err()
+	return r.cache.Get(context.Background(), tokenId).Err()
 }

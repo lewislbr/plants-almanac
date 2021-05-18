@@ -1,9 +1,10 @@
 package redis
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 )
 
 type Driver struct {
@@ -21,7 +22,7 @@ func (d *Driver) Connect(url, pass string) (*redis.Client, error) {
 		Password: pass,
 	})
 
-	_, err := client.Ping().Result()
+	_, err := client.Ping(context.Background()).Result()
 	if err != nil {
 		return nil, err
 	}
