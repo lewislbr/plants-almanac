@@ -3,9 +3,6 @@ package user
 import "time"
 
 type (
-	// Ideally the JSON and BSON tags should be defined in an specific entity
-	// for the server and storage components, respectively, but this being a small
-	// service they are defined here for simplicity.
 	User struct {
 		ID        string    `json:"id"`
 		Name      string    `json:"name"`

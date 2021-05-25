@@ -13,7 +13,7 @@ type userID string
 
 const contextId userID = "userID"
 
-func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
+func authzMiddleware(authUrl string) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			var token string
@@ -27,7 +27,7 @@ func authorizationMiddleware(url string) func(h http.Handler) http.Handler {
 			client := &http.Client{
 				Timeout: time.Second * 10,
 			}
-			res, err := client.Post(url+"/authorization", "text/plain", bytes.NewBuffer([]byte(token)))
+			res, err := client.Post(authUrl+"/authorization", "text/plain", bytes.NewBuffer([]byte(token)))
 			if err != nil {
 				http.Error(w, "something went wrong", http.StatusInternalServerError)
 

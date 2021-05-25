@@ -72,7 +72,7 @@ export function LogIn(): JSX.Element {
 
       history.push("/plants")
     } catch (error) {
-      setErrors((errors) => ({...errors, http: String(error)}))
+      setErrors((errors) => ({...errors, http: error.message}))
       setStatus(HTTPStatus.ERROR)
 
       console.error(error)

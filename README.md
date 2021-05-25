@@ -50,7 +50,7 @@ It is a Go application connected to a cloud MongoDB database stored in MongoDB A
 
 ### Users service
 
-Enables the creation, authentication and authorization of users, as well as generation and revokation of [PASETO](https://paseto.io/) tokens.
+Enables the creation, authentication, and information of users, as well as the generation, validation, and revokation of [PASETO](https://paseto.io/) tokens.
 
 It is a Go application connected to a cloud PostgreSQL database stored in ElephantSQL, and it uses Redis as a cache to store revoked tokens. It follows the [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) and uses the standard library as much as possible.
 

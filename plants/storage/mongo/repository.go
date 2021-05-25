@@ -17,7 +17,7 @@ func NewRepository(db *mongo.Database) *repository {
 	return &repository{db}
 }
 
-func (r *repository) InsertOne(userID string, new plant.Plant) (interface{}, error) {
+func (r *repository) Insert(userID string, new plant.Plant) (interface{}, error) {
 	result, err := r.db.Collection(userID).InsertOne(context.Background(), new)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func (r *repository) FindOne(userID, plantID string) (plant.Plant, error) {
 	return result, nil
 }
 
-func (r *repository) UpdateOne(userID, plantID string, update plant.Plant) (int64, error) {
+func (r *repository) Update(userID, plantID string, update plant.Plant) (int64, error) {
 	filter := bson.M{"_id": plantID}
 	updated := bson.M{
 		"$set": bson.M{
@@ -78,7 +78,7 @@ func (r *repository) UpdateOne(userID, plantID string, update plant.Plant) (int6
 	return result.ModifiedCount, nil
 }
 
-func (r *repository) DeleteOne(userID, plantID string) (int64, error) {
+func (r *repository) Delete(userID, plantID string) (int64, error) {
 	filter := bson.M{"_id": plantID}
 	result, err := r.db.Collection(userID).DeleteOne(context.Background(), filter)
 	if err != nil {

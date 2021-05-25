@@ -10,10 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"plants/add"
-	"plants/delete"
-	"plants/edit"
-	"plants/list"
+	"plants/plant"
 	"plants/server"
 	"plants/storage/mongo"
 )
@@ -33,15 +30,12 @@ func main() {
 	}
 
 	mongoRepo := mongo.NewRepository(mongoDB)
-	addSvc := add.NewService(mongoRepo)
-	listSvc := list.NewService(mongoRepo)
-	editSvc := edit.NewService(mongoRepo)
-	deleteSvc := delete.NewService(mongoRepo)
-	httpServer := server.New(addSvc, listSvc, editSvc, deleteSvc, env.AuthURL)
+	plantSvc := plant.NewService(mongoRepo)
+	plantSvr := server.New(plantSvc, env.AuthURL)
 
-	go gracefulShutdown(httpServer, mongoDriver)
+	go gracefulShutdown(plantSvr, mongoDriver)
 
-	err = httpServer.Start()
+	err = plantSvr.Start()
 	if err != nil {
 		log.Panic(err)
 	}
@@ -49,7 +43,7 @@ func main() {
 	defer func() {
 		r := recover()
 		if r != nil {
-			cleanUp(httpServer, mongoDriver)
+			cleanUp(plantSvr, mongoDriver)
 			debug.PrintStack()
 			os.Exit(1)
 		}
@@ -73,25 +67,25 @@ func getEnvVars() *envVars {
 	}
 }
 
-func gracefulShutdown(http *server.Server, mongo *mongo.Driver) {
+func gracefulShutdown(svr *server.Server, db *mongo.Driver) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	<-quit
 
-	cleanUp(http, mongo)
+	cleanUp(svr, db)
 }
 
-func cleanUp(http *server.Server, mongo *mongo.Driver) {
+func cleanUp(svr *server.Server, db *mongo.Driver) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	err := mongo.Disconnect(ctx)
+	err := db.Disconnect(ctx)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	err = http.Stop(ctx)
+	err = svr.Stop(ctx)
 	if err != nil {
 		fmt.Println(err)
 	}

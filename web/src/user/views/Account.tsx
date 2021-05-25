@@ -28,7 +28,7 @@ export function Account(): JSX.Element {
         setData(result)
         setStatus(HTTPStatus.SUCCESS)
       } catch (error) {
-        setErrors((errors) => ({...errors, http: String(error)}))
+        setErrors((errors) => ({...errors, http: error.message}))
         setStatus(HTTPStatus.ERROR)
 
         console.error(error)
@@ -47,7 +47,7 @@ export function Account(): JSX.Element {
 
       history.push("/welcome")
     } catch (error) {
-      setErrors((errors) => ({...errors, http: String(error)}))
+      setErrors((errors) => ({...errors, http: error.message}))
       setStatus(HTTPStatus.ERROR)
 
       console.error(error)

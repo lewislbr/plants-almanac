@@ -10,15 +10,11 @@ import (
 	"syscall"
 	"time"
 
-	"users/authenticate"
-	"users/authorize"
-	"users/create"
-	"users/generate"
-	"users/info"
-	"users/revoke"
 	"users/server"
 	"users/storage/postgres"
 	"users/storage/redis"
+	"users/token"
+	"users/user"
 )
 
 type envVars struct {
@@ -45,17 +41,13 @@ func main() {
 
 	postgresRepo := postgres.NewRepository(postgresDB)
 	redisRepo := redis.NewRepository(redisCache)
-	createSvc := create.NewService(postgresRepo)
-	generateSvc := generate.NewService(env.TokenSecret)
-	authenticateSvc := authenticate.NewService(postgresRepo)
-	authorizeSvc := authorize.NewService(env.TokenSecret, redisRepo)
-	revokeSvc := revoke.NewService(env.TokenSecret, redisRepo)
-	infoSvc := info.NewService(postgresRepo)
-	httpServer := server.New(createSvc, authenticateSvc, authorizeSvc, generateSvc, revokeSvc, infoSvc, env.AppDomain)
+	userSvc := user.NewService(postgresRepo)
+	tokenSvc := token.NewService(env.TokenSecret, redisRepo)
+	userSvr := server.New(userSvc, tokenSvc, env.AppDomain)
 
-	go gracefulShutdown(httpServer, postgresDriver, redisDriver)
+	go gracefulShutdown(userSvr, postgresDriver, redisDriver)
 
-	err = httpServer.Start()
+	err = userSvr.Start()
 	if err != nil {
 		log.Panic(err)
 	}
@@ -63,7 +55,7 @@ func main() {
 	defer func() {
 		r := recover()
 		if r != nil {
-			cleanUp(httpServer, postgresDriver, redisDriver)
+			cleanUp(userSvr, postgresDriver, redisDriver)
 			debug.PrintStack()
 			os.Exit(1)
 		}
@@ -89,27 +81,27 @@ func getEnvVars() *envVars {
 	}
 }
 
-func gracefulShutdown(http *server.Server, postgres *postgres.Driver, redis *redis.Driver) {
+func gracefulShutdown(svr *server.Server, db *postgres.Driver, cache *redis.Driver) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	<-quit
 
-	cleanUp(http, postgres, redis)
+	cleanUp(svr, db, cache)
 }
 
-func cleanUp(http *server.Server, postgres *postgres.Driver, redis *redis.Driver) {
+func cleanUp(svr *server.Server, db *postgres.Driver, cache *redis.Driver) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	postgres.Disconnect()
+	db.Disconnect()
 
-	err := redis.Disconnect()
+	err := cache.Disconnect()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	err = http.Stop(ctx)
+	err = svr.Stop(ctx)
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -9,7 +9,7 @@ export async function addOne(plant: NewPlant): Promise<void> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 }
 
@@ -19,10 +19,10 @@ export async function listAll(): Promise<Plant[]> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 
-  return (await response.json()) || []
+  return response.json()
 }
 
 export async function listOne(id: Plant["id"]): Promise<Plant> {
@@ -31,10 +31,10 @@ export async function listOne(id: Plant["id"]): Promise<Plant> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 
-  return await response.json()
+  return response.json()
 }
 
 export async function editOne(id: Plant["id"], plant: NewPlant): Promise<void> {
@@ -46,7 +46,7 @@ export async function editOne(id: Plant["id"], plant: NewPlant): Promise<void> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 }
 
@@ -57,6 +57,6 @@ export async function deleteOne(id: Plant["id"]): Promise<void> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 }

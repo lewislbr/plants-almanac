@@ -15,17 +15,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestHandler(t *testing.T) {
-	t.Run("Add should return 201 after successful request", func(t *testing.T) {
+func TestAdd(t *testing.T) {
+	t.Run("should return 201 after successful request", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		adder.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(nil)
+		plantSvc.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(nil)
 
 		plant := &plant.Plant{Name: "test"}
 		payload, err := json.Marshal(plant)
@@ -42,16 +39,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusCreated, w.Result().StatusCode)
 	})
 
-	t.Run("Add should return 400 if required data is missing", func(t *testing.T) {
+	t.Run("should return 400 if required data is missing", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		adder.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrMissingData)
+		plantSvc.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrMissingData)
 
 		plant := &plant.Plant{}
 		payload, err := json.Marshal(plant)
@@ -68,16 +62,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusBadRequest, w.Result().StatusCode)
 	})
 
-	t.Run("Add should return 500 if an unexpected error happens", func(t *testing.T) {
+	t.Run("should return 500 if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		adder.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(errors.New("error"))
+		plantSvc.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(errors.New("error"))
 
 		plant := &plant.Plant{Name: "test"}
 		payload, err := json.Marshal(plant)
@@ -93,17 +84,16 @@ func TestHandler(t *testing.T) {
 
 		require.Equal(t, http.StatusInternalServerError, w.Result().StatusCode)
 	})
+}
 
-	t.Run("ListAll should return 200 if the request is successful", func(t *testing.T) {
+func TestListAll(t *testing.T) {
+	t.Run("should return 200 if the request is successful", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		lister.On("ListAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
+		plantSvc.On("ListAll", mock.AnythingOfType("string")).Return([]plant.Plant{}, nil)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -114,16 +104,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusOK, w.Result().StatusCode)
 	})
 
-	t.Run("ListAll should return 500 if if an unexpected error happens", func(t *testing.T) {
+	t.Run("should return 500 if if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		lister.On("ListAll", mock.AnythingOfType("string")).Return(nil, errors.New("error"))
+		plantSvc.On("ListAll", mock.AnythingOfType("string")).Return(nil, errors.New("error"))
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -133,17 +120,16 @@ func TestHandler(t *testing.T) {
 
 		require.Equal(t, http.StatusInternalServerError, w.Result().StatusCode)
 	})
+}
 
-	t.Run("ListOne should return 200 if the request is successful", func(t *testing.T) {
+func TestListOne(t *testing.T) {
+	t.Run("should return 200 if the request is successful", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		lister.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{Name: "test"}, nil)
+		plantSvc.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{Name: "test"}, nil)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/123", nil)
@@ -154,16 +140,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusOK, w.Result().StatusCode)
 	})
 
-	t.Run("ListOne should return 400 if required data is missing", func(t *testing.T) {
+	t.Run("should return 400 if required data is missing", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		lister.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, plant.ErrMissingData)
+		plantSvc.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, plant.ErrMissingData)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -174,16 +157,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusBadRequest, w.Result().StatusCode)
 	})
 
-	t.Run("ListOne should return 404 if the plant is not found", func(t *testing.T) {
+	t.Run("should return 404 if the plant is not found", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		lister.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, plant.ErrNotFound)
+		plantSvc.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, plant.ErrNotFound)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/123", nil)
@@ -194,16 +174,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusNotFound, w.Result().StatusCode)
 	})
 
-	t.Run("ListOne should return 500 if an unexpected error happens", func(t *testing.T) {
+	t.Run("should return 500 if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		lister.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("error"))
+		plantSvc.On("ListOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.Plant{}, errors.New("error"))
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/123", nil)
@@ -213,17 +190,16 @@ func TestHandler(t *testing.T) {
 
 		require.Equal(t, http.StatusInternalServerError, w.Result().StatusCode)
 	})
+}
 
-	t.Run("Edit should return 204 if the request is successful", func(t *testing.T) {
+func TestEdit(t *testing.T) {
+	t.Run("should return 204 if the request is successful", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		editer.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(nil)
+		plantSvc.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(nil)
 
 		plant := &plant.Plant{}
 		payload, err := json.Marshal(plant)
@@ -240,16 +216,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusNoContent, w.Result().StatusCode)
 	})
 
-	t.Run("Edit should return 400 if required data is missing", func(t *testing.T) {
+	t.Run("should return 400 if required data is missing", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		editer.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrMissingData)
+		plantSvc.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrMissingData)
 
 		plant := &plant.Plant{}
 		payload, err := json.Marshal(plant)
@@ -266,16 +239,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusBadRequest, w.Result().StatusCode)
 	})
 
-	t.Run("Edit should return 404 if the plant is not found", func(t *testing.T) {
+	t.Run("should return 404 if the plant is not found", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		editer.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrNotFound)
+		plantSvc.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrNotFound)
 
 		plant := &plant.Plant{}
 		payload, err := json.Marshal(plant)
@@ -292,16 +262,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusNotFound, w.Result().StatusCode)
 	})
 
-	t.Run("Edit should return 500 if an unexpected error happens", func(t *testing.T) {
+	t.Run("should return 500 if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		editer.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(errors.New("error"))
+		plantSvc.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(errors.New("error"))
 
 		plant := &plant.Plant{}
 		payload, err := json.Marshal(plant)
@@ -317,17 +284,16 @@ func TestHandler(t *testing.T) {
 
 		require.Equal(t, http.StatusInternalServerError, w.Result().StatusCode)
 	})
+}
 
-	t.Run("Delete should return 204 if the request is successful", func(t *testing.T) {
+func TestDelete(t *testing.T) {
+	t.Run("should return 204 if the request is successful", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		deleter.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil)
+		plantSvc.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodDelete, "/123", nil)
@@ -338,16 +304,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusNoContent, w.Result().StatusCode)
 	})
 
-	t.Run("Delete should return 400 if required data is missing", func(t *testing.T) {
+	t.Run("should return 400 if required data is missing", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		deleter.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.ErrMissingData)
+		plantSvc.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(plant.ErrMissingData)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodDelete, "/", nil)
@@ -358,16 +321,13 @@ func TestHandler(t *testing.T) {
 		require.Equal(t, http.StatusBadRequest, w.Result().StatusCode)
 	})
 
-	t.Run("Delete should return 500 if an unexpected error happens", func(t *testing.T) {
+	t.Run("should return 500 if an unexpected error happens", func(t *testing.T) {
 		t.Parallel()
 
-		adder := &mockAdder{}
-		deleter := &mockDeleter{}
-		editer := &mockEditer{}
-		lister := &mockLister{}
-		handler := NewHandler(adder, lister, editer, deleter)
+		plantSvc := &mockPlantService{}
+		handler := NewHandler(plantSvc)
 
-		deleter.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(errors.New("error"))
+		plantSvc.On("Delete", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(errors.New("error"))
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodDelete, "/123", nil)

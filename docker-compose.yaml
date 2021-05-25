@@ -11,7 +11,7 @@ services:
       - "9901:9901"
       - "10000:10000"
     volumes:
-      - ./.envoy:/etc/envoy
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
 
   plants:
     build:

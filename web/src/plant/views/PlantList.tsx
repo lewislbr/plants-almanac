@@ -24,7 +24,7 @@ export function PlantList(): JSX.Element {
     setStatus(HTTPStatus.LOADING)
     ;(async (): Promise<void> => {
       try {
-        const result = await listAll()
+        const result = (await listAll()) || []
 
         switch (sortMethod) {
           case Options.Created.KEY:
@@ -43,7 +43,7 @@ export function PlantList(): JSX.Element {
 
         setStatus(HTTPStatus.SUCCESS)
       } catch (error) {
-        setErrors((errors) => ({...errors, http: String(error)}))
+        setErrors((errors) => ({...errors, http: error.message}))
         setStatus(HTTPStatus.ERROR)
 
         console.error(error)

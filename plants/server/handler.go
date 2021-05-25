@@ -12,30 +12,21 @@ import (
 )
 
 type (
-	adder interface {
+	plantService interface {
 		Add(string, plant.Plant) error
-	}
-	lister interface {
 		ListAll(string) ([]plant.Plant, error)
 		ListOne(string, string) (plant.Plant, error)
-	}
-	editer interface {
 		Edit(string, string, plant.Plant) error
-	}
-	deleter interface {
 		Delete(string, string) error
 	}
 
 	handler struct {
-		addSvc    adder
-		listSvc   lister
-		editSvc   editer
-		deleteSvc deleter
+		plantSvc plantService
 	}
 )
 
-func NewHandler(addSvc adder, listSvc lister, editSvc editer, deleteSvc deleter) *handler {
-	return &handler{addSvc, listSvc, editSvc, deleteSvc}
+func NewHandler(plantSvc plantService) *handler {
+	return &handler{plantSvc}
 }
 
 func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +41,7 @@ func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := r.Context().Value(contextId).(string)
-	err = h.addSvc.Add(userID, new)
+	err = h.plantSvc.Add(userID, new)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):
@@ -71,7 +62,7 @@ func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
 
 func (h *handler) ListAll(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(contextId).(string)
-	result, err := h.listSvc.ListAll(userID)
+	result, err := h.plantSvc.ListAll(userID)
 	if err != nil {
 		http.Error(w, "something went wrong", http.StatusInternalServerError)
 
@@ -95,7 +86,7 @@ func (h *handler) ListAll(w http.ResponseWriter, r *http.Request) {
 func (h *handler) ListOne(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(contextId).(string)
 	plantID := chi.URLParam(r, "id")
-	result, err := h.listSvc.ListOne(userID, plantID)
+	result, err := h.plantSvc.ListOne(userID, plantID)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):
@@ -140,7 +131,7 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.Context().Value(contextId).(string)
 	plantID := chi.URLParam(r, "id")
-	err = h.editSvc.Edit(userID, plantID, update)
+	err = h.plantSvc.Edit(userID, plantID, update)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):
@@ -166,7 +157,7 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(contextId).(string)
 	plantID := chi.URLParam(r, "id")
-	err := h.deleteSvc.Delete(userID, plantID)
+	err := h.plantSvc.Delete(userID, plantID)
 	if err != nil {
 		switch {
 		case errors.Is(err, plant.ErrMissingData):

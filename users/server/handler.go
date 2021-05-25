@@ -7,50 +7,31 @@ import (
 	"log"
 	"net/http"
 
+	"users/token"
 	"users/user"
 )
 
 type (
-	creater interface {
+	userService interface {
 		Create(user.User) error
-	}
-	authenticater interface {
 		Authenticate(cred user.Credentials) (string, error)
+		Info(string) (user.Info, error)
 	}
-	authorizer interface {
-		Authorize(string) (string, error)
-	}
-	generater interface {
-		GenerateToken(string) (string, error)
-	}
-	revoker interface {
-		RevokeToken(string) error
-	}
-	infoer interface {
-		UserInfo(string) (user.Info, error)
+	tokenService interface {
+		Generate(string) (string, error)
+		Validate(string) (string, error)
+		Revoke(string) error
 	}
 
 	handler struct {
-		createSvc       creater
-		authenticateSvc authenticater
-		authorizeSvc    authorizer
-		generateSvc     generater
-		revokeSvc       revoker
-		infoSvc         infoer
-		domain          string
+		userSvc  userService
+		tokenSvc tokenService
+		domain   string
 	}
 )
 
-func NewHandler(
-	createSvc creater,
-	authenticateSvc authenticater,
-	authorizeSvc authorizer,
-	generateSvc generater,
-	revokeSvc revoker,
-	infoSvc infoer,
-	domain string,
-) *handler {
-	return &handler{createSvc, authenticateSvc, authorizeSvc, generateSvc, revokeSvc, infoSvc, domain}
+func NewHandler(userSvc userService, tokenSvc tokenService, domain string) *handler {
+	return &handler{userSvc, tokenSvc, domain}
 }
 
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +46,7 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.createSvc.Create(new)
+	err = h.userSvc.Create(new)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -100,7 +81,7 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID, err := h.authenticateSvc.Authenticate(cred)
+	userID, err := h.userSvc.Authenticate(cred)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):
@@ -124,11 +105,11 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	token, err := h.generateSvc.GenerateToken(userID)
+	tkn, err := h.tokenSvc.Generate(userID)
 	if err != nil {
 		switch {
-		case errors.Is(err, user.ErrMissingData):
-			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, token.ErrMissingData):
+			http.Error(w, token.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
 		default:
@@ -140,7 +121,7 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Add("Set-Cookie", "st="+token+"; Domain="+h.domain+"; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
+	w.Header().Add("Set-Cookie", "st="+tkn+"; Domain="+h.domain+"; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 	w.Header().Add("Set-Cookie", "te=1; Domain="+h.domain+"; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 
 	w.WriteHeader(http.StatusNoContent)
@@ -156,16 +137,16 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := string(body)
-	userID, err := h.authorizeSvc.Authorize(token)
+	tkn := string(body)
+	userID, err := h.tokenSvc.Validate(tkn)
 	if err != nil {
 		switch {
-		case errors.Is(err, user.ErrMissingData):
-			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, token.ErrMissingData):
+			http.Error(w, token.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		case errors.Is(err, user.ErrInvalidToken):
-			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
+		case errors.Is(err, token.ErrInvalidToken):
+			http.Error(w, token.ErrInvalidToken.Error(), http.StatusUnauthorized)
 
 			return
 		default:
@@ -188,23 +169,23 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
-	var token string
+	var tkn string
 
 	for _, cookie := range r.Cookies() {
 		if cookie.Name == "st" {
-			token = cookie.Value
+			tkn = cookie.Value
 		}
 	}
 
-	userID, err := h.authorizeSvc.Authorize(token)
+	userID, err := h.tokenSvc.Validate(tkn)
 	if err != nil {
 		switch {
-		case errors.Is(err, user.ErrMissingData):
-			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, token.ErrMissingData):
+			http.Error(w, token.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		case errors.Is(err, user.ErrInvalidToken):
-			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
+		case errors.Is(err, token.ErrInvalidToken):
+			http.Error(w, token.ErrInvalidToken.Error(), http.StatusUnauthorized)
 
 			return
 		default:
@@ -216,15 +197,15 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = h.revokeSvc.RevokeToken(token)
+	err = h.tokenSvc.Revoke(tkn)
 	if err != nil {
 		switch {
-		case errors.Is(err, user.ErrMissingData):
-			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, token.ErrMissingData):
+			http.Error(w, token.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		case errors.Is(err, user.ErrInvalidToken):
-			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
+		case errors.Is(err, token.ErrInvalidToken):
+			http.Error(w, token.ErrInvalidToken.Error(), http.StatusUnauthorized)
 
 			return
 		default:
@@ -236,11 +217,11 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	token, err = h.generateSvc.GenerateToken(userID)
+	tkn, err = h.tokenSvc.Generate(userID)
 	if err != nil {
 		switch {
-		case errors.Is(err, user.ErrMissingData):
-			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, token.ErrMissingData):
+			http.Error(w, token.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
 		default:
@@ -252,30 +233,30 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Add("Set-Cookie", "st="+token+"; Domain="+h.domain+"; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
+	w.Header().Add("Set-Cookie", "st="+tkn+"; Domain="+h.domain+"; HttpOnly; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 	w.Header().Add("Set-Cookie", "te=1; Domain="+h.domain+"; Max-Age=604800; Path=/; SameSite=Strict; Secure")
 
 	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *handler) LogOut(w http.ResponseWriter, r *http.Request) {
-	var token string
+	var tkn string
 
 	for _, cookie := range r.Cookies() {
 		if cookie.Name == "st" {
-			token = cookie.Value
+			tkn = cookie.Value
 		}
 	}
 
-	err := h.revokeSvc.RevokeToken(token)
+	err := h.tokenSvc.Revoke(tkn)
 	if err != nil {
 		switch {
-		case errors.Is(err, user.ErrMissingData):
-			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, token.ErrMissingData):
+			http.Error(w, token.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		case errors.Is(err, user.ErrInvalidToken):
-			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
+		case errors.Is(err, token.ErrInvalidToken):
+			http.Error(w, token.ErrInvalidToken.Error(), http.StatusUnauthorized)
 
 			return
 		default:
@@ -294,23 +275,23 @@ func (h *handler) LogOut(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) Info(w http.ResponseWriter, r *http.Request) {
-	var token string
+	var tkn string
 
 	for _, cookie := range r.Cookies() {
 		if cookie.Name == "st" {
-			token = cookie.Value
+			tkn = cookie.Value
 		}
 	}
 
-	userID, err := h.authorizeSvc.Authorize(token)
+	userID, err := h.tokenSvc.Validate(tkn)
 	if err != nil {
 		switch {
-		case errors.Is(err, user.ErrMissingData):
-			http.Error(w, user.ErrMissingData.Error(), http.StatusBadRequest)
+		case errors.Is(err, token.ErrMissingData):
+			http.Error(w, token.ErrMissingData.Error(), http.StatusBadRequest)
 
 			return
-		case errors.Is(err, user.ErrInvalidToken):
-			http.Error(w, user.ErrInvalidToken.Error(), http.StatusUnauthorized)
+		case errors.Is(err, token.ErrInvalidToken):
+			http.Error(w, token.ErrInvalidToken.Error(), http.StatusUnauthorized)
 
 			return
 		default:
@@ -322,7 +303,7 @@ func (h *handler) Info(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	data, err := h.infoSvc.UserInfo(userID)
+	data, err := h.userSvc.Info(userID)
 	if err != nil {
 		switch {
 		case errors.Is(err, user.ErrMissingData):

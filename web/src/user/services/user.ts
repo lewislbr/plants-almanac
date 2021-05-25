@@ -8,7 +8,7 @@ export async function signUp(user: NewUser): Promise<void> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 }
 
@@ -21,7 +21,7 @@ export async function logIn(credentials: Credentials): Promise<void> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 }
 
@@ -31,7 +31,7 @@ export async function refreshToken(): Promise<void> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 }
 
@@ -45,7 +45,7 @@ export async function logOut(): Promise<void> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 }
 
@@ -55,8 +55,8 @@ export async function getInfo(): Promise<UserInfo> {
   })
 
   if (!response.ok) {
-    throw new Error(await response.text())
+    throw Error(await response.text())
   }
 
-  return await response.json()
+  return response.json()
 }

@@ -16,7 +16,7 @@ func NewRepository(db *pgxpool.Pool) *repository {
 	return &repository{db}
 }
 
-func (r *repository) InsertOne(new user.User) error {
+func (r *repository) Insert(new user.User) error {
 	_, err := r.db.Exec(context.Background(), `
 		INSERT INTO user_(id, name, email, hash, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6);
@@ -30,7 +30,7 @@ func (r *repository) InsertOne(new user.User) error {
 	return nil
 }
 
-func (r *repository) FindOne(email string) (user.User, error) {
+func (r *repository) Find(email string) (user.User, error) {
 	var result user.User
 
 	row := r.db.QueryRow(context.Background(), `SELECT id, hash FROM user_ WHERE email = $1 LIMIT 1;`, email)
@@ -54,7 +54,7 @@ func (r *repository) CheckExists(email string) (bool, error) {
 	return result, nil
 }
 
-func (r *repository) GetUserInfo(userID string) (user.Info, error) {
+func (r *repository) GetInfo(userID string) (user.Info, error) {
 	var result user.Info
 
 	row := r.db.QueryRow(context.Background(), `SELECT name, email, created_at FROM user_ WHERE id = $1 LIMIT 1;`, userID)

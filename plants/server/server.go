@@ -15,15 +15,15 @@ type Server struct {
 	svr *http.Server
 }
 
-func New(addSvc adder, listSvc lister, editSvc editer, deleteSvc deleter, auth string) *Server {
+func New(plantSvc plantService, authUrl string) *Server {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
 	r.Group(func(r chi.Router) {
-		r.Use(authorizationMiddleware(auth))
+		r.Use(authzMiddleware(authUrl))
 		r.Route("/api", func(r chi.Router) {
 			r.Route("/plants", func(r chi.Router) {
-				h := NewHandler(addSvc, listSvc, editSvc, deleteSvc)
+				h := NewHandler(plantSvc)
 
 				r.Post("/", h.Add)
 				r.Get("/", h.ListAll)
