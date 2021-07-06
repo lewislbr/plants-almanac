@@ -2,11 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
-	"runtime/debug"
 	"syscall"
 	"time"
 
@@ -26,7 +24,7 @@ func main() {
 	mongoDriver := mongo.New()
 	mongoDB, err := mongoDriver.Connect(env.MongoURI, env.Database)
 	if err != nil {
-		log.Panic(err)
+		log.Panicf("Error connecting database: %v\n", err)
 	}
 
 	mongoRepo := mongo.NewRepository(mongoDB)
@@ -37,14 +35,14 @@ func main() {
 
 	err = plantSvr.Start()
 	if err != nil {
-		log.Panic(err)
+		log.Panicf("Error starting server: %v\n", err)
 	}
 
 	defer func() {
 		r := recover()
 		if r != nil {
 			cleanUp(plantSvr, mongoDriver)
-			debug.PrintStack()
+
 			os.Exit(1)
 		}
 	}()
@@ -54,7 +52,7 @@ func getEnvVars() *envVars {
 	get := func(k string) string {
 		v, set := os.LookupEnv(k)
 		if !set || v == "" {
-			log.Fatalf("%q environment variable not set.\n", k)
+			log.Fatalf("%q environment variable not set\n", k)
 		}
 
 		return v
@@ -82,11 +80,11 @@ func cleanUp(svr *server.Server, db *mongo.Driver) {
 
 	err := db.Disconnect(ctx)
 	if err != nil {
-		fmt.Println(err)
+		log.Printf("Error disconnecting database: %v\n", err)
 	}
 
 	err = svr.Stop(ctx)
 	if err != nil {
-		fmt.Println(err)
+		log.Printf("Error stopping server: %v\n", err)
 	}
 }

@@ -3,6 +3,7 @@ package redis
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -21,13 +22,12 @@ func (d *Driver) Connect(url, pass string) (*redis.Client, error) {
 		DB:       0,
 		Password: pass,
 	})
-
 	_, err := client.Ping(context.Background()).Result()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error pinging Redis client: %w", err)
 	}
 
-	fmt.Println("Users cache ready ✅")
+	log.Println("Users cache ready ✅")
 
 	d.client = client
 
@@ -35,7 +35,9 @@ func (d *Driver) Connect(url, pass string) (*redis.Client, error) {
 }
 
 func (d *Driver) Disconnect() error {
-	fmt.Println("Disconnecting cache...")
+	log.Println("Disconnecting cache...")
 
-	return d.client.Close()
+	err := d.client.Close()
+
+	return fmt.Errorf("error disconnecting Redis driver: %w", err)
 }

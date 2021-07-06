@@ -7,7 +7,6 @@ require (
 	github.com/go-chi/chi/v5 v5.0.3
 	github.com/google/uuid v1.2.0
 	github.com/klauspost/compress v1.12.2 // indirect
-	github.com/pkg/errors v0.9.1
 	github.com/stretchr/objx v0.3.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect

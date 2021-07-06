@@ -2,11 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
-	"runtime/debug"
 	"syscall"
 	"time"
 
@@ -30,13 +28,13 @@ func main() {
 	postgresDriver := postgres.New()
 	postgresDB, err := postgresDriver.Connect(env.PostgresURI)
 	if err != nil {
-		log.Panic(err)
+		log.Panicf("Error connecting database: %v\n", err)
 	}
 
 	redisDriver := redis.New()
 	redisCache, err := redisDriver.Connect(env.RedisURL, env.RedisPass)
 	if err != nil {
-		log.Panic(err)
+		log.Panicf("Error connecting cache: %v\n", err)
 	}
 
 	postgresRepo := postgres.NewRepository(postgresDB)
@@ -49,14 +47,14 @@ func main() {
 
 	err = userSvr.Start()
 	if err != nil {
-		log.Panic(err)
+		log.Panicf("Error starting server: %v\n", err)
 	}
 
 	defer func() {
 		r := recover()
 		if r != nil {
 			cleanUp(userSvr, postgresDriver, redisDriver)
-			debug.PrintStack()
+
 			os.Exit(1)
 		}
 	}()
@@ -66,7 +64,7 @@ func getEnvVars() *envVars {
 	get := func(k string) string {
 		v, set := os.LookupEnv(k)
 		if !set || v == "" {
-			log.Fatalf("%q environment variable not set.\n", k)
+			log.Fatalf("%q environment variable not set\n", k)
 		}
 
 		return v
@@ -98,11 +96,11 @@ func cleanUp(svr *server.Server, db *postgres.Driver, cache *redis.Driver) {
 
 	err := cache.Disconnect()
 	if err != nil {
-		fmt.Println(err)
+		log.Printf("Error disconnecting cache: %v\n", err)
 	}
 
 	err = svr.Stop(ctx)
 	if err != nil {
-		fmt.Println(err)
+		log.Printf("Error stopping server: %v\n", err)
 	}
 }

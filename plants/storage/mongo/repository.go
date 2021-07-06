@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"fmt"
 
 	"plants/plant"
 
@@ -20,7 +21,7 @@ func NewRepository(db *mongo.Database) *repository {
 func (r *repository) Insert(userID string, new plant.Plant) (interface{}, error) {
 	result, err := r.db.Collection(userID).InsertOne(context.Background(), new)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error inserting plant: %w", err)
 	}
 
 	return result.InsertedID, nil
@@ -29,14 +30,14 @@ func (r *repository) Insert(userID string, new plant.Plant) (interface{}, error)
 func (r *repository) FindAll(userID string) ([]plant.Plant, error) {
 	cursor, err := r.db.Collection(userID).Find(context.Background(), bson.M{})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error finding plants: %w", err)
 	}
 
 	var results []plant.Plant
 
 	err = cursor.All(context.Background(), &results)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error iterating plants: %w", err)
 	}
 
 	return results, nil
@@ -49,7 +50,11 @@ func (r *repository) FindOne(userID, plantID string) (plant.Plant, error) {
 
 	err := r.db.Collection(userID).FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
-		return plant.Plant{}, err
+		if err == mongo.ErrNoDocuments {
+			return plant.Plant{}, fmt.Errorf("error finding plant: %w", plant.ErrNotFound)
+		}
+
+		return plant.Plant{}, fmt.Errorf("error finding plant: %w", err)
 	}
 
 	return result, nil
@@ -72,7 +77,7 @@ func (r *repository) Update(userID, plantID string, update plant.Plant) (int64, 
 	}
 	result, err := r.db.Collection(userID).UpdateOne(context.Background(), filter, updated)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("error editing plant: %w", err)
 	}
 
 	return result.ModifiedCount, nil
@@ -82,7 +87,7 @@ func (r *repository) Delete(userID, plantID string) (int64, error) {
 	filter := bson.M{"_id": plantID}
 	result, err := r.db.Collection(userID).DeleteOne(context.Background(), filter)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("error deleting plant: %w", err)
 	}
 
 	return result.DeletedCount, nil

@@ -2,13 +2,13 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 
 	"plants/plant"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/pkg/errors"
 )
 
 type (
@@ -33,9 +33,9 @@ func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
 	new := plant.Plant{}
 	err := json.NewDecoder(r.Body).Decode(&new)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error decoding add request: %v\n", err)
 
 		return
 	}
@@ -49,9 +49,9 @@ func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error adding plant: %v\n", err)
 
 			return
 		}
@@ -64,9 +64,9 @@ func (h *handler) ListAll(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(contextId).(string)
 	result, err := h.plantSvc.ListAll(userID)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error listing plants: %v\n", err)
 
 		return
 	}
@@ -75,9 +75,9 @@ func (h *handler) ListAll(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(result)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error encoding plants response: %v\n", err)
 
 		return
 	}
@@ -98,9 +98,9 @@ func (h *handler) ListOne(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error listing plant: %v\n", err)
 
 			return
 		}
@@ -110,9 +110,9 @@ func (h *handler) ListOne(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(result)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error encoding plant response: %v\n", err)
 
 		return
 	}
@@ -122,9 +122,9 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 	update := plant.Plant{}
 	err := json.NewDecoder(r.Body).Decode(&update)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error decoding edit request: %v\n", err)
 
 		return
 	}
@@ -143,9 +143,9 @@ func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error editing plant: %v\n", err)
 
 			return
 		}
@@ -165,9 +165,9 @@ func (h *handler) Delete(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error deleting plant: %v\n", err)
 
 			return
 		}

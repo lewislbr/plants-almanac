@@ -25,7 +25,7 @@ func TestCreate(t *testing.T) {
 		}
 		err := service.Create(new)
 
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 	})
 
 	t.Run("should error when the user already exists", func(t *testing.T) {
@@ -44,7 +44,7 @@ func TestCreate(t *testing.T) {
 		}
 		err := service.Create(new)
 
-		require.EqualError(t, err, ErrUserExists.Error())
+		require.ErrorIs(t, err, ErrUserExists)
 	})
 
 	t.Run("should create a user with no error", func(t *testing.T) {
@@ -82,7 +82,7 @@ func TestAuthenticate(t *testing.T) {
 		userID, err := service.Authenticate(creds)
 
 		require.Empty(t, userID)
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 	})
 
 	t.Run("should error when the user does not exist", func(t *testing.T) {
@@ -100,7 +100,7 @@ func TestAuthenticate(t *testing.T) {
 		userID, err := service.Authenticate(creds)
 
 		require.Empty(t, userID)
-		require.EqualError(t, err, ErrNotFound.Error())
+		require.ErrorIs(t, err, ErrNotFound)
 	})
 
 	t.Run("should error when password is incorrect", func(t *testing.T) {
@@ -128,7 +128,7 @@ func TestAuthenticate(t *testing.T) {
 		userID, err := service.Authenticate(creds)
 
 		require.Empty(t, userID)
-		require.EqualError(t, err, ErrInvalidPassword.Error())
+		require.ErrorIs(t, err, ErrInvalidPassword)
 	})
 
 	t.Run("should return a user userID on correct authentication", func(t *testing.T) {
@@ -173,7 +173,7 @@ func TestInfo(t *testing.T) {
 		_, err := service.Info(userID)
 
 		require.Empty(t, userID)
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 	})
 
 	t.Run("should return user info when request is successful", func(t *testing.T) {

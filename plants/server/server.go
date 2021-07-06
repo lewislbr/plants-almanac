@@ -2,13 +2,14 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/pkg/errors"
 )
 
 type Server struct {
@@ -54,18 +55,20 @@ func New(plantSvc plantService, authUrl string) *Server {
 }
 
 func (s *Server) Start() error {
-	fmt.Println("Plants server ready ✅")
+	log.Println("Plants server ready ✅")
 
 	err := s.svr.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
-		return err
+		return fmt.Errorf("error starting server: %w", err)
 	}
 
 	return nil
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	fmt.Println("Stopping server...")
+	log.Println("Stopping server...")
 
-	return s.svr.Shutdown(ctx)
+	err := s.svr.Shutdown(ctx)
+
+	return fmt.Errorf("error stopping server: %w", err)
 }

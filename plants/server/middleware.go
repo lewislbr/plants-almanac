@@ -31,21 +31,7 @@ func authzMiddleware(authUrl string) func(h http.Handler) http.Handler {
 			if err != nil {
 				http.Error(w, "something went wrong", http.StatusInternalServerError)
 
-				log.Printf("%+v\n", err)
-
-				return
-			}
-			if res.StatusCode != http.StatusOK {
-				body, err := io.ReadAll(res.Body)
-				if err != nil {
-					log.Printf("%+v\n", err)
-				}
-
-				w.WriteHeader(res.StatusCode)
-				_, err = w.Write(body)
-				if err != nil {
-					log.Printf("%+v\n", err)
-				}
+				log.Printf("error requesting authorization: %v\n", err)
 
 				return
 			}
@@ -56,7 +42,17 @@ func authzMiddleware(authUrl string) func(h http.Handler) http.Handler {
 			if err != nil {
 				http.Error(w, "something went wrong", http.StatusInternalServerError)
 
-				log.Printf("%+v\n", err)
+				log.Printf("error reading authorization response: %v\n", err)
+
+				return
+			}
+
+			if res.StatusCode != http.StatusOK {
+				w.WriteHeader(res.StatusCode)
+				_, err = w.Write(body)
+				if err != nil {
+					log.Printf("error forwarding authorization response: %v\n", err)
+				}
 
 				return
 			}

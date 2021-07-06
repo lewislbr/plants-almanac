@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -26,15 +27,15 @@ func NewService(postgres postgresRepository) *service {
 
 func (s *service) Create(new User) error {
 	if new.Name == "" || new.Email == "" || new.Password == "" {
-		return ErrMissingData
+		return fmt.Errorf("error creating user: %w", ErrMissingData)
 	}
 
 	exists, err := s.postgres.CheckExists(new.Email)
 	if err != nil {
-		return err
+		return fmt.Errorf("error checking user: %w", ErrMissingData)
 	}
 	if exists {
-		return ErrUserExists
+		return fmt.Errorf("error creating user: %w", ErrUserExists)
 	}
 
 	new.ID = uuid.New().String()
@@ -42,27 +43,33 @@ func (s *service) Create(new User) error {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(new.Password), 10)
 	if err != nil {
-		return err
+		return fmt.Errorf("error generating password: %w", err)
 	}
 
 	new.Hash = string(hash)
 
-	return s.postgres.Insert(new)
+	err = s.postgres.Insert(new)
+	if err != nil {
+		return fmt.Errorf("error inserting user: %w", err)
+	}
+
+	return nil
 }
 
 func (s *service) Authenticate(cred Credentials) (string, error) {
 	if cred.Email == "" || cred.Password == "" {
-		return "", ErrMissingData
+		return "", fmt.Errorf("error authenticating user: %w", ErrMissingData)
+
 	}
 
 	existUser, err := s.postgres.Find(cred.Email)
 	if err != nil {
-		return "", ErrNotFound
+		return "", fmt.Errorf("error finding user: %w", ErrNotFound)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(existUser.Hash), []byte(cred.Password))
 	if err != nil {
-		return "", ErrInvalidPassword
+		return "", fmt.Errorf("error validating password: %w", ErrInvalidPassword)
 	}
 
 	return existUser.ID, nil
@@ -70,12 +77,12 @@ func (s *service) Authenticate(cred Credentials) (string, error) {
 
 func (s *service) Info(userID string) (Info, error) {
 	if userID == "" {
-		return Info{}, ErrMissingData
+		return Info{}, fmt.Errorf("error getting user info: %w", ErrMissingData)
 	}
 
 	userInfo, err := s.postgres.GetInfo(userID)
 	if err != nil {
-		return Info{}, ErrNotFound
+		return Info{}, fmt.Errorf("error getting user info: %w", ErrNotFound)
 	}
 
 	return userInfo, nil

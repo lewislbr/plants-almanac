@@ -1,6 +1,7 @@
 package plant
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -26,7 +27,7 @@ func NewService(repo repository) *service {
 
 func (s *service) Add(userID string, new Plant) error {
 	if new.Name == "" {
-		return ErrMissingData
+		return fmt.Errorf("error adding plant: %w", ErrMissingData)
 	}
 
 	new.ID = uuid.New().String()
@@ -34,14 +35,17 @@ func (s *service) Add(userID string, new Plant) error {
 	new.EditedAt = time.Now().UTC()
 
 	_, err := s.repo.Insert(userID, new)
+	if err != nil {
+		return fmt.Errorf("error inserting plant: %w", err)
+	}
 
-	return err
+	return nil
 }
 
 func (s *service) ListAll(userID string) ([]Plant, error) {
 	result, err := s.repo.FindAll(userID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error finding plants: %w", err)
 	}
 
 	return result, nil
@@ -49,12 +53,12 @@ func (s *service) ListAll(userID string) ([]Plant, error) {
 
 func (s *service) ListOne(userID, plantID string) (Plant, error) {
 	if plantID == "" {
-		return Plant{}, ErrMissingData
+		return Plant{}, fmt.Errorf("error listing plant: %w", ErrMissingData)
 	}
 
 	result, err := s.repo.FindOne(userID, plantID)
 	if err != nil {
-		return Plant{}, ErrNotFound
+		return Plant{}, fmt.Errorf("error finding plant: %w", ErrNotFound)
 	}
 
 	return result, nil
@@ -62,12 +66,12 @@ func (s *service) ListOne(userID, plantID string) (Plant, error) {
 
 func (s *service) Edit(userID, plantID string, update Plant) error {
 	if update.Name == "" {
-		return ErrMissingData
+		return fmt.Errorf("error editing plant: %w", ErrMissingData)
 	}
 
 	exist, err := s.repo.FindOne(userID, plantID)
 	if err != nil {
-		return ErrNotFound
+		return fmt.Errorf("error finding plant: %w", ErrNotFound)
 	}
 
 	update.CreatedAt = exist.CreatedAt
@@ -75,10 +79,10 @@ func (s *service) Edit(userID, plantID string, update Plant) error {
 
 	result, err := s.repo.Update(userID, plantID, update)
 	if err != nil {
-		return err
+		return fmt.Errorf("error updating plant: %w", err)
 	}
 	if result == 0 {
-		return ErrNotFound
+		return fmt.Errorf("error updating plant: %w", ErrNotFound)
 	}
 
 	return nil
@@ -86,15 +90,15 @@ func (s *service) Edit(userID, plantID string, update Plant) error {
 
 func (s *service) Delete(userID, plantID string) error {
 	if plantID == "" {
-		return ErrMissingData
+		return fmt.Errorf("error deleting plant: %w", ErrMissingData)
 	}
 
 	result, err := s.repo.Delete(userID, plantID)
 	if err != nil {
-		return err
+		return fmt.Errorf("error deleting plant: %w", err)
 	}
 	if result == 0 {
-		return ErrNotFound
+		return fmt.Errorf("error deleting plant: %w", ErrNotFound)
 	}
 
 	return nil

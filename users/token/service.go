@@ -1,6 +1,7 @@
 package token
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -25,7 +26,7 @@ func NewService(secret string, redis redisRepository) *service {
 
 func (s *service) Generate(userID string) (string, error) {
 	if userID == "" {
-		return "", ErrMissingData
+		return "", fmt.Errorf("error generating token: %w", ErrMissingData)
 	}
 
 	jsonToken := paseto.JSONToken{
@@ -39,7 +40,7 @@ func (s *service) Generate(userID string) (string, error) {
 	}
 	token, err := paseto.NewV2().Encrypt([]byte(s.secret), jsonToken, nil)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error encrypting token: %w", err)
 	}
 
 	return token, nil
@@ -47,19 +48,19 @@ func (s *service) Generate(userID string) (string, error) {
 
 func (s *service) Validate(token string) (string, error) {
 	if token == "" {
-		return "", ErrMissingData
+		return "", fmt.Errorf("error validating token: %w", ErrMissingData)
 	}
 
 	var data paseto.JSONToken
 
 	err := paseto.NewV2().Decrypt(token, []byte(s.secret), &data, nil)
 	if err != nil {
-		return "", ErrInvalidToken
+		return "", fmt.Errorf("error decrypting token: %w", ErrInvalidToken)
 	}
 
 	err = s.redis.CheckExists(data.Jti)
 	if err == nil {
-		return "", ErrInvalidToken
+		return "", fmt.Errorf("error checking token: %w", ErrInvalidToken)
 	}
 
 	userID := data.Subject
@@ -69,15 +70,20 @@ func (s *service) Validate(token string) (string, error) {
 
 func (s *service) Revoke(token string) error {
 	if token == "" {
-		return ErrMissingData
+		return fmt.Errorf("error revoking token: %w", ErrMissingData)
 	}
 
 	var data paseto.JSONToken
 
 	err := paseto.NewV2().Decrypt(token, []byte(s.secret), &data, nil)
 	if err != nil {
-		return ErrInvalidToken
+		return fmt.Errorf("error decrypting token: %w", ErrInvalidToken)
 	}
 
-	return s.redis.Add(data.Jti)
+	err = s.redis.Add(data.Jti)
+	if err != nil {
+		return fmt.Errorf("error adding token: %w", err)
+	}
+
+	return nil
 }

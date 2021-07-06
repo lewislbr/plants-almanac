@@ -1,7 +1,6 @@
 package plant
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/mock"
@@ -24,7 +23,7 @@ func TestAdd(t *testing.T) {
 		}
 		err := service.Add(userID, newPlant)
 
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 	})
 
 	t.Run("should create a plant with no error", func(t *testing.T) {
@@ -70,7 +69,7 @@ func TestList(t *testing.T) {
 		plantID := ""
 		result, err := service.ListOne(userID, plantID)
 
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 		require.Equal(t, Plant{}, result)
 	})
 
@@ -79,13 +78,13 @@ func TestList(t *testing.T) {
 
 		repo := &mockRepository{}
 
-		repo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(Plant{}, errors.New("not found"))
+		repo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(Plant{}, ErrNotFound)
 
 		service := NewService(repo)
 		plantID := "123"
 		result, err := service.ListOne(userID, plantID)
 
-		require.EqualError(t, err, ErrNotFound.Error())
+		require.ErrorIs(t, err, ErrNotFound)
 		require.Equal(t, Plant{}, result)
 	})
 
@@ -121,7 +120,7 @@ func TestEdit(t *testing.T) {
 		}
 		err := service.Edit(userID, plantID, newPlant)
 
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 	})
 
 	t.Run("should error when the plant is not found", func(t *testing.T) {
@@ -129,7 +128,7 @@ func TestEdit(t *testing.T) {
 
 		repo := &mockRepository{}
 
-		repo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(Plant{}, errors.New("not found"))
+		repo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(Plant{}, ErrNotFound)
 		repo.On("Update", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("Plant")).Return(int64(0), nil)
 
 		service := NewService(repo)
@@ -139,7 +138,7 @@ func TestEdit(t *testing.T) {
 		}
 		err := service.Edit(userID, plantID, newPlant)
 
-		require.EqualError(t, err, ErrNotFound.Error())
+		require.ErrorIs(t, err, ErrNotFound)
 	})
 
 	t.Run("should edit a plant with no error", func(t *testing.T) {
@@ -173,7 +172,7 @@ func TestDelete(t *testing.T) {
 		plantID := ""
 		err := service.Delete(userID, plantID)
 
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 	})
 
 	t.Run("should error when there are no matches", func(t *testing.T) {
@@ -187,7 +186,7 @@ func TestDelete(t *testing.T) {
 		plantID := "124"
 		err := service.Delete(userID, plantID)
 
-		require.EqualError(t, err, ErrNotFound.Error())
+		require.ErrorIs(t, err, ErrNotFound)
 	})
 
 	t.Run("should delete a plant with no error", func(t *testing.T) {

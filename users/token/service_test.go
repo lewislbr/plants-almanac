@@ -18,7 +18,7 @@ func TestGenerate(t *testing.T) {
 		userID, err := service.Generate(userID)
 
 		require.Empty(t, userID)
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 	})
 
 	t.Run("should generate a token given a user ID", func(t *testing.T) {
@@ -47,7 +47,7 @@ func TestValidate(t *testing.T) {
 		userID, err := service.Validate(token)
 
 		require.Empty(t, userID)
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 	})
 
 	t.Run("should error when token is invalid", func(t *testing.T) {
@@ -62,7 +62,7 @@ func TestValidate(t *testing.T) {
 		userID, err := service.Validate(token)
 
 		require.Empty(t, userID)
-		require.EqualError(t, err, ErrInvalidToken.Error())
+		require.ErrorIs(t, err, ErrInvalidToken)
 	})
 
 	t.Run("should error when token is revoked", func(t *testing.T) {
@@ -77,7 +77,7 @@ func TestValidate(t *testing.T) {
 		userID, err := service.Validate(token)
 
 		require.Empty(t, userID)
-		require.EqualError(t, err, ErrInvalidToken.Error())
+		require.ErrorIs(t, err, ErrInvalidToken)
 	})
 
 	t.Run("should return an ID", func(t *testing.T) {
@@ -109,7 +109,7 @@ func TestRevoke(t *testing.T) {
 		token := ""
 		err := service.Revoke(token)
 
-		require.EqualError(t, err, ErrMissingData.Error())
+		require.ErrorIs(t, err, ErrMissingData)
 	})
 
 	t.Run("should error when the token is invalid", func(t *testing.T) {
@@ -123,7 +123,7 @@ func TestRevoke(t *testing.T) {
 		token := "a.b.c.d"
 		err := service.Revoke(token)
 
-		require.EqualError(t, err, ErrInvalidToken.Error())
+		require.ErrorIs(t, err, ErrInvalidToken)
 	})
 
 	t.Run("should return no error on success", func(t *testing.T) {

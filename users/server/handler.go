@@ -39,9 +39,9 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&new)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error decoding create request: %v\n", err)
 
 		return
 	}
@@ -58,9 +58,9 @@ func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error creating user: %v\n", err)
 
 			return
 		}
@@ -74,9 +74,9 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&cred)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error decoding log in request: %v\n", err)
 
 		return
 	}
@@ -97,9 +97,9 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error logging in user: %v\n", err)
 
 			return
 		}
@@ -113,9 +113,9 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error logging in user: %v\n", err)
 
 			return
 		}
@@ -130,9 +130,9 @@ func (h *handler) LogIn(w http.ResponseWriter, r *http.Request) {
 func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error reading authorization request: %v\n", err)
 
 		return
 	}
@@ -150,9 +150,9 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error authorizing user: %v\n", err)
 
 			return
 		}
@@ -160,9 +160,9 @@ func (h *handler) Authorize(w http.ResponseWriter, r *http.Request) {
 
 	_, err = io.WriteString(w, userID)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error authorizing user: %v\n", err)
 
 		return
 	}
@@ -189,9 +189,9 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error refreshing token: %v\n", err)
 
 			return
 		}
@@ -209,9 +209,9 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error refreshing token: %v\n", err)
 
 			return
 		}
@@ -225,9 +225,9 @@ func (h *handler) Refresh(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error refreshing token: %v\n", err)
 
 			return
 		}
@@ -260,9 +260,9 @@ func (h *handler) LogOut(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error logging out user: %v\n", err)
 
 			return
 		}
@@ -295,9 +295,9 @@ func (h *handler) Info(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error getting user info: %v\n", err)
 
 			return
 		}
@@ -315,9 +315,9 @@ func (h *handler) Info(w http.ResponseWriter, r *http.Request) {
 
 			return
 		default:
-			http.Error(w, "something went wrong", http.StatusInternalServerError)
+			http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-			log.Printf("%+v\n", err)
+			log.Printf("Error getting user info: %v\n", err)
 
 			return
 		}
@@ -327,9 +327,9 @@ func (h *handler) Info(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(data)
 	if err != nil {
-		http.Error(w, "something went wrong", http.StatusInternalServerError)
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 
-		log.Printf("%+v\n", err)
+		log.Printf("Error encoding user info response: %v\n", err)
 
 		return
 	}
