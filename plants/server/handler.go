@@ -30,7 +30,8 @@ func NewHandler(plantSvc plantService) *handler {
 }
 
 func (h *handler) Add(w http.ResponseWriter, r *http.Request) {
-	new := plant.Plant{}
+	var new plant.Plant
+
 	err := json.NewDecoder(r.Body).Decode(&new)
 	if err != nil {
 		http.Error(w, "Something went wrong", http.StatusInternalServerError)
@@ -119,7 +120,8 @@ func (h *handler) ListOne(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) Edit(w http.ResponseWriter, r *http.Request) {
-	update := plant.Plant{}
+	var update plant.Plant
+
 	err := json.NewDecoder(r.Body).Decode(&update)
 	if err != nil {
 		http.Error(w, "Something went wrong", http.StatusInternalServerError)

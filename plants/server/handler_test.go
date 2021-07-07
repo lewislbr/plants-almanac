@@ -47,7 +47,8 @@ func TestAdd(t *testing.T) {
 
 		plantSvc.On("Add", mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrMissingData)
 
-		plant := &plant.Plant{}
+		var plant plant.Plant
+
 		payload, err := json.Marshal(plant)
 		if err != nil {
 			t.Fatal(err)
@@ -201,7 +202,8 @@ func TestEdit(t *testing.T) {
 
 		plantSvc.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(nil)
 
-		plant := &plant.Plant{}
+		var plant plant.Plant
+
 		payload, err := json.Marshal(plant)
 		if err != nil {
 			t.Fatal(err)
@@ -224,7 +226,8 @@ func TestEdit(t *testing.T) {
 
 		plantSvc.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrMissingData)
 
-		plant := &plant.Plant{}
+		var plant plant.Plant
+
 		payload, err := json.Marshal(plant)
 		if err != nil {
 			t.Fatal(err)
@@ -247,7 +250,8 @@ func TestEdit(t *testing.T) {
 
 		plantSvc.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(plant.ErrNotFound)
 
-		plant := &plant.Plant{}
+		var plant plant.Plant
+
 		payload, err := json.Marshal(plant)
 		if err != nil {
 			t.Fatal(err)
@@ -270,7 +274,8 @@ func TestEdit(t *testing.T) {
 
 		plantSvc.On("Edit", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("plant.Plant")).Return(errors.New("error"))
 
-		plant := &plant.Plant{}
+		var plant plant.Plant
+
 		payload, err := json.Marshal(plant)
 		if err != nil {
 			t.Fatal(err)
