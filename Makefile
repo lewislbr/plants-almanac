@@ -1,5 +1,5 @@
 setup:
-	@(pre-commit --version && pre-commit install) || (brew install pre-commit && pre-commit install)
+	@(pre-commit --version || brew install pre-commit) && pre-commit install
 
 start:
 	@docker compose -p plantdex up --build -d
