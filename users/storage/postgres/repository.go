@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"users/user"
+	"lewislbr/plantdex/users/user"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )

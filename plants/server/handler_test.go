@@ -9,7 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"plants/plant"
+	"lewislbr/plantdex/plants/plant"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"

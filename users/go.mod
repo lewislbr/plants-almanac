@@ -1,4 +1,4 @@
-module users
+module lewislbr/plantdex/users
 
 go 1.16
 

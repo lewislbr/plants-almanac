@@ -7,8 +7,8 @@ import (
 	"log"
 	"net/http"
 
-	"users/token"
-	"users/user"
+	"lewislbr/plantdex/users/token"
+	"lewislbr/plantdex/users/user"
 )
 
 type (

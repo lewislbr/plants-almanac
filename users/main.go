@@ -8,11 +8,11 @@ import (
 	"syscall"
 	"time"
 
-	"users/server"
-	"users/storage/postgres"
-	"users/storage/redis"
-	"users/token"
-	"users/user"
+	"lewislbr/plantdex/users/server"
+	"lewislbr/plantdex/users/storage/postgres"
+	"lewislbr/plantdex/users/storage/redis"
+	"lewislbr/plantdex/users/token"
+	"lewislbr/plantdex/users/user"
 )
 
 type envVars struct {

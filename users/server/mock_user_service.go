@@ -3,7 +3,7 @@
 package server
 
 import (
-	user "users/user"
+	user "lewislbr/plantdex/users/user"
 
 	mock "github.com/stretchr/testify/mock"
 )

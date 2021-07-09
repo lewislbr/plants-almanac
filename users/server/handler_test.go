@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"users/token"
-	"users/user"
+	"lewislbr/plantdex/users/token"
+	"lewislbr/plantdex/users/user"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"

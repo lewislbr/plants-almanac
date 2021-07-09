@@ -1,4 +1,4 @@
-module plants
+module lewislbr/plantdex/plants
 
 go 1.16
 

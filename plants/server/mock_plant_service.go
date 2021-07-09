@@ -3,7 +3,7 @@
 package server
 
 import (
-	plant "plants/plant"
+	plant "lewislbr/plantdex/plants/plant"
 
 	mock "github.com/stretchr/testify/mock"
 )

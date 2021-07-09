@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"plants/plant"
+	"lewislbr/plantdex/plants/plant"
 
 	"github.com/go-chi/chi/v5"
 )

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"plants/plant"
+	"lewislbr/plantdex/plants/plant"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

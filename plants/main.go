@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"plants/plant"
-	"plants/server"
-	"plants/storage/mongo"
+	"lewislbr/plantdex/plants/plant"
+	"lewislbr/plantdex/plants/server"
+	"lewislbr/plantdex/plants/storage/mongo"
 )
 
 type envVars struct {
