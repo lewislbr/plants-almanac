@@ -8,9 +8,11 @@ import (
 	"github.com/o1egl/paseto"
 )
 
+const expiration = 30 * 24 * time.Hour
+
 type (
 	redisRepository interface {
-		Add(string) error
+		Add(string, time.Duration) error
 		CheckExists(string) error
 	}
 
@@ -29,14 +31,15 @@ func (s *service) Generate(userID string) (string, error) {
 		return "", fmt.Errorf("error generating token: %w", ErrMissingData)
 	}
 
+	now := time.Now().UTC()
 	jsonToken := paseto.JSONToken{
 		Audience:   "plantdex",
 		Issuer:     "users",
 		Jti:        uuid.New().String(),
 		Subject:    userID,
-		IssuedAt:   time.Now(),
-		Expiration: time.Now().AddDate(0, 0, 7),
-		NotBefore:  time.Now(),
+		IssuedAt:   now,
+		Expiration: now.Add(expiration),
+		NotBefore:  now,
 	}
 	token, err := paseto.NewV2().Encrypt([]byte(s.secret), jsonToken, nil)
 	if err != nil {
@@ -80,7 +83,7 @@ func (s *service) Revoke(token string) error {
 		return fmt.Errorf("error decrypting token: %w", ErrInvalidToken)
 	}
 
-	err = s.redis.Add(data.Jti)
+	err = s.redis.Add(data.Jti, expiration)
 	if err != nil {
 		return fmt.Errorf("error adding token: %w", err)
 	}

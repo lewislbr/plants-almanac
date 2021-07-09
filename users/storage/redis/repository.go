@@ -16,10 +16,10 @@ func NewRepository(cache *redis.Client) *repository {
 	return &repository{cache}
 }
 
-func (r *repository) Add(tokenId string) error {
-	err := r.cache.Set(context.Background(), tokenId, 0, 7*24*time.Hour).Err()
+func (r *repository) Add(tokenId string, exp time.Duration) error {
+	err := r.cache.Set(context.Background(), tokenId, 0, exp).Err()
 	if err != nil {
-		return fmt.Errorf("error adding user: %w", err)
+		return fmt.Errorf("error adding token: %w", err)
 	}
 
 	return nil
@@ -28,7 +28,7 @@ func (r *repository) Add(tokenId string) error {
 func (r *repository) CheckExists(tokenId string) error {
 	err := r.cache.Get(context.Background(), tokenId).Err()
 	if err != nil {
-		return fmt.Errorf("error checking user: %w", err)
+		return fmt.Errorf("error checking token: %w", err)
 	}
 
 	return nil
