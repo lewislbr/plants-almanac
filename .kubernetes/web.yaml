@@ -39,5 +39,4 @@ spec:
   selector:
     app: web
   ports:
-    - port: 80
-      targetPort: 8080
+    - port: 8080

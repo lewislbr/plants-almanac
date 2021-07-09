@@ -49,5 +49,4 @@ spec:
   selector:
     app: plants
   ports:
-    - port: 80
-      targetPort: 8080
+    - port: 8080

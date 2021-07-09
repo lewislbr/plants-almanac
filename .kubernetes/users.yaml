@@ -49,5 +49,4 @@ spec:
   selector:
     app: users
   ports:
-    - port: 80
-      targetPort: 8080
+    - port: 8080

@@ -78,5 +78,4 @@ spec:
   selector:
     app: users-redis
   ports:
-    - port: 80
-      targetPort: 6379
+    - port: 6379
