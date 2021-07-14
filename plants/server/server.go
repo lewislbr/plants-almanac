@@ -10,36 +10,36 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+	"github.com/go-chi/httprate"
 )
 
 type Server struct {
 	svr *http.Server
 }
 
-func New(plantSvc plantService, authUrl string) *Server {
+func New(plantSvc plantService, authUrl, webUrl string) *Server {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
-	r.Group(func(r chi.Router) {
-		r.Use(authzMiddleware(authUrl))
-		r.Route("/api", func(r chi.Router) {
-			r.Route("/plants", func(r chi.Router) {
-				h := NewHandler(plantSvc)
+	r.Use(middleware.Timeout(30 * time.Second))
+	r.Use(httprate.LimitByIP(100, 1*time.Minute))
+	r.Use(cors.Handler(cors.Options{
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Origin"},
+		AllowedMethods:   []string{"DELETE", "GET", "OPTIONS", "PUT", "POST"},
+		AllowedOrigins:   []string{webUrl},
+		MaxAge:           86400,
+	}))
+	r.Use(headersMiddleware, authzMiddleware(authUrl))
 
-				r.Post("/", h.Add)
-				r.Get("/", h.ListAll)
-				r.Get("/{id}", h.ListOne)
-				r.Put("/{id}", h.Edit)
-				r.Delete("/{id}", h.Delete)
-			})
-		})
-	})
-	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
-	r.Get("/readyz", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
+	h := NewHandler(plantSvc)
+
+	r.Post("/", h.Add)
+	r.Get("/", h.ListAll)
+	r.Get("/{id}", h.ListOne)
+	r.Put("/{id}", h.Edit)
+	r.Delete("/{id}", h.Delete)
 
 	s := &http.Server{}
 

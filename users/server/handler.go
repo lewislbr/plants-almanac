@@ -13,7 +13,7 @@ import (
 
 type (
 	userService interface {
-		Create(user.User) error
+		Create(user.New) error
 		Authenticate(cred user.Credentials) (string, error)
 		Info(string) (user.Info, error)
 	}
@@ -35,7 +35,7 @@ func NewHandler(userSvc userService, tokenSvc tokenService, domain string) *hand
 }
 
 func (h *handler) Create(w http.ResponseWriter, r *http.Request) {
-	var new user.User
+	var new user.New
 
 	err := json.NewDecoder(r.Body).Decode(&new)
 	if err != nil {

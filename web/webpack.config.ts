@@ -62,7 +62,6 @@ module.exports = (env: unknown, options: {mode: string | undefined}) => {
         path: ".env",
       }),
       new HtmlWebpackPlugin({
-        base: isDevelopment ? "http://localhost:10000" : "https://plantdex.app",
         minify: isDevelopment
           ? false
           : {

@@ -1,18 +1,6 @@
 version: "3"
 
 services:
-  envoy:
-    image: envoyproxy/envoy-alpine:v1.18-latest
-    container_name: envoy
-    environment:
-      - ENVOY_UID=777
-      - ENVOY_GID=777
-    ports:
-      - "9901:9901"
-      - "10000:10000"
-    volumes:
-      - ./envoy.yaml:/etc/envoy/envoy.yaml
-
   plants:
     build:
       context: plants
@@ -34,17 +22,14 @@ services:
     container_name: users
     env_file:
       - users/.env
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/plantdex-dev-local-key.json
     ports:
       - "8082:8080"
+    volumes:
+      - ./users/plantdex-dev-local-key.json:/tmp/keys/plantdex-dev-local-key.json:ro
     stdin_open: true
     tty: true
-
-  users-redis:
-    image: redis:6-alpine
-    container_name: users-redis
-    ports:
-      - "6379:6379"
-    command: redis-server --requirepass 1234
 
   web:
     build:

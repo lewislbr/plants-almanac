@@ -9,46 +9,49 @@ import (
 )
 
 type (
-	postgresRepository interface {
+	userRepo interface {
 		Insert(User) error
 		CheckExists(string) (bool, error)
 		Find(string) (User, error)
 		GetInfo(string) (Info, error)
 	}
 
-	service struct {
-		postgres postgresRepository
+	userService struct {
+		userRepo userRepo
 	}
 )
 
-func NewService(postgres postgresRepository) *service {
-	return &service{postgres}
+func NewService(userRepo userRepo) *userService {
+	return &userService{userRepo}
 }
 
-func (s *service) Create(new User) error {
+func (s *userService) Create(new New) error {
 	if new.Name == "" || new.Email == "" || new.Password == "" {
 		return fmt.Errorf("error creating user: %w", ErrMissingData)
 	}
 
-	exists, err := s.postgres.CheckExists(new.Email)
+	exists, err := s.userRepo.CheckExists(new.Email)
 	if err != nil {
-		return fmt.Errorf("error checking user: %w", ErrMissingData)
+		return fmt.Errorf("error checking user: %w", err)
 	}
 	if exists {
 		return fmt.Errorf("error creating user: %w", ErrUserExists)
 	}
-
-	new.ID = uuid.New().String()
-	new.CreatedAt = time.Now().UTC()
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(new.Password), 10)
 	if err != nil {
 		return fmt.Errorf("error generating password: %w", err)
 	}
 
-	new.Hash = string(hash)
+	user := User{
+		ID:        uuid.New().String(),
+		Name:      new.Name,
+		Email:     new.Email,
+		Hash:      string(hash),
+		CreatedAt: time.Now().UTC(),
+	}
 
-	err = s.postgres.Insert(new)
+	err = s.userRepo.Insert(user)
 	if err != nil {
 		return fmt.Errorf("error inserting user: %w", err)
 	}
@@ -56,14 +59,17 @@ func (s *service) Create(new User) error {
 	return nil
 }
 
-func (s *service) Authenticate(cred Credentials) (string, error) {
+func (s *userService) Authenticate(cred Credentials) (string, error) {
 	if cred.Email == "" || cred.Password == "" {
 		return "", fmt.Errorf("error authenticating user: %w", ErrMissingData)
 
 	}
 
-	existUser, err := s.postgres.Find(cred.Email)
+	existUser, err := s.userRepo.Find(cred.Email)
 	if err != nil {
+		return "", fmt.Errorf("error finding user: %w", err)
+	}
+	if existUser == (User{}) {
 		return "", fmt.Errorf("error finding user: %w", ErrNotFound)
 	}
 
@@ -75,13 +81,16 @@ func (s *service) Authenticate(cred Credentials) (string, error) {
 	return existUser.ID, nil
 }
 
-func (s *service) Info(userID string) (Info, error) {
+func (s *userService) Info(userID string) (Info, error) {
 	if userID == "" {
 		return Info{}, fmt.Errorf("error getting user info: %w", ErrMissingData)
 	}
 
-	userInfo, err := s.postgres.GetInfo(userID)
+	userInfo, err := s.userRepo.GetInfo(userID)
 	if err != nil {
+		return Info{}, fmt.Errorf("error getting user info: %w", err)
+	}
+	if userInfo == (Info{}) {
 		return Info{}, fmt.Errorf("error getting user info: %w", ErrNotFound)
 	}
 

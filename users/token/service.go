@@ -11,22 +11,22 @@ import (
 const expiration = 30 * 24 * time.Hour
 
 type (
-	redisRepository interface {
-		Add(string, time.Duration) error
-		CheckExists(string) error
+	tokenRepo interface {
+		Add(string) error
+		CheckExists(string) (bool, error)
 	}
 
-	service struct {
-		secret string
-		redis  redisRepository
+	tokenService struct {
+		secret    string
+		tokenRepo tokenRepo
 	}
 )
 
-func NewService(secret string, redis redisRepository) *service {
-	return &service{secret, redis}
+func NewService(secret string, tokenRepo tokenRepo) *tokenService {
+	return &tokenService{secret, tokenRepo}
 }
 
-func (s *service) Generate(userID string) (string, error) {
+func (s *tokenService) Generate(userID string) (string, error) {
 	if userID == "" {
 		return "", fmt.Errorf("error generating token: %w", ErrMissingData)
 	}
@@ -49,7 +49,7 @@ func (s *service) Generate(userID string) (string, error) {
 	return token, nil
 }
 
-func (s *service) Validate(token string) (string, error) {
+func (s *tokenService) Validate(token string) (string, error) {
 	if token == "" {
 		return "", fmt.Errorf("error validating token: %w", ErrMissingData)
 	}
@@ -61,8 +61,11 @@ func (s *service) Validate(token string) (string, error) {
 		return "", fmt.Errorf("error decrypting token: %w", ErrInvalidToken)
 	}
 
-	err = s.redis.CheckExists(data.Jti)
-	if err == nil {
+	exists, err := s.tokenRepo.CheckExists(data.Jti)
+	if err != nil {
+		return "", fmt.Errorf("error checking token: %w", err)
+	}
+	if exists {
 		return "", fmt.Errorf("error checking token: %w", ErrInvalidToken)
 	}
 
@@ -71,7 +74,7 @@ func (s *service) Validate(token string) (string, error) {
 	return userID, nil
 }
 
-func (s *service) Revoke(token string) error {
+func (s *tokenService) Revoke(token string) error {
 	if token == "" {
 		return fmt.Errorf("error revoking token: %w", ErrMissingData)
 	}
@@ -83,7 +86,7 @@ func (s *service) Revoke(token string) error {
 		return fmt.Errorf("error decrypting token: %w", ErrInvalidToken)
 	}
 
-	err = s.redis.Add(data.Jti, expiration)
+	err = s.tokenRepo.Add(data.Jti)
 	if err != nil {
 		return fmt.Errorf("error adding token: %w", err)
 	}

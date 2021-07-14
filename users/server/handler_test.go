@@ -23,9 +23,9 @@ func TestCreate(t *testing.T) {
 		tokenSvc := &mockTokenService{}
 		handler := NewHandler(userSvc, tokenSvc, "")
 
-		userSvc.On("Create", mock.AnythingOfType("user.User")).Return(nil)
+		userSvc.On("Create", mock.AnythingOfType("user.New")).Return(nil)
 
-		user := &user.User{Name: "test", Email: "test", Password: "test"}
+		user := &user.New{Name: "test", Email: "test", Password: "test"}
 		payload, err := json.Marshal(user)
 		if err != nil {
 			t.Fatal(err)
@@ -46,9 +46,9 @@ func TestCreate(t *testing.T) {
 		tokenSvc := &mockTokenService{}
 		handler := NewHandler(userSvc, tokenSvc, "")
 
-		userSvc.On("Create", mock.AnythingOfType("user.User")).Return(user.ErrMissingData)
+		userSvc.On("Create", mock.AnythingOfType("user.New")).Return(user.ErrMissingData)
 
-		user := &user.User{Name: "test", Email: "test", Password: "test"}
+		user := &user.New{Name: "test", Email: "test", Password: "test"}
 		payload, err := json.Marshal(user)
 		if err != nil {
 			t.Fatal(err)
@@ -69,9 +69,9 @@ func TestCreate(t *testing.T) {
 		tokenSvc := &mockTokenService{}
 		handler := NewHandler(userSvc, tokenSvc, "")
 
-		userSvc.On("Create", mock.AnythingOfType("user.User")).Return(user.ErrUserExists)
+		userSvc.On("Create", mock.AnythingOfType("user.New")).Return(user.ErrUserExists)
 
-		user := &user.User{Name: "test", Email: "test", Password: "test"}
+		user := &user.New{Name: "test", Email: "test", Password: "test"}
 		payload, err := json.Marshal(user)
 		if err != nil {
 			t.Fatal(err)
@@ -92,9 +92,9 @@ func TestCreate(t *testing.T) {
 		tokenSvc := &mockTokenService{}
 		handler := NewHandler(userSvc, tokenSvc, "")
 
-		userSvc.On("Create", mock.AnythingOfType("user.User")).Return(errors.New("error"))
+		userSvc.On("Create", mock.AnythingOfType("user.New")).Return(errors.New("error"))
 
-		user := &user.User{Name: "test", Email: "test", Password: "test"}
+		user := &user.New{Name: "test", Email: "test", Password: "test"}
 		payload, err := json.Marshal(user)
 		if err != nil {
 			t.Fatal(err)

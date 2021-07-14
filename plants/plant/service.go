@@ -8,7 +8,7 @@ import (
 )
 
 type (
-	repository interface {
+	plantRepo interface {
 		Insert(string, Plant) (interface{}, error)
 		FindAll(string) ([]Plant, error)
 		FindOne(string, string) (Plant, error)
@@ -16,16 +16,16 @@ type (
 		Delete(string, string) (int64, error)
 	}
 
-	service struct {
-		repo repository
+	plantService struct {
+		plantRepo plantRepo
 	}
 )
 
-func NewService(repo repository) *service {
-	return &service{repo}
+func NewService(plantRepo plantRepo) *plantService {
+	return &plantService{plantRepo}
 }
 
-func (s *service) Add(userID string, new Plant) error {
+func (s *plantService) Add(userID string, new Plant) error {
 	if new.Name == "" {
 		return fmt.Errorf("error adding plant: %w", ErrMissingData)
 	}
@@ -34,7 +34,7 @@ func (s *service) Add(userID string, new Plant) error {
 	new.CreatedAt = time.Now().UTC()
 	new.EditedAt = time.Now().UTC()
 
-	_, err := s.repo.Insert(userID, new)
+	_, err := s.plantRepo.Insert(userID, new)
 	if err != nil {
 		return fmt.Errorf("error inserting plant: %w", err)
 	}
@@ -42,8 +42,8 @@ func (s *service) Add(userID string, new Plant) error {
 	return nil
 }
 
-func (s *service) ListAll(userID string) ([]Plant, error) {
-	result, err := s.repo.FindAll(userID)
+func (s *plantService) ListAll(userID string) ([]Plant, error) {
+	result, err := s.plantRepo.FindAll(userID)
 	if err != nil {
 		return nil, fmt.Errorf("error finding plants: %w", err)
 	}
@@ -51,12 +51,12 @@ func (s *service) ListAll(userID string) ([]Plant, error) {
 	return result, nil
 }
 
-func (s *service) ListOne(userID, plantID string) (Plant, error) {
+func (s *plantService) ListOne(userID, plantID string) (Plant, error) {
 	if plantID == "" {
 		return Plant{}, fmt.Errorf("error listing plant: %w", ErrMissingData)
 	}
 
-	result, err := s.repo.FindOne(userID, plantID)
+	result, err := s.plantRepo.FindOne(userID, plantID)
 	if err != nil {
 		return Plant{}, fmt.Errorf("error finding plant: %w", ErrNotFound)
 	}
@@ -64,12 +64,12 @@ func (s *service) ListOne(userID, plantID string) (Plant, error) {
 	return result, nil
 }
 
-func (s *service) Edit(userID, plantID string, update Plant) error {
+func (s *plantService) Edit(userID, plantID string, update Plant) error {
 	if update.Name == "" {
 		return fmt.Errorf("error editing plant: %w", ErrMissingData)
 	}
 
-	exist, err := s.repo.FindOne(userID, plantID)
+	exist, err := s.plantRepo.FindOne(userID, plantID)
 	if err != nil {
 		return fmt.Errorf("error finding plant: %w", ErrNotFound)
 	}
@@ -77,7 +77,7 @@ func (s *service) Edit(userID, plantID string, update Plant) error {
 	update.CreatedAt = exist.CreatedAt
 	update.EditedAt = time.Now().UTC()
 
-	result, err := s.repo.Update(userID, plantID, update)
+	result, err := s.plantRepo.Update(userID, plantID, update)
 	if err != nil {
 		return fmt.Errorf("error updating plant: %w", err)
 	}
@@ -88,12 +88,12 @@ func (s *service) Edit(userID, plantID string, update Plant) error {
 	return nil
 }
 
-func (s *service) Delete(userID, plantID string) error {
+func (s *plantService) Delete(userID, plantID string) error {
 	if plantID == "" {
 		return fmt.Errorf("error deleting plant: %w", ErrMissingData)
 	}
 
-	result, err := s.repo.Delete(userID, plantID)
+	result, err := s.plantRepo.Delete(userID, plantID)
 	if err != nil {
 		return fmt.Errorf("error deleting plant: %w", err)
 	}

@@ -16,8 +16,8 @@ env:
   REGISTRY: eu.gcr.io
 
 jobs:
-  build:
-    name: Build app
+  deploy:
+    name: Deploy container to Google Cloud Run
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -46,29 +46,17 @@ jobs:
       - name: Push image
         run: docker push "$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$APP_NAME":"$GIT_SHA"
 
-  deploy:
-    name: Deploy app
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Install gcloud beta
+        run: |
+          gcloud components install beta
 
-      - name: Get git sha
-        run: echo "GIT_SHA=`echo $(git rev-parse --short HEAD)`" >> $GITHUB_ENV
-
-      - name: Update image tag
-        run: sed -i "s/:latest/:$GIT_SHA/i" ../.kubernetes/plants.yaml
-
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: "${{ secrets.DO_ACCESS_TOKEN }}"
-
-      - name: Set up DigitalOcean kubeconfig
-        run: doctl kubernetes cluster kubeconfig save "$CLUSTER_NAME"
-        env:
-          CLUSTER_NAME: "${{ secrets.CLUSTER_NAME }}"
-
-      - name: Deploy to Kubernetes
-        run: kubectl apply -f ../.kubernetes/plants.yaml
+      - name: Deploy container
+        run: |
+          gcloud beta run deploy "$APP_NAME" \
+          --allow-unauthenticated \
+          --image="$REGISTRY"/"${{ secrets.GCP_PROJECT_ID }}"/"$APP_NAME":"$GIT_SHA" \
+          --max-instances=4 \
+          --platform=managed \
+          --quiet \
+          --region=europe-west1 \
+          --update-secrets=PLANTS_DATABASE_NAME=PLANTS_DATABASE_NAME:latest,PLANTS_DATABASE_URI=PLANTS_DATABASE_URI:latest,USERS_URL=USERS_URL:latest,WEB_URL=WEB_URL:latest

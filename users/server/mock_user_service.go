@@ -35,11 +35,11 @@ func (_m *mockUserService) Authenticate(cred user.Credentials) (string, error) {
 }
 
 // Create provides a mock function with given fields: _a0
-func (_m *mockUserService) Create(_a0 user.User) error {
+func (_m *mockUserService) Create(_a0 user.New) error {
 	ret := _m.Called(_a0)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(user.User) error); ok {
+	if rf, ok := ret.Get(0).(func(user.New) error); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)

@@ -9,41 +9,40 @@ import (
 	"time"
 
 	"lewislbr/plantdex/users/server"
-	"lewislbr/plantdex/users/storage/postgres"
-	"lewislbr/plantdex/users/storage/redis"
+	"lewislbr/plantdex/users/storage/tokenstore"
+	"lewislbr/plantdex/users/storage/userstore"
 	"lewislbr/plantdex/users/token"
 	"lewislbr/plantdex/users/user"
 )
 
 type envVars struct {
-	PostgresURI string
-	AppDomain   string
-	RedisPass   string
-	RedisURL    string
-	TokenSecret string
+	AppDomain    string
+	GCPProjectId string
+	TokenSecret  string
+	WebURL       string
 }
 
 func main() {
 	env := getEnvVars()
-	postgresDriver := postgres.New()
-	postgresDB, err := postgresDriver.Connect(env.PostgresURI)
+	userStore := userstore.New()
+	userDB, err := userStore.Connect(env.PostgresURI)
 	if err != nil {
-		log.Panicf("Error connecting database: %v\n", err)
+		log.Panicf("Error connecting user database: %v\n", err)
 	}
 
-	redisDriver := redis.New()
-	redisCache, err := redisDriver.Connect(env.RedisURL, env.RedisPass)
+	tokenStore := tokenstore.New()
+	tokenDB, err := tokenStore.Connect(env.GCPProjectId)
 	if err != nil {
-		log.Panicf("Error connecting cache: %v\n", err)
+		log.Panicf("Error connecting token database: %v\n", err)
 	}
 
-	postgresRepo := postgres.NewRepository(postgresDB)
-	redisRepo := redis.NewRepository(redisCache)
-	userSvc := user.NewService(postgresRepo)
-	tokenSvc := token.NewService(env.TokenSecret, redisRepo)
-	userSvr := server.New(userSvc, tokenSvc, env.AppDomain)
+	userRepo := userstore.NewRepository(userDB)
+	tokenRepo := tokenstore.NewRepository(tokenDB)
+	userSvc := user.NewService(userRepo)
+	tokenSvc := token.NewService(env.TokenSecret, tokenRepo)
+	userSvr := server.New(userSvc, tokenSvc, env.AppDomain, env.WebURL)
 
-	go gracefulShutdown(userSvr, postgresDriver, redisDriver)
+	go gracefulShutdown(userSvr, userStore)
 
 	err = userSvr.Start()
 	if err != nil {
@@ -53,7 +52,7 @@ func main() {
 	defer func() {
 		r := recover()
 		if r != nil {
-			cleanUp(userSvr, postgresDriver, redisDriver)
+			cleanUp(userSvr, userStore)
 
 			os.Exit(1)
 		}
@@ -71,35 +70,27 @@ func getEnvVars() *envVars {
 	}
 
 	return &envVars{
-		PostgresURI: get("USERS_DATABASE_URI"),
-		AppDomain:   get("APP_DOMAIN"),
-		RedisPass:   get("USERS_REDIS_PASSWORD"),
-		RedisURL:    get("USERS_REDIS_URL"),
-		TokenSecret: get("USERS_SECRET"),
+		AppDomain:    get("APP_DOMAIN"),
+		GCPProjectId: get("GCP_PROJECT_ID"),
+		TokenSecret:  get("USERS_SECRET"),
+		WebURL:       get("WEB_URL"),
 	}
 }
 
-func gracefulShutdown(svr *server.Server, db *postgres.Driver, cache *redis.Driver) {
+func gracefulShutdown(svr *server.Server, db *userstore.Driver) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	<-quit
 
-	cleanUp(svr, db, cache)
+	cleanUp(svr, db)
 }
 
-func cleanUp(svr *server.Server, db *postgres.Driver, cache *redis.Driver) {
+func cleanUp(svr *server.Server, db *userstore.Driver) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	db.Disconnect()
-
-	err := cache.Disconnect()
-	if err != nil {
-		log.Printf("Error disconnecting cache: %v\n", err)
-	}
-
-	err = svr.Stop(ctx)
+	err := svr.Stop(ctx)
 	if err != nil {
 		log.Printf("Error stopping server: %v\n", err)
 	}

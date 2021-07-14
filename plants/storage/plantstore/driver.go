@@ -1,4 +1,4 @@
-package mongo
+package plantstore
 
 import (
 	"context"
@@ -21,12 +21,12 @@ func (s *Driver) Connect(uri, db string) (*mongo.Database, error) {
 	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
-		return nil, fmt.Errorf("error connecting Mongo driver: %w", err)
+		return nil, fmt.Errorf("error connecting plant client: %w", err)
 	}
 
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error pinging Mongo client: %w", err)
+		return nil, fmt.Errorf("error pinging plant client: %w", err)
 	}
 
 	log.Println("Plants database ready ✅")

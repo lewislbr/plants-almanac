@@ -10,28 +10,29 @@ import (
 
 	"lewislbr/plantdex/plants/plant"
 	"lewislbr/plantdex/plants/server"
-	"lewislbr/plantdex/plants/storage/mongo"
+	"lewislbr/plantdex/plants/storage/plantstore"
 )
 
 type envVars struct {
 	AuthURL  string
 	Database string
 	MongoURI string
+	WebURL   string
 }
 
 func main() {
 	env := getEnvVars()
-	mongoDriver := mongo.New()
-	mongoDB, err := mongoDriver.Connect(env.MongoURI, env.Database)
+	plantStore := plantstore.New()
+	plantDB, err := plantStore.Connect(env.MongoURI, env.Database)
 	if err != nil {
-		log.Panicf("Error connecting database: %v\n", err)
+		log.Panicf("Error connecting plants database: %v\n", err)
 	}
 
-	mongoRepo := mongo.NewRepository(mongoDB)
-	plantSvc := plant.NewService(mongoRepo)
-	plantSvr := server.New(plantSvc, env.AuthURL)
+	plantRepo := plantstore.NewRepository(plantDB)
+	plantSvc := plant.NewService(plantRepo)
+	plantSvr := server.New(plantSvc, env.AuthURL, env.WebURL)
 
-	go gracefulShutdown(plantSvr, mongoDriver)
+	go gracefulShutdown(plantSvr, plantStore)
 
 	err = plantSvr.Start()
 	if err != nil {
@@ -41,7 +42,7 @@ func main() {
 	defer func() {
 		r := recover()
 		if r != nil {
-			cleanUp(plantSvr, mongoDriver)
+			cleanUp(plantSvr, plantStore)
 
 			os.Exit(1)
 		}
@@ -62,10 +63,11 @@ func getEnvVars() *envVars {
 		AuthURL:  get("USERS_URL"),
 		Database: get("PLANTS_DATABASE_NAME"),
 		MongoURI: get("PLANTS_DATABASE_URI"),
+		WebURL:   get("WEB_URL"),
 	}
 }
 
-func gracefulShutdown(svr *server.Server, db *mongo.Driver) {
+func gracefulShutdown(svr *server.Server, db *plantstore.Driver) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
@@ -74,13 +76,13 @@ func gracefulShutdown(svr *server.Server, db *mongo.Driver) {
 	cleanUp(svr, db)
 }
 
-func cleanUp(svr *server.Server, db *mongo.Driver) {
+func cleanUp(svr *server.Server, db *plantstore.Driver) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	err := db.Disconnect(ctx)
 	if err != nil {
-		log.Printf("Error disconnecting database: %v\n", err)
+		log.Printf("Error disconnecting plants database: %v\n", err)
 	}
 
 	err = svr.Stop(ctx)
