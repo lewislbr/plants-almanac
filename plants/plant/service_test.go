@@ -15,7 +15,7 @@ func TestAdd(t *testing.T) {
 
 		plantRepo := &mockPlantRepo{}
 
-		plantRepo.On("Insert", mock.AnythingOfType("string"), mock.AnythingOfType("Plant")).Return("", nil)
+		plantRepo.On("Insert", mock.AnythingOfType("string"), mock.AnythingOfType("Plant")).Return(nil)
 
 		plantService := NewService(plantRepo)
 		newPlant := Plant{
@@ -31,7 +31,7 @@ func TestAdd(t *testing.T) {
 
 		plantRepo := &mockPlantRepo{}
 
-		plantRepo.On("Insert", mock.AnythingOfType("string"), mock.AnythingOfType("Plant")).Return("", nil)
+		plantRepo.On("Insert", mock.AnythingOfType("string"), mock.AnythingOfType("Plant")).Return(nil)
 
 		plantService := NewService(plantRepo)
 		newPlant := Plant{
@@ -93,7 +93,7 @@ func TestList(t *testing.T) {
 
 		plantRepo := &mockPlantRepo{}
 
-		plantRepo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(Plant{}, nil)
+		plantRepo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(Plant{Name: "foo"}, nil)
 
 		plantService := NewService(plantRepo)
 		plantID := "123"
@@ -146,7 +146,7 @@ func TestEdit(t *testing.T) {
 
 		plantRepo := &mockPlantRepo{}
 
-		plantRepo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(Plant{}, nil)
+		plantRepo.On("FindOne", mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(Plant{Name: "foo"}, nil)
 		plantRepo.On("Update", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("Plant")).Return(int64(1), nil)
 
 		plantService := NewService(plantRepo)

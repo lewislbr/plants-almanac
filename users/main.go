@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -23,17 +24,30 @@ type envVars struct {
 }
 
 func main() {
+	if svr, err := run(); err != nil {
+		log.Printf("Error starting app: %v\n", err)
+
+		err := cleanUp(svr)
+		if err != nil {
+			log.Printf("Error cleaning up: %v\n", err)
+		}
+
+		os.Exit(1)
+	}
+}
+
+func run() (*server.Server, error) {
 	env := getEnvVars()
 	userStore := userstore.New()
-	userDB, err := userStore.Connect(env.PostgresURI)
+	userDB, err := userStore.Connect(env.GCPProjectId)
 	if err != nil {
-		log.Panicf("Error connecting user database: %v\n", err)
+		return nil, fmt.Errorf("error connecting user database: %v\n", err)
 	}
 
 	tokenStore := tokenstore.New()
 	tokenDB, err := tokenStore.Connect(env.GCPProjectId)
 	if err != nil {
-		log.Panicf("Error connecting token database: %v\n", err)
+		return nil, fmt.Errorf("error connecting token database: %v\n", err)
 	}
 
 	userRepo := userstore.NewRepository(userDB)
@@ -46,17 +60,10 @@ func main() {
 
 	err = userSvr.Start()
 	if err != nil {
-		log.Panicf("Error starting server: %v\n", err)
+		return userSvr, fmt.Errorf("error starting users server: %v\n", err)
 	}
 
-	defer func() {
-		r := recover()
-		if r != nil {
-			cleanUp(userSvr, userStore)
-
-			os.Exit(1)
-		}
-	}()
+	return nil, nil
 }
 
 func getEnvVars() *envVars {
@@ -83,15 +90,20 @@ func gracefulShutdown(svr *server.Server, db *userstore.Driver) {
 
 	<-quit
 
-	cleanUp(svr, db)
+	err := cleanUp(svr)
+	if err != nil {
+		log.Printf("Error cleaning up: %v\n", err)
+	}
 }
 
-func cleanUp(svr *server.Server, db *userstore.Driver) {
+func cleanUp(svr *server.Server) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	err := svr.Stop(ctx)
 	if err != nil {
-		log.Printf("Error stopping server: %v\n", err)
+		return fmt.Errorf("error stopping server: %v\n", err)
 	}
+
+	return nil
 }

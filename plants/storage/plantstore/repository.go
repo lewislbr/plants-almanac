@@ -8,6 +8,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type repository struct {
@@ -18,17 +19,17 @@ func NewRepository(db *mongo.Database) *repository {
 	return &repository{db}
 }
 
-func (r *repository) Insert(userID string, new plant.Plant) (interface{}, error) {
-	result, err := r.db.Collection(userID).InsertOne(context.Background(), new)
+func (r *repository) Insert(userID string, new plant.Plant) error {
+	_, err := r.db.Collection(userID).InsertOne(context.Background(), new)
 	if err != nil {
-		return nil, fmt.Errorf("error inserting plant: %w", err)
+		return fmt.Errorf("error inserting plant: %w", err)
 	}
 
-	return result.InsertedID, nil
+	return nil
 }
 
 func (r *repository) FindAll(userID string) ([]plant.Plant, error) {
-	cursor, err := r.db.Collection(userID).Find(context.Background(), bson.M{})
+	cursor, err := r.db.Collection(userID).Find(context.Background(), bson.M{}, options.Find().SetProjection(bson.M{"created_at": 1, "edited_at": 1, "name": 1}))
 	if err != nil {
 		return nil, fmt.Errorf("error finding plants: %w", err)
 	}
@@ -37,7 +38,7 @@ func (r *repository) FindAll(userID string) ([]plant.Plant, error) {
 
 	err = cursor.All(context.Background(), &results)
 	if err != nil {
-		return nil, fmt.Errorf("error iterating plants: %w", err)
+		return nil, fmt.Errorf("error converting data: %w", err)
 	}
 
 	return results, nil
@@ -51,7 +52,7 @@ func (r *repository) FindOne(userID, plantID string) (plant.Plant, error) {
 	err := r.db.Collection(userID).FindOne(context.Background(), filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return plant.Plant{}, fmt.Errorf("error finding plant: %w", plant.ErrNotFound)
+			return plant.Plant{}, nil
 		}
 
 		return plant.Plant{}, fmt.Errorf("error finding plant: %w", err)

@@ -44,6 +44,9 @@ func (s *Driver) Disconnect(ctx context.Context) error {
 	log.Println("Disconnecting database...")
 
 	err := s.database.Client().Disconnect(ctx)
+	if err != nil {
+		return fmt.Errorf("error disconnecting Mongo driver: %w", err)
+	}
 
-	return fmt.Errorf("error disconnecting Mongo driver: %w", err)
+	return nil
 }

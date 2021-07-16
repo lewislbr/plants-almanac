@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -21,11 +22,24 @@ type envVars struct {
 }
 
 func main() {
+	if svr, db, err := start(); err != nil {
+		log.Printf("Error starting app: %v\n", err)
+
+		err := cleanUp(svr, db)
+		if err != nil {
+			log.Printf("Error cleaning up: %v\n", err)
+		}
+
+		os.Exit(1)
+	}
+}
+
+func start() (*server.Server, *plantstore.Driver, error) {
 	env := getEnvVars()
 	plantStore := plantstore.New()
 	plantDB, err := plantStore.Connect(env.MongoURI, env.Database)
 	if err != nil {
-		log.Panicf("Error connecting plants database: %v\n", err)
+		return nil, plantStore, fmt.Errorf("error connecting plants database: %v\n", err)
 	}
 
 	plantRepo := plantstore.NewRepository(plantDB)
@@ -36,17 +50,10 @@ func main() {
 
 	err = plantSvr.Start()
 	if err != nil {
-		log.Panicf("Error starting server: %v\n", err)
+		return plantSvr, plantStore, fmt.Errorf("error starting plants server: %v\n", err)
 	}
 
-	defer func() {
-		r := recover()
-		if r != nil {
-			cleanUp(plantSvr, plantStore)
-
-			os.Exit(1)
-		}
-	}()
+	return nil, nil, nil
 }
 
 func getEnvVars() *envVars {
@@ -73,20 +80,25 @@ func gracefulShutdown(svr *server.Server, db *plantstore.Driver) {
 
 	<-quit
 
-	cleanUp(svr, db)
+	err := cleanUp(svr, db)
+	if err != nil {
+		log.Printf("Error cleaning up: %v\n", err)
+	}
 }
 
-func cleanUp(svr *server.Server, db *plantstore.Driver) {
+func cleanUp(svr *server.Server, db *plantstore.Driver) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	err := db.Disconnect(ctx)
 	if err != nil {
-		log.Printf("Error disconnecting plants database: %v\n", err)
+		return fmt.Errorf("error disconnecting plants database: %v\n", err)
 	}
 
 	err = svr.Stop(ctx)
 	if err != nil {
-		log.Printf("Error stopping server: %v\n", err)
+		return fmt.Errorf("error disconnecting plants server: %v\n", err)
 	}
+
+	return nil
 }

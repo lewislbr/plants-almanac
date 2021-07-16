@@ -75,26 +75,17 @@ func (_m *mockPlantRepo) FindOne(_a0 string, _a1 string) (Plant, error) {
 }
 
 // Insert provides a mock function with given fields: _a0, _a1
-func (_m *mockPlantRepo) Insert(_a0 string, _a1 Plant) (interface{}, error) {
+func (_m *mockPlantRepo) Insert(_a0 string, _a1 Plant) error {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 interface{}
-	if rf, ok := ret.Get(0).(func(string, Plant) interface{}); ok {
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, Plant) error); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(interface{})
-		}
+		r0 = ret.Error(0)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(string, Plant) error); ok {
-		r1 = rf(_a0, _a1)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // Update provides a mock function with given fields: _a0, _a1, _a2

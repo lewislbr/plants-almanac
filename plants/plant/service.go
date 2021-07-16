@@ -9,7 +9,7 @@ import (
 
 type (
 	plantRepo interface {
-		Insert(string, Plant) (interface{}, error)
+		Insert(string, Plant) error
 		FindAll(string) ([]Plant, error)
 		FindOne(string, string) (Plant, error)
 		Update(string, string, Plant) (int64, error)
@@ -34,7 +34,7 @@ func (s *plantService) Add(userID string, new Plant) error {
 	new.CreatedAt = time.Now().UTC()
 	new.EditedAt = time.Now().UTC()
 
-	_, err := s.plantRepo.Insert(userID, new)
+	err := s.plantRepo.Insert(userID, new)
 	if err != nil {
 		return fmt.Errorf("error inserting plant: %w", err)
 	}
@@ -58,6 +58,9 @@ func (s *plantService) ListOne(userID, plantID string) (Plant, error) {
 
 	result, err := s.plantRepo.FindOne(userID, plantID)
 	if err != nil {
+		return Plant{}, fmt.Errorf("error finding plant: %w", err)
+	}
+	if result == (Plant{}) {
 		return Plant{}, fmt.Errorf("error finding plant: %w", ErrNotFound)
 	}
 
@@ -69,12 +72,15 @@ func (s *plantService) Edit(userID, plantID string, update Plant) error {
 		return fmt.Errorf("error editing plant: %w", ErrMissingData)
 	}
 
-	exist, err := s.plantRepo.FindOne(userID, plantID)
+	existing, err := s.plantRepo.FindOne(userID, plantID)
 	if err != nil {
+		return fmt.Errorf("error finding plant: %w", err)
+	}
+	if existing == (Plant{}) {
 		return fmt.Errorf("error finding plant: %w", ErrNotFound)
 	}
 
-	update.CreatedAt = exist.CreatedAt
+	update.CreatedAt = existing.CreatedAt
 	update.EditedAt = time.Now().UTC()
 
 	result, err := s.plantRepo.Update(userID, plantID, update)
